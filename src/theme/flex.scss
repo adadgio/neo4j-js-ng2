@@ -1,0 +1,81 @@
+/**
+ * Flex layout
+ */
+[flex] {
+    display: flex;
+}
+
+[flex-rows] {
+    display: flex;
+    flex-direction: row;
+}
+
+[flex-columns] {
+    display: flex;
+    flex-direction: column;
+}
+
+[flex-fill] {
+    display: flex;
+    flex: 1;
+}
+
+[flex-center] {
+    align-items: center;
+    justify-content: center;
+}
+[flex-center] {
+    align-items: center;
+    justify-content: center;
+}
+
+[flex-align-center],
+[flex-vertical-align-center]
+{
+    align-items: center;
+}
+
+[flex-justify-center] {
+    justify-content: center;
+}
+[flex-justify-start] {
+    justify-content: flex-start;
+}
+[flex-justify-end] {
+    justify-content: flex-end;
+}
+[flex-align-end] {
+    align-items: flex-end;
+}
+
+[pull-right],
+[flex-pull-right],
+[flex-push-right] {
+    margin-left: auto;
+}
+
+[pull-left],
+[flex-pull-left]
+[flex-pull-right],
+[flex-push-left] {
+    margin-right: auto;
+}
+
+[flex-align-stretch] {
+    align-items: stretch;
+}
+[flex-with-icon] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+// [flex-fullpage-layout] {
+//     display: flex;
+//     flex-direction: column;
+//     flex: 1;
+// }
+
+[margin] { margin: 8px 8px 8px 8px }
+[padding] { padding: 8px 8px 8px 8px }
+[margin-x2] { margin: 16px 16px 16px 16px }
+[padding-x2] { padding: 16px 16px 16px 16px }

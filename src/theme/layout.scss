@@ -1,0 +1,34 @@
+@import "./shared/_mixins";
+@import "./shared/_variables";
+
+/**
+ * Layout
+ */
+*, html {
+    outline: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    color: $fontColorInversed;
+    display: flex;
+    flex-direction: column;
+    font-size: $fontSize;
+    font-family: Arial, sans-serif;
+    background-color: colors(midnight);
+    @include text-antialias()
+}
+
+app-root {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+router-outlet {
+    display: none;
+}

@@ -1,6 +1,7 @@
 declare var window: any;
 import * as d3 from 'd3';
-import { Node } from './node';
+// import { Node } from './node';
+import { Node } from '../../neo4j';
 
 export class Graph
 {
@@ -24,27 +25,27 @@ export class Graph
         this.selector = selector;
         this.init()
     }
-    
+
     init()
     {
-        // d3.select(window)
-        //     .on('keyup', (e) => {
-        //         console.log('key up', e)
-        //     })
-        //     .on('keydown', (e) => {
-        //         console.log('key down', e)
-        //     })
+        d3.select(window)
+            .on('keyup', (e) => {
+                console.log('key up', e)
+            })
+            .on('keydown', (e) => {
+                console.log('key down', e)
+            })
 
         this.svg = d3.select(this.selector)
-            // .on('mouseup', (e) => {
-            //     console.log('mouse up', e)
-            // })
-            // .on('mousedown', (e) => {
-            //     console.log('mouse down', e)
-            // })
-            // .on('mousemove', (e) => {
-            //
-            // })
+            .on('mouseup', (e) => {
+                console.log('mouse up', e)
+            })
+            .on('mousedown', (e) => {
+                console.log('mouse down', e)
+            })
+            .on('mousemove', (e) => {
+
+            })
 
         this.force = d3.layout.force()
             .nodes([]).links([])

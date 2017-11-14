@@ -1,0 +1,18 @@
+/**
+ * Variables
+ */
+
+$fontSize: 13px;
+$fontColor: #545454;
+$fontColorInversed: #f9f9f9;
+
+$theme: (
+    white:      #f9f9f9,
+    midnight:   #222222,
+    coal:       #303030,
+    charcoal:   #464545,
+);
+
+@function colors($colorName) {
+    @return map-get($theme, $colorName);
+}

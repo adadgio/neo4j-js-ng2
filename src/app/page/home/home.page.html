@@ -1,1 +1,17 @@
-<svg id="graph" style="width:400px;height:400px"></svg>
+<div flex flex-fill flex-rows>
+
+    <div flex class="column-left">
+        <node-edit
+            [node]="selectedNode">
+        </node-edit>
+    </div>
+
+    <div flex flex-fill class="column-center">
+        <svg id="graph" style="width:400px;height:400px"></svg>
+    </div>
+
+
+    <div flex class="column-right">
+        Left
+    </div>
+</div>
