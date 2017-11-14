@@ -1,0 +1,30 @@
+import { NgModule }                 from '@angular/core';
+import { RouterModule, Routes }     from '@angular/router';
+import { PreloadAllModules }        from '@angular/router';
+
+import { HomePageComponent }    from './page';
+
+const APP_ROUTES: Routes = [
+    {
+        path: '',
+        component: HomePageComponent,
+        canActivate: [  ],
+    },
+    { path: '', redirectTo: '/', pathMatch: 'full' },
+];
+
+@NgModule({
+    imports: [
+        RouterModule.forRoot(
+            APP_ROUTES,
+            {
+                // enableTracing: true, // debugging purposes only
+                preloadingStrategy: PreloadAllModules,
+            }
+        )
+    ],
+    exports: [
+        RouterModule
+    ]
+})
+export class AppRoutingModule { }
