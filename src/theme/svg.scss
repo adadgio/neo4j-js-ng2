@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-@import "./normalize";
-@import "./layout";
-@import "./flex";
-@import "./svg";
+circle {
+    &.red {
+        fill: red;
+    }
+    
+}

@@ -18,7 +18,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
     constructor(private neo4j: Neo4jService)
     {
         const transaction = new Transaction();
-        transaction.add('MATCH (n), (b: Document) RETURN n, b, ID(n), ID(b), LABELS(n), LABELS(b) LIMIT 10')
+        transaction.add('MATCH (n: Ad), (b: Document) RETURN n, b, ID(n), ID(b), LABELS(n), LABELS(b) LIMIT 3')
         // transaction.add('MATCH (a: Ad) RETURN a LIMIT 3')
         // transaction.add('MATCH (b: Ad) RETURN b.id, b.name LIMIT 5')
 
@@ -26,9 +26,12 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
             // the number of result sets depends on the number of transactions
             // const firstResultSet = resultSets[0]
+            
+            const dataset = resultSets[0].getDataset('n')
 
-            // const dataset = resultSets[0].getDataset('n')
-            // console.log(resultSets)
+            dataset.distinct('id').each((n: Node) => {
+                console.log(n)
+            })
 
         }).catch(err => console.log(err) )
     }

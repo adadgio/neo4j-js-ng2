@@ -25,7 +25,7 @@ export class Node
             }
         }
     }
-
+    
     set(prop: string, value: any, enumerable: boolean = true)
     {
         if (false === enumerable) {

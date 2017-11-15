@@ -18,137 +18,92 @@ export class ResultSet
         // console.log(columns)
         // console.log(data)
 
-        // prepate datasets
-        for (let i in columns) {
-            const colInfo = this.parseColumn(columns[i])
-            const entity = colInfo.entity;
-            datasets[entity] = [];
-        }
+        for (let index in columns) {
+            const col = columns[index]
+            const nfo = this.parseColumn(col)
 
-        // console.log(datasets)
-        console.log(data)
-        console.log(columns)
+            const alias = nfo.alias
+            const prop = nfo.property
 
-        for (let index in data) {
+            if (typeof datasets[alias] === 'undefined') {
+                datasets[alias] = []
+            }
 
-            // const node = new Node();
-            const row = data[index].row;
-            // datasets[entity][index] = new Node();
+            for (let i in data) {
 
-            // datasets[entity][index] = new Node();
-            // loop through each row properties (indexed by array)
-            // and find to which column/entity the row belongs
-            // there should be as much properties as columns
+                let row = data[i].row
 
-            for (let i in columns) {
-
-                const value = row[i];
-                const colInfo = this.parseColumn(columns[i])
-                // console.log(colInfo)
-                const entity = colInfo.entity;
-                const prop = colInfo.property;
-
-                if (typeof datasets[entity][index] === 'undefined') {
-                    datasets[entity][index] = new Node();
+                if (typeof datasets[alias][i] === 'undefined') {
+                    datasets[alias][i] = new Node()
                 }
 
-                console.log(`row[${index}] Col[${columns[i]}]`, value)
+                // iterate through row properties
+                for (let k in row) {
 
-                if (typeof value === 'object') {
-                     datasets[entity][index][prop] = value
-                }
-                
-                // console.log(prop)
-                if (null === prop) {
+                    // only add value if index is current column index
+                    // otherwhise all nodes will have all other node entities properties
+                    if (k === index) {
 
-                    // datasets[entity][index][prop] =
+                        let valOrProps = row[k]
 
-                } else {
+                        if (prop === null) {
 
-                    if (prop === 'ID') {
+                            // use false to prevent overriding exisint properties
+                            datasets[alias][i].hydrate(valOrProps, false)
 
-                    } else if (prop === 'LABELS') {
+                        } else if (prop === 'ID') {
+
+                            // use false parameter to make this property non-enumerable (hidden)
+                            datasets[alias][i].set('ID', valOrProps, false)
+
+                        } else if (prop === 'LABELS') {
+
+                            // use false parameter to make this property non-enumerable (hidden)
+                            datasets[alias][i].set('LABELS', valOrProps, false)
+
+                        } else {
+
+                            // node.hydrate(valOrProps, false)
+                        }
 
                     }
 
                 }
-                // if (null !== prop) {
-                //
-                //     if (prop === 'ID') {
-                //
-                //     } else if (prop === 'LABELS') {
-                //
-                //     } else {
-                //         // console.log(entity, index, prop)
-                //         datasets[entity][index].set(prop, value)
-                //     }
-                // }
 
+                // add special functions to dataset (each array accessor)
+                Object.defineProperty(datasets[alias], 'each', {
+                    configurable: false,
+                    enumerable: false,
+                    writable: true,
+                    value: function(callback: Function) {
+                        for (let i in this) {
+                            callback(this[i])
+                        }
+                        return this
+                    }
+                })
 
-                // the hydrated row will be pushed in the correct dataset
-                // assign properties to the correct
-                // for (let j in row) {
-                //     const value = row[k];
-                // }
+                Object.defineProperty(datasets[alias], 'distinct', {
+                    configurable: false,
+                    enumerable: false,
+                    writable: true,
+                    value: function(prop: string) {
+                        if (this.length < 2) { return this }
+                        
+                        for (let i in this) {
+                            for (let j in datasets[alias]) {
+                                const entry = datasets[alias][j]
+                                if (entry[prop] === this[i][prop] && typeof this[i][prop] !== 'undefined') {
+                                    this.shift(i, 1)
+                                }
+                            }
+                        }
+                        return this
+                    }
+                })
+
             }
-
         }
-
-        console.log(datasets)
-        // for (let i in data) {
-        //     const rowData = data[i].row;
-        //
-        //     // console.log(rowData)
-        //     let entities = {};
-        //
-        //     for (let col of columns) {
-        //         let nfo = this.parseColumn(col);
-        //         let e = nfo.entity;
-        //         entities[e] = new Node();
-        //     }
-        //
-        //     for (let k in rowData) {
-        //
-        //         const colInfo = this.parseColumn(columns[k]);
-        //         const e = colInfo.entity;
-        //         const prop = colInfo.property;
-        //
-        //         if (prop === 'ID') {
-        //
-        //             // make this property non-enumerable by using false as a 2nd parameter
-        //             entities[e].set('ID', rowData[k], false);
-        //
-        //         } else if (prop === 'LABELS') {
-        //
-        //             // make this property non-enumerable by using false as a 2nd parameter
-        //             entities[e].set('LABELS', rowData[k], false);
-        //
-        //         } else {
-        //
-        //             // hydrate row but prevent replacing exeisting properties
-        //             // by setting the hydration 2nd parameter to false
-        //             entities[e].hydrate(rowData[k], false)
-        //         }
-        //     }
-        //
-        //     for (let e in entities) {
-        //         const row = entities[e]
-        //         datasets[e].push(row)
-        //
-        //         // define and each function looper for each dataset
-        //         Object.defineProperty(datasets[e], 'each', {
-        //             configurable: false,
-        //             enumerable: false,
-        //             writable: true,
-        //             value: (callback: Function) => {
-        //                 for (let i in this.datasets[e]) {
-        //                     callback(this.datasets[e][i])
-        //                 }
-        //             }
-        //         })
-        //     }
-        //
-        // }
 
         return datasets;
     }
@@ -164,9 +119,9 @@ export class ResultSet
     /**
      * Turns column names into:
      *  n => { entity: "n", property: null }
-     *  n.name => { entity: "n", property: "name" }
-     *  ID(n) => { entity: "n", property: "ID" }
-     * @return object { entity: "", property }
+     *  n.name => { alias: "n", property: "name" }
+     *  ID(n) => { alias: "n", property: "ID" }
+     * @return object { alias: "", property }
      */
     parseColumn(col: string)
     {
@@ -174,11 +129,11 @@ export class ResultSet
         const partsB = col.split('(')
 
         if (partsA.length === 2) {
-            return { entity: partsA[0], property: partsA[1] }
+            return { alias: partsA[0], property: partsA[1] }
         } else if (partsB.length === 2) {
-            return { entity: partsB[1].replace(')', ''), property: partsB[0] }
+            return { alias: partsB[1].replace(')', ''), property: partsB[0] }
         } else {
-            return { entity: col, property: null }
+            return { alias: col, property: null }
         }
     }
 
@@ -204,4 +159,5 @@ export class ResultSet
     {
         return (typeof this.datasets[col] === 'undefined') ? null : this.datasets[col];
     }
+
 }
