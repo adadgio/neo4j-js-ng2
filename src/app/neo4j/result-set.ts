@@ -88,16 +88,24 @@ export class ResultSet
                     enumerable: false,
                     writable: true,
                     value: function(prop: string) {
-                        if (this.length < 2) { return this }
-                        
-                        for (let i in this) {
-                            for (let j in datasets[alias]) {
-                                const entry = datasets[alias][j]
-                                if (entry[prop] === this[i][prop] && typeof this[i][prop] !== 'undefined') {
-                                    this.shift(i, 1)
-                                }
-                            }
-                        }
+                        // // const self = this
+                        // let keys = this.map(n => {return n[prop]}).filter((num, i, self) => {
+                        //     return self.indexOf(num) === i;
+                        // })
+                        //
+                        // console.log(keys)
+                        //
+                        // for (let i = this.length; i >= 0; i--) {
+                        //
+                        //     if (typeof this[i] !== 'undefined' && keys.indexOf(this[i][prop]) > -1) {
+                        //         console.log(this[i][prop], keys)
+                        //         this.splice(i, 1)
+                        //         keys.splice(i, 1)
+                        //     }
+                        // }
+                        //
+                        // console.log(this)
+                        // return this
                         return this
                     }
                 })
