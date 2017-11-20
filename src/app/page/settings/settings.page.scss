@@ -1,0 +1,35 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+@import "../../../theme/shared/_scrollbars";
+
+:host {
+    // @include hostSupportsPageScroll()
+    // margin-bottom: 24px;
+    @include hostSupportsFullPage()
+}
+
+.editor, .actions {
+
+}
+
+pre.editor {
+    width: 100%;
+    color: colors(white);
+    overflow-y: auto;
+    height: 480px;
+    min-width: 500px;
+    background-color: colors(charcoal);
+    padding: 16px;
+    margin: 0px;
+    font-size: $fontSize - 2px;
+    font-family: Monospace, "Monospace sans", sans-serif;
+
+    @include box-sizing();
+    @include scrollbars(.5em, slategray);
+}
+
+.actions {
+    app-button {
+        // margin-right: 16px;
+    }
+}

@@ -2,5 +2,41 @@
 @import "../../../theme/shared/_variables";
 
 :host {
+    @include hostSupportsFullHeight()
+}
 
+.input-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+
+    input[type="text"] {
+        display: block;
+        width: 100%;
+        @include box-sizing(border-box);
+    }
+
+    .i-col1 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-right: 8px;
+        flex-basis: 35%;
+    }
+    .i-col2 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-right: 8px;
+    }
+    .i-col3 {
+        width: 15px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        text-align: right;
+        font-size: $fontSize - 2px;
+    }
 }

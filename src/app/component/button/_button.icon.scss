@@ -1,0 +1,14 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+:host[icon-only] {
+
+    button {
+        padding: 0px;
+        margin: 0px;
+        min-width: 0px;
+
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}

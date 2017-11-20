@@ -1,25 +1,50 @@
-import { Injectable }       from '@angular/core';
-import { Headers, Http }    from '@angular/http';
-import { PropertyAccess }   from '../core';
+import { Injectable, Optional }     from '@angular/core';
+import { Headers, Http }            from '@angular/http';
+import { PropertyAccess }           from '../core';
+import { LocalStorage }             from './local.storage';
 
 @Injectable()
 export class SettingsService
 {
-    settings: any = {};
+    settings: any = {}
+    inited: boolean = false
 
-    constructor(private http: Http)
+    private storageKey: string = 'neo4j_settings'
+
+    constructor(@Optional() private http: Http)
     {
-        
+        // try to read data from local storage first
+        const localSettings = LocalStorage.get(this.storageKey)
+
+        if (localSettings !== null) {
+            this.set(localSettings)
+            console.warn(`settings.service.ts Neo4j settings loaded from local storage`)
+        }
     }
 
-    set(settings: any)
+    areSet()
     {
+        return this.inited
+    }
+
+    reset()
+    {
+        this.settings = {}
+        LocalStorage.remove(this.storageKey)
+        return this
+    }
+
+    set(settings: any, force: boolean = false)
+    {
+        if (true === this.areSet() && force !== true) {
+            return this
+        }
+
         this.settings = settings;
+        LocalStorage.set(this.storageKey, settings)
 
-        // const accessor = new PropertyAccess()
-        // const value = accessor.getValue(this.settings, 'test[1].name')
-
-        return this;
+        this.inited = true
+        return this
     }
 
     get(access: string = null)

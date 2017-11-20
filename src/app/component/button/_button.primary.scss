@@ -1,0 +1,19 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+:host[primary] {
+
+    button {
+
+        color: colors(white);
+        background-color: #375a7f;
+
+        &:hover {
+            background-color: #2e4f73;
+        }
+
+        &:active {
+            background-color: #315d8c;
+        }
+    }
+}

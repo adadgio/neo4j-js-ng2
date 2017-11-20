@@ -2,17 +2,19 @@
 @import "../../../theme/shared/_variables";
 
 :host {
-    @include hostSupportsFullpage();
+    @include hostSupportsFullPage()
 }
 
 .column-left {
-    width: 290px;
+    width: 280px;
+    margin-right: 24px;
 }
 
 .column-right {
-    width: 200px;
+    width: 210px;
+    margin-left: 24px;
 }
 
-.column-center {
+.box-title {
 
 }

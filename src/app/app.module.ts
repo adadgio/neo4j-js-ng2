@@ -8,18 +8,37 @@ import { bootstrap }             from './bootstrap';
 import { AppComponent }         from './app.component';
 import { AppRoutingModule }     from './app.routing.module';
 
+import { KeysPipe }             from './core/pipe';
 import { SettingsService }      from './service';
-import { Neo4jService }         from './neo4j';
-import { HomePageComponent }    from './page';
 
-import { NodeEditComponent }    from './component';
+import { Neo4jService }         from './neo4j';
+
+import { HomePageComponent }        from './page';
+import { SettingsPageComponent }    from './page';
+
+import { HeaderComponent }      from './component';
+import { SearchComponent }      from './component';
+import { SwitchComponent }      from './component';
+import { ButtonComponent }      from './component';
+import { GraphComponent }               from './component';
+import { NodeEditComponent }            from './component';
+
 
 @NgModule({
     declarations: [
         AppComponent,
-        
+
+        KeysPipe,
+
         HomePageComponent,
-        NodeEditComponent
+        HeaderComponent,
+        SearchComponent,
+        SwitchComponent,
+        ButtonComponent,
+
+        GraphComponent,
+        NodeEditComponent,
+        SettingsPageComponent,
     ],
     imports: [
         BrowserModule,

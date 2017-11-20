@@ -1,0 +1,46 @@
+@import "./shared/_mixins";
+@import "./shared/_variables";
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+input[type="text"] {
+    display: flex;
+    align-items: center;
+    border: none;
+    font-family: inherit;
+    font-size: $fontSize;
+    padding: 8px 10px 8px 10px;
+    background-color: colors(whitesmoke);
+    border: none;
+    @include border-radius(2px);
+
+    &.input-tiny {
+        font-size: $fontSize - 2px;
+        padding: 6px 7px;
+    }
+    &.center {
+        text-align: center;
+    }
+
+    &.input-large {
+        font-size: $fontSize + 1px;
+        padding: 10px 12px 10px 12px;
+    }
+
+    &.themed {
+        color: colors(white);
+        background-color: colors(coal);
+        border: 1px solid #5886b7;
+        @include border-radius(2px);
+    }
+}

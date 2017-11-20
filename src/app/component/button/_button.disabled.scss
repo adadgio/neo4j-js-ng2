@@ -1,0 +1,19 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+:host[disabled] {
+    button {
+
+        cursor: not-allowed;
+        color: #6c7886;
+        background-color: #424952;
+
+        &:hover {
+            background-color: #424952;
+        }
+
+        &:active {
+            background-color: #424952;
+        }
+    }
+}

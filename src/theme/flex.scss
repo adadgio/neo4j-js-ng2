@@ -24,17 +24,10 @@
     align-items: center;
     justify-content: center;
 }
-[flex-center] {
-    align-items: center;
-    justify-content: center;
-}
-
-[flex-align-center],
-[flex-vertical-align-center]
+[flex-align-center]
 {
     align-items: center;
 }
-
 [flex-justify-center] {
     justify-content: center;
 }
@@ -47,17 +40,18 @@
 [flex-align-end] {
     align-items: flex-end;
 }
+[flex-space-between] {
+    justify-content: space-between;
+}
+[flex-space-around] {
+    justify-content: space-around;
+}
 
-[pull-right],
-[flex-pull-right],
-[flex-push-right] {
+[pull-right] {
     margin-left: auto;
 }
 
-[pull-left],
-[flex-pull-left]
-[flex-pull-right],
-[flex-push-left] {
+[pull-left] {
     margin-right: auto;
 }
 

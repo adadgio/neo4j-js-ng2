@@ -1,0 +1,41 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+nav {
+    position: fixed;
+    width: 100%;
+    height: $headerHeight;
+    background-color: colors(nemo);
+    z-index: 9;
+    color: colors(white);
+    
+    h1, a {
+        color: inherit;
+        display: flex;
+        align-items: center;
+        margin: 0px;
+        padding: 0px 16px;
+    }
+
+    a {
+
+        &:hover {
+            background-color: colors(nemo-hover);
+        }
+
+        &.status-icon {
+            line-height: inherit;
+            font-size: $fontSize + 6px;
+            margin-right: 8px;
+        }
+
+        > i[class^="icon-"], div[class*="icon-"] {
+            margin-right: 8px
+        }
+    }
+
+    h1 {
+        font-size: $fontSize + 4px;
+        font-weight: 200;
+    }
+}

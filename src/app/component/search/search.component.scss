@@ -1,0 +1,38 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+:host {
+
+}
+
+.search {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    
+    input[type="text"] {
+        flex: 1;
+        @include border-radius(0px 1px 1px 0px);
+    }
+
+    a.info {
+        color: colors(grayish);
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        display: flex;
+        align-items: center;
+        line-height: 1em;
+        font-size: $fontSize + 4px;
+    }
+}
+
+.search-bar {
+    display: flex;
+    position: relative;
+}
+
+.query-bar {
+    display: flex;
+    position: relative;
+}

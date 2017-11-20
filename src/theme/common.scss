@@ -1,0 +1,64 @@
+@import "./shared/_mixins";
+@import "./shared/_variables";
+
+/**
+ * Commpon classes and styles.
+ */
+$radius: 1px;
+.radiusize {
+    @include border-radius($radius)
+}
+.radiusize-top {
+    @include border-radius($radius $radius 0px 0px)
+}
+.radiusize-bottom {
+    @include border-radius(0px 0px $radius $radius)
+}
+
+.coal {
+    background-color: colors(coal)
+}
+.coal-border {
+    border: 1px solid colors(coal);
+}
+
+.charcoal {
+    background-color: colors(charcoal)
+}
+
+.gray {
+    color: colors(gray);
+}
+
+.small {
+    font-size: $fontSize - 2px
+}
+
+.padding-8px {
+    padding: 8px;
+}
+.padding-16px {
+    padding: 16px;
+}
+.padding-8-16px {
+    padding: 16px;
+}
+.margin-right-8px {
+    margin-right: 8px;
+}
+.margin-left-8px {
+    margin-left: 8px;
+}
+
+.primary {
+    color: colors(primary);
+}
+.secondary {
+    color: colors(secondary);
+}
+.green {
+    color: colors(green);
+}
+.red {
+    color: colors(red);
+}

@@ -2,4 +2,10 @@
 @import "./normalize";
 @import "./layout";
 @import "./flex";
-@import "./svg";
+@import "./common";
+@import "./form";
+
+@import "./svg/svg";
+@import "./svg/node";
+@import "./svg/links";
+@import "./svg/cursors";

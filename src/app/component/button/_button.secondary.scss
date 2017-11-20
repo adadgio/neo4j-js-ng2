@@ -1,0 +1,17 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+:host[secondary] {
+    button {
+
+        color: colors(white);
+        background-color: #424951;
+        
+        &:hover {
+            background-color: #3a424a;
+        }
+        &:active {
+            background-color: #434d56;
+        }
+    }
+}

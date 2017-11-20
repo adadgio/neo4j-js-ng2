@@ -2,6 +2,7 @@ import { Injectable }           from '@angular/core';
 import { Response }             from '@angular/http';
 import { Headers, Http }        from '@angular/http';
 import { SettingsService }      from '../service';
+import { Debug }                from '../service';
 import { PropertyAccess }       from '../core';
 import { ResultSet }            from './result-set';
 import { Transaction }          from './transaction';
@@ -9,7 +10,11 @@ import { Transaction }          from './transaction';
 @Injectable()
 export class Neo4jService
 {
-    headers: Headers;
+    private url: string;
+    private headers: Headers;
+
+    static DEBUG = true
+    static NO_DEBUG = false
 
     constructor(private http: Http, private settings: SettingsService)
     {
@@ -17,23 +22,27 @@ export class Neo4jService
             'Content-Type': 'application/json; charset=utf-8',
             'Authorization': this.settings.get('client.authBasic')
         })
+
+        const endpoint = this.settings.get('client.apiEndpoint');
+        this.url = `${endpoint}/transaction/commit`
     }
 
-    commit(trans: Transaction)
+    commit(trans: Transaction, noDebug: boolean = Neo4jService.DEBUG): Promise<any>
     {
-        const headers = this.headers;
-        const endpoint = this.settings.get('client.apiEndpoint');
-        const url = `${endpoint}/transaction/commit`;
+        if (noDebug === Neo4jService.DEBUG) {
+            Debug.logAll(trans.getStatements().map((s) => { return s.statement }))
+        }
 
         return new Promise((resolve, reject) => {
-            this.http.post(url, { statements: trans.getStatements() }, { headers: this.headers })
+            this.http.post(this.url, { statements: trans.getStatements() }, { headers: this.headers })
                 .map(res => res.json())
                 .toPromise()
                 .then((response: Response) => {
                     const result = this.handleResults(response)
                     resolve(result)
-
+                    
                 }).catch(error => {
+                    Debug.log(error)
                     reject(error)
                 })
         })
@@ -49,5 +58,24 @@ export class Neo4jService
         }
 
         return resultSets;
+    }
+
+    ping(): Promise<boolean>
+    {
+        const trans = new Transaction()
+        trans.add('MATCH (n) RETURN ID(n) LIMIT 1')
+
+        return new Promise((resolve, reject) => {
+            this.http.post(this.url, { statements: trans.getStatements() }, { headers: this.headers })
+                .map(res => res.json())
+                .toPromise()
+                .then((response: Response) => {
+                    resolve(true)
+                }).catch(error => {
+                    Debug.log(error)
+                    reject(error)
+                })
+        })
+
     }
 }

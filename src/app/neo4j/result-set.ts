@@ -15,9 +15,6 @@ export class ResultSet
         const data: any = results['data'];
         const columns: any = results['columns'];
 
-        // console.log(columns)
-        // console.log(data)
-
         for (let index in columns) {
             const col = columns[index]
             const nfo = this.parseColumn(col)
@@ -27,6 +24,15 @@ export class ResultSet
 
             if (typeof datasets[alias] === 'undefined') {
                 datasets[alias] = []
+
+                Object.defineProperty(datasets[alias], 'first', {
+                    configurable: false,
+                    enumerable: false,
+                    writable: false,
+                    value: function () {
+                        return this.length > 0 ? this[0] : null
+                    }
+                })
             }
 
             for (let i in data) {
@@ -70,46 +76,6 @@ export class ResultSet
 
                 }
 
-                // add special functions to dataset (each array accessor)
-                Object.defineProperty(datasets[alias], 'each', {
-                    configurable: false,
-                    enumerable: false,
-                    writable: true,
-                    value: function(callback: Function) {
-                        for (let i in this) {
-                            callback(this[i])
-                        }
-                        return this
-                    }
-                })
-
-                Object.defineProperty(datasets[alias], 'distinct', {
-                    configurable: false,
-                    enumerable: false,
-                    writable: true,
-                    value: function(prop: string) {
-                        // // const self = this
-                        // let keys = this.map(n => {return n[prop]}).filter((num, i, self) => {
-                        //     return self.indexOf(num) === i;
-                        // })
-                        //
-                        // console.log(keys)
-                        //
-                        // for (let i = this.length; i >= 0; i--) {
-                        //
-                        //     if (typeof this[i] !== 'undefined' && keys.indexOf(this[i][prop]) > -1) {
-                        //         console.log(this[i][prop], keys)
-                        //         this.splice(i, 1)
-                        //         keys.splice(i, 1)
-                        //     }
-                        // }
-                        //
-                        // console.log(this)
-                        // return this
-                        return this
-                    }
-                })
-
             }
         }
 
@@ -142,24 +108,6 @@ export class ResultSet
             return { alias: partsB[1].replace(')', ''), property: partsB[0] }
         } else {
             return { alias: col, property: null }
-        }
-    }
-
-    isSpecialProperty(col: string)
-    {
-        const parts = col.split('(')
-        return (parts.length === 2) ? true : false;
-    }
-
-    getSpecialPropertyColumnDescriptor(col: string)
-    {
-        const parts = col.split('(')
-
-        if (parts.length === 2) {
-            const col = parts[1].replace(')', '')
-            return { columnName: col, specialProperty: parts[0] }
-        } else {
-            return null
         }
     }
 

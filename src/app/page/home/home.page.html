@@ -1,17 +1,40 @@
 <div flex flex-fill flex-rows>
 
-    <div flex class="column-left">
+    <div flex flex-columns class="column-left radiusize coal-border">
         <node-edit
-            [node]="selectedNode">
+            [node]="currentSelectedNode"
+            (onNodeEdited)="onNodeEdited($event)"
+        >
         </node-edit>
     </div>
 
-    <div flex flex-fill class="column-center">
-        <svg id="graph" style="width:400px;height:400px"></svg>
+
+    <div flex flex-fill flex-columns class="coal-border radiusize">
+        <div class="coal radiusize-top">
+            <search-component [mode]="'normal'" (onSearch)="onSearch($event)"></search-component>
+        </div>
+        <div flex flex-fill class="charcoal">
+            <graph-component
+                [createMode]="createModeEnabled"
+                (nodeSelected)="onNodeSelected($event)"
+                (nodeDoubleClicked)="onNodeDoubleClicked($event)"
+                (nodeAdded)="onNodeAdded($event)"
+            ></graph-component>
+        </div>
     </div>
 
 
-    <div flex class="column-right">
-        Left
+    <div flex  flex-columns class="column-right coal-border radiusize">
+        <div flex flex-rows flex-align-center class="coal padding-8px">
+            <span>Create mode</span>
+            <switch-component pull-right [value]="createModeEnabled" (change)="onCreateModeChanged($event)"></switch-component>
+        </div>
+
+        <div flex flex-fill class="charcoal padding-16px">
+            qsd
+        </div>
     </div>
+
 </div>
+
+<!-- <settings-edit-component></settings-edit-component> -->

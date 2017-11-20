@@ -1,16 +1,30 @@
 /**
- * Variables
+ * Variables, colors and theme.
  */
-
-$fontSize: 13px;
+$fontSize: 14px;
 $fontColor: #545454;
 $fontColorInversed: #f9f9f9;
+$headerHeight: 55px;
 
 $theme: (
+    gray:       gray,
+    grayish:    #868686,
     white:      #f9f9f9,
+    black:      $fontColor,
+    whitesmoke: whitesmoke,
     midnight:   #222222,
-    coal:       #303030,
-    charcoal:   #464545,
+    coal:       #464545,
+    charcoal:   #303030,
+    nemo:       #375a7f,
+    nemo-hover: #28415b,
+    green:      #148014,
+    sea:        #337ab7,
+
+    primary:    #375a7f,
+    secondary:  #0ce3ac,
+
+    red:        #e74b3c,
+    blue:       #3597dc,
 );
 
 @function colors($colorName) {

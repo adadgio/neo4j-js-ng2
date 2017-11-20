@@ -20,7 +20,7 @@ body {
     font-size: $fontSize;
     font-family: Arial, sans-serif;
     background-color: colors(midnight);
-    @include text-antialias()
+    @include text-antialias();
 }
 
 app-root {
@@ -31,4 +31,33 @@ app-root {
 
 router-outlet {
     display: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1 {
+    color: colors(gray);
+    font-size: $fontSize + 8px;
+    font-weight: 200;
+    margin: 16px 0px 32px 0px;
+}
+
+p {
+    margin: 0px;
+    padding: 0px;
+}
+p.paragraph {
+    padding: 0px 16px;
+    margin: 8px 0px;
+}
+
+[page] {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin-top: $headerHeight;
+    padding: 16px;
 }

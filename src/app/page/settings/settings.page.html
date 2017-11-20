@@ -1,0 +1,27 @@
+<div flex flex-columns>
+
+    <div flex flex-rows>
+
+        <div flex flex-columns class="coal-border radiusize">
+            <div flex flex-rows class="coal radiusize-top padding-16px">
+                <span flex>settings.js</span>
+                <span flex *ngIf="(null !== error)" class="red margin-left-8px" [innerText]="error"></span>
+                <span pull-right><a class="secondary" href="" (click)="reset($event)">Reset</a></span>
+            </div>
+
+            <pre flex class="editor" #settingsEditor contenteditable [innerText]="settingsString"></pre>
+
+            <div flex flex-rows flex-space-between class="actions coal padding-16px radiusize-bottom">
+                <app-button (click)="save($event)" primary>Save settings</app-button>
+                <app-button (click)="cancel($event)" danger>Cancel</app-button>
+            </div>
+
+        </div>
+
+        <div flex flex-fill flex-columns class="">
+            sqd
+        </div>
+
+    </div>
+
+</div>

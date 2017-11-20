@@ -1,8 +1,14 @@
+import { NodeInterface } from './node-interface';
 
-export class Node
+const reserved = [
+    'ID', 'LABELS',
+];
+
+export class Node implements NodeInterface
 {
-    private ID;
-    private LABELS;
+    ID: number;
+    LABELS = [];
+    props: any = {};
 
     constructor(data: any = null)
     {
@@ -14,18 +20,17 @@ export class Node
     hydrate(data: any, allowReplace: boolean = true)
     {
         for (let prop in data) {
-            if (data.hasOwnProperty(prop)) {
+            if (data.hasOwnProperty(prop) && typeof data[prop] !== 'function') {
 
-                if (false === allowReplace && false === this.hasOwnProperty(prop)) {
-                    this[prop] = data[prop]
+                if (reserved.indexOf(prop) === -1) {
+                    this.props[prop] = data[prop]
                 } else {
                     this[prop] = data[prop]
                 }
-
             }
         }
     }
-    
+
     set(prop: string, value: any, enumerable: boolean = true)
     {
         if (false === enumerable) {
@@ -36,22 +41,38 @@ export class Node
                 value: value
             })
         } else {
-            this[prop] = value;
+
+            if (reserved.indexOf(prop) === -1) {
+                this.props[prop] = value;
+            } else {
+                this[prop] = value
+            }
+
         }
+    }
+
+    properties()
+    {
+        return this.props;
     }
 
     get(prop: string)
     {
-        return (typeof this[prop] === 'undefined') ? null : this[prop]
+        return (typeof this.props[prop] === 'undefined') ? null : this.props[prop]
     }
 
     getId()
     {
-        return this.get('ID')
+        return this.ID
     }
 
     getLabels()
     {
-        return this.get('LABELS')
+        return this.LABELS
+    }
+
+    getFirstLabel()
+    {
+        return (this.LABELS.length > 0) ? this.LABELS[0] : null
     }
 }

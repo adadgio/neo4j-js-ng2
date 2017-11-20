@@ -1,0 +1,10 @@
+/* the dragline to create links between 2 nodes in create mode */
+$draglineColor: #dedede;
+
+line.dragline {
+    stroke: $draglineColor;
+    stroke-width: 2px;
+}
+.dragline-arrow {
+    fill: $draglineColor;
+}

@@ -44,8 +44,25 @@
     }
 }
 
-@mixin hostSupportsFullpage() {
+@mixin hostSupportsFullPage() {
     display: flex;
     flex-direction: column;
     flex: 1;
+}
+
+@mixin hostSupportsPageScroll() {
+    display: block;
+    flex: none;
+    overflow-y: auto;
+    margin-bottom: 16px;
+}
+
+@mixin hostSupportsFullHeight() {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+@mixin hostDefaults() {
+    flex: none
 }
