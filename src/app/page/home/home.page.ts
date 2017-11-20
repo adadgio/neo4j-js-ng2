@@ -38,7 +38,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
         this.graph.start()
 
         const transaction = new Transaction()
-        transaction.add('MATCH (n: Ad), (b: Document) RETURN n, b, n.truc, ID(n), ID(b), LABELS(n), LABELS(b) LIMIT 20')
+        transaction.add('MATCH (n), (b: Document) RETURN n, b, n.truc, ID(n), ID(b), LABELS(n), LABELS(b) LIMIT 200')
 
         this.neo4j.commit(transaction, Neo4jService.NO_DEBUG).then((resultSets: Array<ResultSet>) => {
 
@@ -90,7 +90,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
         // to handle proper UI and be safe regarding integrity so you'll
         // need to make the cypher transaction and append node to graph only
         // if it was successfull
-        
+
         // @todo Set default label from create mode windows
         node.addLabel(this.createModeDefaults.label)
 

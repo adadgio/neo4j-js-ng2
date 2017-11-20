@@ -8,7 +8,7 @@ class DebugSingleton
     constructor()
     {
         const localMessages = LocalStorage.get(this.storageKey)
-
+        
         if (localMessages !== null) {
             this.messages = localMessages
         }
@@ -34,6 +34,12 @@ class DebugSingleton
     getMessages()
     {
         return this.messages
+    }
+
+    clear()
+    {
+        LocalStorage.set(this.storageKey, null)
+        this.messages = null
     }
 }
 

@@ -24,7 +24,7 @@ export class Neo4jService
         const endpoint = this.settings.get('client.apiEndpoint');
         this.url = `${endpoint}/transaction/commit`
     }
-
+    
     commit(trans: Transaction, noDebug: boolean = Neo4jService.DEBUG): Promise<any>
     {
         if (noDebug === Neo4jService.DEBUG) {

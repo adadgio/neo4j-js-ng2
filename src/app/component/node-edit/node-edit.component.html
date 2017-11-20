@@ -6,7 +6,9 @@
             <span flex class="gray">Properties</span>
             <a flex pull-right class="secondary" (click)="addProperty($event)" href=""><i class="icon-plus"></i></a>
         </div>
-        
+
+        {{ node.getLabels() | json }}
+
         <div *ngFor="let prop of node.properties() | keys" class="input-group">
             <span class="i-col1">
                 <input type="text" [attr.value]="prop" class="input-tiny themed">

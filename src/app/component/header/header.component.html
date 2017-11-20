@@ -4,11 +4,15 @@
             <a flex routerLink="/" href="">Neo4j JS</a>
         </h1>
     </div>
-    
+
     <div flex flex-rows flex-align-center pull-right flex-align-stretch>
 
         <a flex flex-align-center href="" title="Neo4j settings" routerLink="/settings">
             <i class="icon-equalizer2"></i> Settings
+        </a>
+
+        <a flex flex-align-center href="" title="Debug logs" routerLink="/debug">
+            <i class="icon-bug"></i> Logs
         </a>
 
         <a *ngIf="(false === neo4jOk)" href="" class="red">

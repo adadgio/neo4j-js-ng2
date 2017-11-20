@@ -1,0 +1,11 @@
+<div flex flex-columns>
+
+    <div class="actions">
+        <a href="" class="secondary" (click)="clear($event)">Clear</a>
+    </div>
+
+    <div *ngFor="let logText of logs" class="debug-row">
+        <div [innerText]="logText"></div>
+    </div>
+
+</div>

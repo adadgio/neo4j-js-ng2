@@ -1,0 +1,17 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+@import "../../../theme/shared/_scrollbars";
+
+:host {
+    @include hostSupportsFullPage()
+}
+
+.debug-row {
+    font-size: $fontSize - 2px;
+    font-family: monospace, "Monospace sans", sans-serif;
+    margin-bottom: 16px;
+}
+
+.actions {
+    margin-bottom: 16px;
+}

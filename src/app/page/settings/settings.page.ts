@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef }     from '@angular/core';
 import { Router } from '@angular/router';
 import { OnInit, AfterViewInit, OnChanges }     from '@angular/core';
-import { SimpleChanges }                    from '@angular/core';
+import { SimpleChanges }                        from '@angular/core';
 import { SettingsService }                      from '../../service';
 
 @Component({
@@ -49,7 +49,7 @@ export class SettingsPageComponent implements OnInit, AfterViewInit, OnChanges
 
             this.settings.set(json, true)
             this.settingsString = JSON.stringify(json, null, 2)
-            
+
         } catch (e) {
             this.error = 'Invalid JSON'
         }

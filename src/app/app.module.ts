@@ -15,6 +15,7 @@ import { Neo4jService }         from './neo4j';
 import { Neo4jRepository }      from './neo4j';
 
 import { HomePageComponent }        from './page';
+import { DebugPageComponent }       from './page';
 import { SettingsPageComponent }    from './page';
 
 import { HeaderComponent }      from './component';
@@ -30,8 +31,7 @@ import { NodeEditComponent }            from './component';
         AppComponent,
 
         KeysPipe,
-
-        HomePageComponent,
+        
         HeaderComponent,
         SearchComponent,
         SwitchComponent,
@@ -39,6 +39,9 @@ import { NodeEditComponent }            from './component';
 
         GraphComponent,
         NodeEditComponent,
+
+        HomePageComponent,
+        DebugPageComponent,
         SettingsPageComponent,
     ],
     imports: [

@@ -30,9 +30,9 @@ export class Neo4jRepository
 
         const transaction = new Transaction()
         transaction.add(query)
-        
+
         return new Promise((resolve, reject) => {
-            this.neo4j.commit(transaction, Neo4jService.NO_DEBUG).then((resultSets: Array<ResultSet>) => {
+            this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
 
                 let node = resultSets[0].getDataset('n').first()
                 resolve(node)
@@ -69,7 +69,7 @@ export class Neo4jRepository
         transaction.add(`MATCH (a)-[r]->(b) WHERE ID(a) = ${id} RETURN a, b, ID(a), ID(b), LABELS(a), LABELS(b), r, ID(r), TYPE(r)`)
 
         return new Promise((resolve, reject) => {
-            this.neo4j.commit(transaction, Neo4jService.NO_DEBUG).then((resultSets: Array<ResultSet>) => {
+            this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
 
                  // "r" dataset (relationship nodes) should match number of "b" nodes...)
                  // @todo ...what happens with multiple relationships then?

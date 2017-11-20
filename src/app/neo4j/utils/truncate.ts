@@ -1,6 +1,8 @@
 import { NodeInterface }  from '../model';
 
-export function truncate(str: string, len: number = 10) {
-    let trunc = str.substring(0, len).trim()
-    return (str.length > len) ? `${trunc}...` : str
+export function truncate(value: string|number, len: number = 10) {
+    if (typeof(value) === 'number') { return value }
+
+    let trunc = value.substring(0, len).trim()
+    return (value.length > len) ? `${trunc}...` : value
 }
