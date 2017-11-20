@@ -14,7 +14,7 @@ html, body {
 }
 
 body {
-    color: $fontColorInversed;
+    color: colors(white);
     display: flex;
     flex-direction: column;
     font-size: $fontSize;
@@ -48,6 +48,7 @@ h1 {
 p {
     margin: 0px;
     padding: 0px;
+    line-height: 1.4em;
 }
 p.paragraph {
     padding: 0px 16px;

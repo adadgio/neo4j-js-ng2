@@ -1,24 +1,29 @@
-import { Component }                from '@angular/core';
-import { OnInit, AfterViewInit }    from '@angular/core';
-import { Input, Output }            from '@angular/core';
-import { EventEmitter }             from '@angular/core';
-import { CypherQuery }              from '../../neo4j';
-import { Transaction }              from '../../neo4j';
-import { Neo4jService, ResultSet }  from '../../neo4j';
-import { Node, NodeInterface }      from '../../neo4j';
+import { NgZone, Component }                    from '@angular/core';
+import { OnChanges, OnInit, AfterViewInit }     from '@angular/core';
+import { Input, Output, EventEmitter }          from '@angular/core';
+import { SimpleChanges }                        from '@angular/core';
+import { Neo4jRepository }                      from '../../neo4j';
+import { ResultSet, CypherQuery, Transaction }  from '../../neo4j/orm';
+import { Node, NodeInterface }                  from '../../neo4j/model';
+
+const randomPropNames = ['jumpy', 'flashbull', 'mourn', 'ugliest', 'furry', 'chew', 'equable', 'puzzling', 'oranges']
 
 @Component({
     selector: 'node-edit',
     templateUrl: './node-edit.component.html',
     styleUrls: ['./node-edit.component.scss']
 })
-export class NodeEditComponent implements OnInit, AfterViewInit
+export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 {
-    @Input('node') node: Node = null;
+    @Input('node') node: NodeInterface = null;
     @Output('onNodeEdited') onNodeEdited: EventEmitter<Node> = new EventEmitter()
-    loading: boolean = false;
 
-    constructor(private neo4j: Neo4jService)
+    loading: boolean = false;
+    cancelable: boolean = false;
+
+    private originalProps: any = null; // NodeInterface = null;
+
+    constructor(private repo: Neo4jRepository, private zone: NgZone)
     {
 
     }
@@ -33,46 +38,63 @@ export class NodeEditComponent implements OnInit, AfterViewInit
 
     }
 
+    ngOnChanges(changes: SimpleChanges)
+    {
+        // detect when a node was changed (from null->node, node->node or null->node)
+        if (this.gracefulId(changes.node.previousValue) !== this.gracefulId(changes.node.currentValue)) {
+            // a new node was really selected, changes do not only concern current node
+
+            if (null !== changes.node.currentValue) {
+                let copy = Object.assign({}, changes.node.currentValue.properties());
+                this.originalProps = copy
+            }
+        }
+    }
+
     save(e?: any)
     {
         if (e) { e.preventDefault() }
+
         this.loading = true
+        this.originalProps = this.node.properties()
 
-        const cypher = new CypherQuery()
-        const transaction = new Transaction();
-
-        cypher
-            .matches('n')
-            .andWhere('n', 'ID(?)', this.node.getId())
-            .setProperties('n', this.node.properties())
-            .returns('n, ID(n), LABELS(n)')
-            .skip(0)
-            .limit(1)
-
-
-        const query = cypher.getQuery()
-        transaction.add(cypher.getQuery())
-
-        this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
+        this.repo.updateNodeById(this.node.getId(), this.node.properties()).then((resultSets: Array<ResultSet>) => {
 
             const node = resultSets[0].getDataset('n').first()
-
-            this.loading = false
             this.onNodeEdited.emit(node)
+            this.loading = false
 
         }).catch(err => {
             this.loading = false
         })
+    }
 
+    addProperty(e: any)
+    {
+        e.preventDefault()
+        this.cancelable = true
+        
+        const prop = randomPropNames[Math.floor(Math.random() * randomPropNames.length)];
+        this.node.add(prop, '...')
+    }
+
+    deleteProperty(e: any, prop: string)
+    {
+        e.preventDefault()
+        this.cancelable = true
+        this.node.remove(prop)
     }
 
     cancel(e?: any)
     {
         if (e) { e.preventDefault() }
+
+        this.cancelable = false
+        this.node.reset(this.originalProps)
     }
 
-    addProperty(e?: any)
+    private gracefulId(node: NodeInterface)
     {
-        if (e) { e.preventDefault() }
+        return (node !== null && typeof(node) !== 'undefined' && node.getId() != null) ? node.getId() : null
     }
 }

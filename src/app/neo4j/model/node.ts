@@ -1,13 +1,15 @@
-import { NodeInterface } from './node-interface';
+import { NodeInterface } from './node.interface';
 
 const reserved = [
-    'ID', 'LABELS',
+    'ID', 'LABELS', 'META', 'TYPE'
 ];
 
 export class Node implements NodeInterface
 {
     ID: number;
-    LABELS = [];
+    LABELS: Array<string> = [];
+    META: any;
+    TYPE?: string;
     props: any = {};
 
     constructor(data: any = null)
@@ -17,7 +19,7 @@ export class Node implements NodeInterface
         }
     }
 
-    hydrate(data: any, allowReplace: boolean = true)
+    hydrate(data: any, allowReplace: boolean = true): void
     {
         for (let prop in data) {
             if (data.hasOwnProperty(prop) && typeof data[prop] !== 'function') {
@@ -29,6 +31,19 @@ export class Node implements NodeInterface
                 }
             }
         }
+    }
+
+    reset(data: any)
+    {
+        for (let prop in this.props) {
+            if (data.hasOwnProperty(prop)) {
+                // keep the prop !
+            } else {
+                this.remove(prop)
+            }
+        }
+
+        return this
     }
 
     set(prop: string, value: any, enumerable: boolean = true)
@@ -49,6 +64,24 @@ export class Node implements NodeInterface
             }
 
         }
+
+        return this
+    }
+
+    add(prop: string, value: any)
+    {
+        if (reserved.indexOf(prop) === -1) {
+            this.props[prop] = value;
+        } else {
+            this[prop] = value
+        }
+        return this
+    }
+
+    remove(prop: string)
+    {
+        delete(this.props[prop])
+        return this
     }
 
     properties()
@@ -66,13 +99,35 @@ export class Node implements NodeInterface
         return this.ID
     }
 
+    getType()
+    {
+        return this.TYPE
+    }
+
     getLabels()
     {
         return this.LABELS
     }
 
+    setLabels(labels: Array<string>)
+    {
+        this.LABELS = labels
+        return this
+    }
+    
+    addLabel(label: string)
+    {
+        this.LABELS.push(label)
+        return this
+    }
+
     getFirstLabel()
     {
         return (this.LABELS.length > 0) ? this.LABELS[0] : null
+    }
+
+    metadata()
+    {
+        return this.META
     }
 }

@@ -5,7 +5,7 @@ import { Input, Output, Component }                 from '@angular/core';
 import { OnInit, OnChanges, AfterViewInit }         from '@angular/core';
 import { ElementRef, HostBinding, EventEmitter }    from '@angular/core';
 import { SettingsService }                          from '../../service';
-import { Node, NodeInterface }                      from '../../neo4j';
+import { Node, NodeInterface }                      from '../../neo4j/model';
 import { Mouse, State, distance }                   from './graph-utils';
 import { Shape }                                    from './graph-utils';
 
@@ -31,8 +31,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     private linksRef: any;
 
     @Output('nodeAdded') nodeAdded: EventEmitter<Node> = new EventEmitter()
+    @Output('nodeCreated') nodeCreated: EventEmitter<Node> = new EventEmitter()
     @Output('nodeSelected') nodeSelected: EventEmitter<Node> = new EventEmitter()
-    @Output('nodeDoubleClicked') nodeDoubleClicked: EventEmitter<Node> = new EventEmitter();
+    @Output('nodeDoubleClicked') nodeDoubleClicked: EventEmitter<Node> = new EventEmitter()
 
     @Input('createMode') set createMode(mode: boolean) {
         this.toggleCreateMode(mode)
@@ -64,10 +65,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     {
         d3.select(window)
             .on('keyup', (e) => {
-                // console.log('key up', e)
+
             })
             .on('keydown', (e) => {
-                // console.log('key down', e)
+
             })
 
         this.svg = d3.select(this.selector)
@@ -91,12 +92,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
                     State.cursor.attr('transform', `translate(${coords})`)
                 }
 
-                // let dragline follow mouse position on drag
+                // let dragline follow mouse position on drag and
                 if (null !== State.dragline && State.dragline.isBeeingDragged()) {
                     // needs to be called inside a "mouse event" such as here
                     State.dragline.followMousePointer(d3.event)
                     State.cursor.classed('hidden', true)
+
                 }
+
+                // console.log(State.cursor)
+                // if (null !== State.cursor && null !== State.dragline && !State.dragline.isBeeingDragged()) {
+                //     State.cursor.classed('hidden', false)
+                // }
 
             })
 
@@ -111,8 +118,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         this.links = this.force.links()
         this.nodesRef = this.svg.selectAll('circle.node', (n: NodeInterface) => { return n.getId() })
         this.linksRef = this.svg.selectAll('.link')
-        // this.nodeGroupsRef = this.svg.selectAll('g.node-group')
-        // this.linksGroupsRef = this.svg.selectAll('g.link-group')
 
         // attach drag event handlers
         this.force
@@ -155,25 +160,25 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         this.linksRef = this.linksRef.data(this.links)
         this.nodesRef = this.nodesRef.data(this.nodes, (n: NodeInterface) => { return n.getId() })
 
-        // let linksGroupsRef = this.linksRef.enter().append('line')
-        //         .attr('class', 'link')
-        //         .attr('marker-end', 'url(#arrow-marker)')
-        //         .style('stroke-width') // , function(d) { return Math.sqrt(d.value); })
-
-        // let linksGroupsRef = this.linksRef
-        //     .enter().append('g')
-        //     .attr('class', 'link-group')
-
-        // linksGroupsRef.append('line')
+        // this.linksRef.enter().append('line')
+        //     .attr('class', 'link')
         //     .attr('marker-end', 'url(#arrow-marker)')
-        //     .style('stroke-width') // , function(d) { return Math.sqrt(d.value); })
+            // .style('stroke-width', function(d) { return Math.sqrt(d.value); });
+
+        let linksGroupsRef = this.linksRef
+            .enter().append('g')
+            .attr('class', 'link-group')
+
+        linksGroupsRef
+            .append('line')
+            .attr('class', 'link')
+            .attr('marker-end', 'url(#arrow-marker)')
 
         // first append a group in which to fit the colored
         // circle the node text label and the outer ring
         // all events are attached to the group and whats inside is just nice design
         let nodeGroupsRefs = this.nodesRef
-            .enter()
-            .append('g')
+            .enter().append('g')
             // .attr("transform", "translate(100,100)")
             .attr('class', 'node-group')
             .on('contextmenu', (d, i) => {
@@ -185,10 +190,16 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
                 d3.event.stopPropagation()
                 d3.event.preventDefault()
             })
+            .on('mouseout', (n: NodeInterface) => {
+                if (State.createModeEnabled) {
+                    State.cursor.show()
+                }
+            })
             .on('mouseover', (n: NodeInterface) => {
                 if (State.createModeEnabled) {
                     State.cursor.hide()
                 }
+
                 if (null !== State.dragline && State.dragline.isBeeingDragged()) {
                     // enlarge target node
                     // cause bugs and glitches so find another way to do this
@@ -288,9 +299,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
         Shape.appendNodeGroupShapes(nodeGroupsRefs, this.settings)
 
-        // remove deleted nodes
-        // this.linksRef.exit().remove()
+        // remove deleted nodes and deleted links
         this.nodesRef.exit().remove()
+        this.linksRef.exit().remove()
 
         this.force.start();
     }
@@ -340,7 +351,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
     findNodeIndexById(id: number)
     {
-
         if (typeof id === 'undefined') {
             console.warn(`graph.components.ts Trying to find a node by id but id is undefined, did you return ID(n) in your query?`)
         }
@@ -354,14 +364,54 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         return null
     }
 
-    onTick(node: any, link: any)
+    addLink(sourceNode: NodeInterface, targetNode: NodeInterface, linkData?: any)
     {
-        node.attr('transform', function (d) {
-            // if (false === State.createModeEnabled) {
-            //     return `translate(${[d.x, d.y]})`
-            // }
+        let source = this.findNodeById(sourceNode.getId())
+        let target = this.findNodeById(targetNode.getId())
+
+        // if (null === source) {
+        //     this.addNode(target)
+        //     source = this.findNodeById(sourceNode.getId())
+        // }
+        //
+        // // add target node if it does not exist yet
+        // if (null === target) {
+        //     this.addNode(target)
+        //     target = this.findNodeById(targetNode.getId())
+        // }
+
+        const link = {
+            source: source,
+            target: target,
+        };
+
+        this.links.push(link);
+        this.update();
+    }
+
+    onTick(nodes: any, links: any)
+    {
+        nodes.attr('transform', function (d) {
             return `translate(${[d.x, d.y]})`
         })
+
+        links.selectAll('.link')
+            .attr('x1', function(d) {
+                var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+                return d.source.x + Math.cos(angle) * (20);
+            })
+            .attr('y1', function(d) {
+                var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+                return d.source.y + Math.sin(angle) * (20);
+            })
+            .attr('x2', function(d) {
+                var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+                return d.target.x - Math.cos(angle) * (20 + 4);
+            })
+            .attr('y2', function(d) {
+                var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+                return d.target.y - Math.sin(angle) * (20 + 4);
+            })
     }
 
     selectNode(element: any)
@@ -484,16 +534,21 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             if (false === canCreate) {
                 clock = 0
                 State.cursor.resetStyle()
-                clearInterval(State.pushMouseTimerTolerance)
-                return
+                clearInterval(State.pushMouseTimer)
             }
 
             if (clock >= State.pushMouseTimerTolerance) {
 
                 clock = 0
-                canCreate = false
+
                 State.cursor.resetStyle()
-                clearInterval(State.pushMouseTimerTolerance)
+                clearInterval(State.pushMouseTimer)
+
+                // create a node for the graph
+                const newNode = new Node({ name: 'New node' })
+                this.nodeCreated.emit(newNode)
+
+                canCreate = false
                 return
             }
 
@@ -544,37 +599,43 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         // make sure we release on a circle and a circle of class "node" (just to make sure)
         // cancel everything if the lien is not dragged on a valid node
         if (element.property('nodeName') !== 'circle') {
-            State.dragline.remove()
-            State.dragline = null
+            this.graphOnRelationshipDragFinished()
             return
         }
-
+        
         const node: NodeInterface = element.datum()
         const sourceId = parseInt(State.dragline.attr('data-source'))
         const targetId = node.getId()
 
-        // remove and reset the dragline
-        if (null !== State.dragline) {
-            State.dragline.remove()
-            State.dragline = null
-            return
-        }
-
         // prevent creating relationships from self to self
         if (sourceId === targetId) {
             console.warn(`graph.component.ts Not a good idea to create a relationship from node to the same node`)
-            State.dragline.remove()
-            State.dragline = null
+            this.graphOnRelationshipDragFinished()
             return
         }
 
         const source: NodeInterface = this.findNodeById(sourceId)
         const target: NodeInterface = this.findNodeById(targetId)
-        console.log(sourceId, targetId)
         console.log(source, target)
 
         State.dragline.remove()
         State.dragline = null
+
+        this.graphOnRelationshipDragFinished()
+    }
+
+    graphOnRelationshipDragFinished()
+    {
+        const element = d3.select(d3.event.target)
+
+        if (null !== State.dragline) {
+            State.dragline.remove()
+            State.dragline = null
+        }
+
+        if (true === State.createModeEnabled && element.property('nodeName') !== 'circle') {
+            State.cursor.show()
+        }
     }
 
     calculateWidthAndHeight()

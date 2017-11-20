@@ -1,6 +1,4 @@
-import { Node }             from './node';
-import { NodeInterface }    from './node-interface';
-import { Debug }            from '../service';
+import { Node, NodeInterface }  from '../model';
 
 export class SimpleQuery
 {
@@ -47,8 +45,7 @@ export class SimpleQuery
         } else {
             queryString += ") RETURN a, ID(a) AS _aid, labels(a) AS _alabels LIMIT "+limit;
         }
-
-        Debug.log(queryString);
+        
         return queryString;
     }
 

@@ -12,6 +12,7 @@ import { KeysPipe }             from './core/pipe';
 import { SettingsService }      from './service';
 
 import { Neo4jService }         from './neo4j';
+import { Neo4jRepository }      from './neo4j';
 
 import { HomePageComponent }        from './page';
 import { SettingsPageComponent }    from './page';
@@ -56,6 +57,7 @@ import { NodeEditComponent }            from './component';
         },
         SettingsService,
         Neo4jService,
+        Neo4jRepository,
     ],
     bootstrap: [
         AppComponent

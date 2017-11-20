@@ -11,13 +11,13 @@ import { AfterViewInit, Renderer, ViewChild }       from '@angular/core';
         <form (ngSubmit)="onSubmit($event)">
             <div class="controls">
                 <app-button primary icon-only><i class="icon-search"></i></app-button>
-                <input type="text" value="" [(ngModel)]="normalQueryString" name="normal_query" placeholder="Rechercher..." class="input-large">
+                <input type="text" value="" [(ngModel)]="normalQueryString" name="normal_query" placeholder="Rechercher..." class="input-large" autocomplete="off">
                 <a class="info" href="" (click)="toggleMode($event)"><i class="icon-earth"></i></a>
             </div>
         </form>
         <form class="query-bar" *ngIf="(mode === 'advanced')">
             <app-button primary><i class="icon-search"></i></app-button>
-            <input type="text" value="" [(ngModel)]="cypherQueryString" name="cypher_query" placeholder="Cypher query..." class="input-large">
+            <input type="text" value="" [(ngModel)]="cypherQueryString" name="cypher_query" placeholder="Cypher query..." class="input-large" autocomplete="off">
             <a class="info" href="" (click)="toggleMode($event)"><i class="icon-embed2"></i></a>
         </form>
     </div>`,

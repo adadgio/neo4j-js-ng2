@@ -29,11 +29,20 @@ $radius: 1px;
 .gray {
     color: colors(gray);
 }
-
+.box-title {
+    font-size: $fontSize + 1;
+}
 .small {
     font-size: $fontSize - 2px
 }
 
+.emarged {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+.emarged-bottom {
+    margin-bottom: 16px;
+}
 .padding-8px {
     padding: 8px;
 }

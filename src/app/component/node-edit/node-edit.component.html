@@ -1,33 +1,27 @@
-<div flex flex-columns flex-fill>
+<div flex flex-fill *ngIf="(null !== node)">
 
-    <div class="coal padding-8-16px">
-        Edit node <span *ngIf="(null !== node)" [innerText]="node.getId()"></span>
-    </div>
+    <div flex flex-columns>
 
-    <div flex flex-fill class="charcoal padding-8-16px">
-        <p *ngIf="(null === node)">
-            <i>Click on a node to edit</i>
-        </p>
-
-        <div *ngIf="(null !== node)" flex flex-columns>
-            <div *ngFor="let prop of node.properties() | keys" class="input-group">
-                <span class="i-col1">
-                    <input type="text" [attr.value]="prop" class="input-tiny themed">
-                </span>
-                <span class="i-col2">
-
-                    <input type="text" [attr.value]="node.get(prop)" class="input-tiny themed" [(ngModel)]="node.props[prop]">
-                </span>
-                <span class="i-col3">
-                    <a href="" class="secondary" (click)="addProperty($event)"><i class="icon-cross"></i></a>
-                </span>
-            </div>
+        <div flex flex-rows class="emarged-bottom">
+            <span flex class="gray">Properties</span>
+            <a flex pull-right class="secondary" (click)="addProperty($event)" href=""><i class="icon-plus"></i></a>
+        </div>
+        
+        <div *ngFor="let prop of node.properties() | keys" class="input-group">
+            <span class="i-col1">
+                <input type="text" [attr.value]="prop" class="input-tiny themed">
+            </span>
+            <span class="i-col2">
+                <input type="text" [attr.value]="node.get(prop)" class="input-tiny themed" [(ngModel)]="node.props[prop]">
+            </span>
+            <span class="i-col3">
+                <a class="secondary" (click)="deleteProperty($event, prop)" href=""><i class="icon-cross"></i></a>
+            </span>
         </div>
     </div>
+</div>
 
-    <div  *ngIf="(null !== node)" flex flex-rows class="charcoal padding-8-16px" flex-space-between>
-        <app-button (click)="save($event)" [loading]="loading" primary>Save</app-button>
-        <app-button (click)="cancel($event)" secondary disabled="true">Cancel</app-button>
-    </div>
-
+<div  *ngIf="(null !== node)" flex flex-rows class="charcoal" flex-space-between>
+    <app-button (click)="save($event)" [loading]="loading" primary>Save</app-button>
+    <app-button (click)="cancel($event)" danger [disabled]="(!cancelable)">Reset</app-button>
 </div>

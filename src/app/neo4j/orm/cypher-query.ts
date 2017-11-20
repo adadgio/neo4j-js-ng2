@@ -1,11 +1,11 @@
-import { Node } from './node';
-import { NodeInterface } from './node-interface';
+import { Node, NodeInterface } from '../model';
 
 export class CypherQuery
 {
     queryString: string = null;
 
     queryParts: Array<string> = [];
+    queryCreateClauses: Array<string> = [];
     queryWhereClauses: Array<string> = [];
     querySetClauses: Array<string> = [];
     queryReturnClauses: Array<string> = [];
@@ -16,6 +16,21 @@ export class CypherQuery
     constructor()
     {
 
+    }
+    
+    create(alias: string, labels: Array<string> = null): CypherQuery
+    {
+        let clause: string;
+
+        if (null !== labels) {
+            let labelStr = labels.join(':')
+            clause = `CREATE (${alias}:${labelStr})`
+        } else {
+            clause = `CREATE (${alias})`
+        }
+
+        this.queryCreateClauses = [clause]
+        return this
     }
 
     matches(alias: string): CypherQuery
@@ -48,6 +63,7 @@ export class CypherQuery
             return this.queryString
         }
 
+        this.addQueryParts(null, this.queryCreateClauses)
         this.addQueryParts('WHERE', this.queryWhereClauses)
         this.addQueryParts(null, this.querySetClauses)
         this.addQueryParts('RETURN', this.queryReturnClauses)

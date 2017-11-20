@@ -1,8 +1,8 @@
 @import "../../../theme/shared/_mixins";
 @import "../../../theme/shared/_variables";
 
-:host[disabled] {
-    button {
+:host {
+    button[disabled] {
 
         cursor: not-allowed;
         color: #6c7886;

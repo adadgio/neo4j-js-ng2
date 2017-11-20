@@ -1,11 +1,9 @@
-import { Injectable }           from '@angular/core';
-import { Response }             from '@angular/http';
-import { Headers, Http }        from '@angular/http';
-import { SettingsService }      from '../service';
-import { Debug }                from '../service';
-import { PropertyAccess }       from '../core';
-import { ResultSet }            from './result-set';
-import { Transaction }          from './transaction';
+import { Injectable }               from '@angular/core';
+import { Response }                 from '@angular/http';
+import { Headers, Http }            from '@angular/http';
+import { Debug, SettingsService }   from '../service';
+import { PropertyAccess }           from '../core';
+import { ResultSet, Transaction }   from './orm';
 
 @Injectable()
 export class Neo4jService
@@ -40,7 +38,7 @@ export class Neo4jService
                 .then((response: Response) => {
                     const result = this.handleResults(response)
                     resolve(result)
-                    
+
                 }).catch(error => {
                     Debug.log(error)
                     reject(error)
@@ -71,9 +69,8 @@ export class Neo4jService
                 .toPromise()
                 .then((response: Response) => {
                     resolve(true)
-                }).catch(error => {
-                    Debug.log(error)
-                    reject(error)
+                }).catch(err => {
+                    throw new Error(err)
                 })
         })
 

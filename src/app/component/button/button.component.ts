@@ -10,7 +10,7 @@ export class ButtonComponent
     @Input('id') id: string = null;
     @Input('loading') loading: boolean = false;
     @Input('disabled') disabled: boolean = false;
-
+    
     constructor() {
 
     }

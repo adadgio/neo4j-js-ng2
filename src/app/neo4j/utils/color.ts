@@ -1,4 +1,4 @@
-import { NodeInterface }  from '../node-interface';
+import { NodeInterface }  from '../model';
 
 export function color(node: NodeInterface, colorOptions: Array<string>) {
     const label = node.getFirstLabel()

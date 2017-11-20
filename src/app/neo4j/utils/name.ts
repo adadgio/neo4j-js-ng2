@@ -1,4 +1,4 @@
-import { NodeInterface }  from '../node-interface';
+import { NodeInterface }  from '../model';
 
 export function name(node: NodeInterface, nameOptions: Array<string>) {
     for (let prop of nameOptions) {

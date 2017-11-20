@@ -1,5 +1,5 @@
 import * as tinycolor       from 'tinycolor2'
-import { NodeInterface }    from '../../../neo4j';
+import { NodeInterface }    from '../../../neo4j/model';
 import { name, color, truncate } from '../../../neo4j/utils';
 import { Mouse }            from './mouse';
 
@@ -88,7 +88,7 @@ class ShapeSingleton
             .attr('class', 'cursor')
 
         cursor.resetStyle = function() {
-            this.transition().style('stroke', '#ABB1BB').style('stroke-width', '1.4px').attr('r', 30);
+            this.transition().style('stroke', '#ABB1BB').style('stroke-width', '1.4px').attr('r', 30)
         }
 
         cursor.animate = function () {
@@ -124,9 +124,14 @@ class ShapeSingleton
             .attr('markerHeight', 4)
             .attr('orient', 'auto')
             .append('path')
-            .attr('d', 'M 0 0 L 10 5 L 0 10 z');
+            .attr('d', 'M 0 0 L 10 5 L 0 10 z')
 
         return marker;
+    }
+
+    appendLinkGroupShapes(groupsRef: any, settings: any)
+    {
+
     }
 
     appendNodeGroupShapes(groupsRef: any, settings: any)

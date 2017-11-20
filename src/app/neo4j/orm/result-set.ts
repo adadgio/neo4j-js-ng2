@@ -1,5 +1,6 @@
-import { Node } from './node';
+import { Node, NodeInterface } from '../model';
 
+// @todo Warn if not LABEL nor ID or event TYPE (for relationships) are not in the query
 export class ResultSet
 {
     datasets: any = {}
@@ -38,6 +39,10 @@ export class ResultSet
             for (let i in data) {
 
                 let row = data[i].row
+                const meta = data[i].meta
+
+                // meta data from the neo4j rest api tells us if
+                // current row a node or a relationship
 
                 if (typeof datasets[alias][i] === 'undefined') {
                     datasets[alias][i] = new Node()
@@ -51,6 +56,8 @@ export class ResultSet
                     if (k === index) {
 
                         let valOrProps = row[k]
+                        const metadata = meta[k]
+                        datasets[alias][i].set('META', metadata, false)
 
                         if (prop === null) {
 
@@ -66,6 +73,10 @@ export class ResultSet
 
                             // use false parameter to make this property non-enumerable (hidden)
                             datasets[alias][i].set('LABELS', valOrProps, false)
+
+                        } else if (prop === 'TYPE') {
+
+                            datasets[alias][i].set('TYPE', valOrProps, false)
 
                         } else {
 

@@ -1,5 +1,4 @@
-import { Node } from './node';
-import { NodeInterface } from './node-interface';
+import { Node, NodeInterface } from '../model';
 
 type Statement = {
     statement: string;
@@ -31,7 +30,7 @@ export class Transaction
         let cypher: Array<string> = [`MATCH (n) WHERE ID(n)`];
 
         for (let prop in node.properties()) {
-            
+
             let value = this.escape(node.get(prop));
 
             cypher.push(`SET n.{prop} = '${value}'`)

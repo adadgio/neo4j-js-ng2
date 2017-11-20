@@ -1,11 +1,24 @@
 <div flex flex-fill flex-rows>
 
     <div flex flex-columns class="column-left radiusize coal-border">
-        <node-edit
-            [node]="currentSelectedNode"
-            (onNodeEdited)="onNodeEdited($event)"
-        >
-        </node-edit>
+
+        <div flex class="coal padding-8-16px box-title gray">
+            Edit node <span *ngIf="(null !== selectedNode)"><i></i></span>
+        </div>
+        <div flex flex-fill class="charcoal padding-8-16px">
+            <p *ngIf="(null === selectedNode && true === createModeEnabled)" class="red">
+                You cant edit nodes while in create mode.
+            </p>
+            <p *ngIf="(null === selectedNode && false === createModeEnabled)">
+                Click on a node to edit its details.Click on a node to edit its details.
+            </p>
+            <node-edit
+                *ngIf="(null !== selectedNode)"
+                [node]="selectedNode"
+                (onNodeEdited)="onNodeEdited($event)">
+            </node-edit>
+        </div>
+
     </div>
 
 
@@ -16,6 +29,7 @@
         <div flex flex-fill class="charcoal">
             <graph-component
                 [createMode]="createModeEnabled"
+                (nodeCreated)="onNodeCreated($event)"
                 (nodeSelected)="onNodeSelected($event)"
                 (nodeDoubleClicked)="onNodeDoubleClicked($event)"
                 (nodeAdded)="onNodeAdded($event)"
@@ -25,7 +39,7 @@
 
 
     <div flex  flex-columns class="column-right coal-border radiusize">
-        <div flex flex-rows flex-align-center class="coal padding-8px">
+        <div flex flex-rows flex-align-center class="coal padding-8-16px box-title gray">
             <span>Create mode</span>
             <switch-component pull-right [value]="createModeEnabled" (change)="onCreateModeChanged($event)"></switch-component>
         </div>

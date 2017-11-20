@@ -19,6 +19,7 @@ export class HeaderComponent
         }, (res: any) => {
             this.neo4jOk = false
         }).catch(err => {
+            console.log(err)
             this.neo4jOk = false
         })
     }
