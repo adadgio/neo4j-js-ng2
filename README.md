@@ -5,14 +5,17 @@ A Neo4j graph database explorer, editor and admin dashboard written in Javascrip
 Table of Contents
 =================
 
-  * [Dockerfile.vim](#dockerfilevim)
-  * [Screenshot](#screenshot)
-  * [Installation](#installation)
-        * [OR using Pathogen:](#or-using-pathogen)
-        * [OR using Vundle:](#or-using-vundle)
-  * [License](#license)
+* [Improvements over v1](#improvements-over-v1)
+* [Getting started](#getting-started)
+  * [Pre-requisites](#pre-requisites)
+  * [Quick configuration](#quick-configuration)
+* [Graph events](#graph-events)
+* [Running in production](#running-in-production)
+* [Running in development](#running-in-development)
+* [Graph events](#graph-events)
+* [License](#license)
 
-## Improvements over Neo4jJS (v1)
+## Improvements over v1
 
 **Bug improvements**
 
@@ -44,7 +47,7 @@ Table of Contents
 
 ## Graph events
 
-
+@todo
 
 ## Running in production
 
