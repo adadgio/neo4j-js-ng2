@@ -4,11 +4,11 @@
 class LocalStorageSingleton
 {
 
-    get(key: string, defaults?: any) {
-        let value = localStorage.getItem(key);
+    get(key: string, defaultValue?: any) {
+        let value = localStorage.getItem(key)
 
-        if (typeof value === 'undefined' || value == null) {
-            value = (defaults) ? defaults : null
+        if (typeof value === 'undefined' || value == null || value == 'null') {
+            value = (defaultValue) ? defaultValue : null
         }
 
         return this.output(value);
@@ -27,7 +27,7 @@ class LocalStorageSingleton
     output(data: any) {
         let value: any;
         if (data === null) { return null }
-        
+
         try {
             value = JSON.parse(data);
         } catch (e) {

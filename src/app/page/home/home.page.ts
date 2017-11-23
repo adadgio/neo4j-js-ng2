@@ -38,20 +38,22 @@ export class HomePageComponent implements OnInit, AfterViewInit
         this.graph.start()
 
         const transaction = new Transaction()
-        transaction.add('MATCH (n), (b: Document) RETURN n, b, n.truc, ID(n), ID(b), LABELS(n), LABELS(b) LIMIT 200')
+        transaction.add('MATCH (n: Company), (b: Officer) RETURN n, b, n.truc, ID(n), ID(b), LABELS(n), LABELS(b) LIMIT 200')
 
-        this.neo4j.commit(transaction, Neo4jService.NO_DEBUG).then((resultSets: Array<ResultSet>) => {
+        this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
 
             // the number of result sets depends on the number of transactions
             // const firstResultSet = resultSets[0]
             let dataset = resultSets[0].getDataset('n')
-            dataset = distinct('ID', dataset)
+            // dataset = distinct('ID', dataset)
 
             dataset.forEach((node: NodeInterface) => {
                 this.graph.addNode(node)
             })
 
-            this.graph.addNode(new Node({ ID: 3, LABELS: ['Person'], name: 'Yolo', x: 5, y: 6 }))
+            // const newNode = new Node({ 'ID': 3, 'LABELS': ['Person'] })
+            // newNode.setFixed(true)
+            // this.graph.addNode(newNode)
 
         }).catch(err => console.log(err) )
     }
@@ -73,7 +75,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
         const createModeCombination = this.settings.get('hotkeys.toggleCreateMode')
 
         if (crosscut(inputCombination, createModeCombination)) {
-            this.createModeEnabled = !this.createModeEnabled
+            this.onCreateModeChanged(!this.createModeEnabled)
         }
     }
 
@@ -81,6 +83,8 @@ export class HomePageComponent implements OnInit, AfterViewInit
     {
         const query = e.query
         const mode = e.mode
+
+        console.log(e)
     }
 
     onNodeCreated(node: NodeInterface)
@@ -90,11 +94,13 @@ export class HomePageComponent implements OnInit, AfterViewInit
         // to handle proper UI and be safe regarding integrity so you'll
         // need to make the cypher transaction and append node to graph only
         // if it was successfull
+        const savedNode = node;
 
         // @todo Set default label from create mode windows
         node.addLabel(this.createModeDefaults.label)
 
         this.repo.persistNode(node).then((node: NodeInterface) => {
+            node.setFixed(true).setCoords(savedNode.getCoords())
             this.graph.addNode(node)
         })
     }
@@ -117,15 +123,21 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     onNodeEdited(node: NodeInterface)
     {
+        console.log(node)
         this.graph.updateNode(node)
+    }
+
+    onRlationshipCreate(e: any)
+    {
+        console.log(e)
     }
 
     onCreateModeChanged(e: boolean)
     {
          // avoid expression (of createModeEnabled) before it was checked (just Angular2 classic view adjustement here)
-        this.selectedNode = null
+        this.selectedNode = null;
         // then safely reset create mode variable
-        this.createModeEnabled = e
+        this.createModeEnabled = e;
     }
 
     private findRelationships(sourceNode: NodeInterface)

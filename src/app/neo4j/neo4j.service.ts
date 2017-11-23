@@ -24,24 +24,29 @@ export class Neo4jService
         const endpoint = this.settings.get('client.apiEndpoint');
         this.url = `${endpoint}/transaction/commit`
     }
-    
-    commit(trans: Transaction, noDebug: boolean = Neo4jService.DEBUG): Promise<any>
+
+    commit(trans: Transaction): Promise<any>
     {
-        if (noDebug === Neo4jService.DEBUG) {
-            Debug.logAll(trans.getStatements().map((s) => { return s.statement }))
-        }
+        Debug.next().log(trans.getStatements(), 'neo4j.service.transaction.query', 'info')
 
         return new Promise((resolve, reject) => {
             this.http.post(this.url, { statements: trans.getStatements() }, { headers: this.headers })
                 .map(res => res.json())
                 .toPromise()
-                .then((response: Response) => {
+                .then((response: any) => {
                     const result = this.handleResults(response)
-                    resolve(result)
 
-                }).catch(error => {
-                    Debug.log(error)
-                    reject(error)
+                    if (response.errors.length > 0) {
+                        Debug.log(response.errors, 'neo4j.service.transaction.error', 'critical')
+                        reject(response.errors)
+                    } else {
+                        Debug.log(result, 'neo4j.service.transaction', 'info')
+                        resolve(result)
+                    }
+
+                }).catch(err => {
+                    Debug.log(err, 'neo4j.service.caught.error', 'critical')
+                    throw new Error(err)
                 })
         })
 
@@ -53,6 +58,10 @@ export class Neo4jService
 
         for (let i in response.results) {
             resultSets.push(new ResultSet(response.results[i]))
+        }
+
+        for (let i in response.errors) {
+
         }
 
         return resultSets;

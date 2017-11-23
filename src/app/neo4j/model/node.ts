@@ -11,6 +11,9 @@ export class Node implements NodeInterface
     META: any;
     TYPE?: string;
     props: any = {};
+    x?: number;
+    y?: number;
+    fixed?: boolean;
 
     constructor(data: any = null)
     {
@@ -78,6 +81,14 @@ export class Node implements NodeInterface
         return this
     }
 
+    renameProperty(prop: string, newProp: string)
+    {
+        const value = this.props[prop]
+        this.remove(prop)
+        this.add(newProp, value)
+        return this
+    }
+
     remove(prop: string)
     {
         delete(this.props[prop])
@@ -114,7 +125,7 @@ export class Node implements NodeInterface
         this.LABELS = labels
         return this
     }
-    
+
     addLabel(label: string)
     {
         this.LABELS.push(label)
@@ -129,5 +140,23 @@ export class Node implements NodeInterface
     metadata()
     {
         return this.META
+    }
+
+    setFixed(fixed: boolean)
+    {
+        this.fixed = fixed
+        return this
+    }
+
+    setCoords(coords: [number, number])
+    {
+        this.x = coords[0]
+        this.y = coords[1]
+        return this
+    }
+
+    getCoords()
+    {
+        return [this.x, this.y]
     }
 }

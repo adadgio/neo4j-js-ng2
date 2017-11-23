@@ -9,6 +9,7 @@ import { AppComponent }         from './app.component';
 import { AppRoutingModule }     from './app.routing.module';
 
 import { KeysPipe }             from './core/pipe';
+import { EntriesPipe }          from './core/pipe';
 import { SettingsService }      from './service';
 
 import { Neo4jService }         from './neo4j';
@@ -22,8 +23,12 @@ import { HeaderComponent }      from './component';
 import { SearchComponent }      from './component';
 import { SwitchComponent }      from './component';
 import { ButtonComponent }      from './component';
-import { GraphComponent }               from './component';
 import { NodeEditComponent }            from './component';
+import { MultiSelectComponent }         from './component';
+import { MultiSelectOptionComponent }   from './component';
+
+import { GraphComponent }               from './component';
+
 
 
 @NgModule({
@@ -31,7 +36,8 @@ import { NodeEditComponent }            from './component';
         AppComponent,
 
         KeysPipe,
-        
+        EntriesPipe,
+
         HeaderComponent,
         SearchComponent,
         SwitchComponent,
@@ -43,6 +49,9 @@ import { NodeEditComponent }            from './component';
         HomePageComponent,
         DebugPageComponent,
         SettingsPageComponent,
+
+        MultiSelectComponent,
+        MultiSelectOptionComponent,
     ],
     imports: [
         BrowserModule,

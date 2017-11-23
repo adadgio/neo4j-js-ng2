@@ -6,10 +6,10 @@
     button {
 
         color: colors(white);
-        background-color: #375a7f;
-
+        background-color: colors(primary);
+        
         &:hover {
-            background-color: #2e4f73;
+            background-color: colors(primary-hover);
         }
 
         &:active {

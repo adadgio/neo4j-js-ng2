@@ -58,13 +58,32 @@ $radius: 1px;
 .margin-left-8px {
     margin-left: 8px;
 }
+.margin-top-8px {
+    margin-top: 8px;
+}
+.margin-bottom-8px {
+    margin-bottom: 8px;
+}
 
 .primary {
     color: colors(primary);
 }
+.success {
+    color: colors(success);
+}
 .secondary {
     color: colors(secondary);
 }
+.warning {
+    color: colors(warning);
+}
+.danger {
+    color: colors(danger);
+}
+.info {
+    color: colors(info);
+}
+
 .green {
     color: colors(green);
 }

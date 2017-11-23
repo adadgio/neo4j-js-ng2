@@ -13,9 +13,7 @@
     margin-bottom: 8px;
 
     input[type="text"] {
-        display: block;
         width: 100%;
-        @include box-sizing(border-box);
     }
 
     .i-col1 {
@@ -39,4 +37,14 @@
         text-align: right;
         font-size: $fontSize - 2px;
     }
+}
+
+.label {
+    color: colors(white);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2px 4px;
+    background-color: #b533b7;
+    @include border-radius(1px);
 }

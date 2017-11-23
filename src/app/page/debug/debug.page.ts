@@ -2,6 +2,7 @@ import { Component }                from '@angular/core';
 import { OnInit, AfterViewInit }    from '@angular/core';
 import { Router }                   from '@angular/router';
 import { Debug }                    from '../../service';
+import { group }                    from '../../core/array';
 
 @Component({
     selector: 'debug-page',
@@ -10,7 +11,7 @@ import { Debug }                    from '../../service';
 })
 export class DebugPageComponent implements OnInit, AfterViewInit
 {
-    logs: Array<any> = []
+    groups: Array<any> = []
 
     constructor(private router: Router)
     {
@@ -19,7 +20,8 @@ export class DebugPageComponent implements OnInit, AfterViewInit
 
     ngOnInit()
     {
-        this.logs = Debug.getMessages()
+        const messages = Debug.getMessages()
+        this.groups = group('date', messages)
     }
 
     ngAfterViewInit()
@@ -27,10 +29,18 @@ export class DebugPageComponent implements OnInit, AfterViewInit
 
     }
 
+    toggleTrace(e: any, i: number, j: number)
+    {
+        e.preventDefault()
+
+        let status = (typeof this.groups[i][j]['hidden'] === 'undefined') ? true : this.groups[i][j]['hidden']
+        this.groups[i][j]['hidden'] = !status
+    }
+
     clear(e: any)
     {
         e.preventDefault()
-        this.logs = []
+        this.groups = []
         Debug.clear()
     }
 }

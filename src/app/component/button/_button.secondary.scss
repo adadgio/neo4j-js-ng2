@@ -5,10 +5,10 @@
     button {
 
         color: colors(white);
-        background-color: #424951;
-        
+        background-color: colors(secondary);
+
         &:hover {
-            background-color: #3a424a;
+            background-color: colors(secondary-hover);
         }
         &:active {
             background-color: #434d56;

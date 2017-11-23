@@ -9,14 +9,14 @@ import { AfterViewInit, Renderer, ViewChild }       from '@angular/core';
     styleUrls: ['./search.component.scss'],
     template: `<div class="search">
         <form (ngSubmit)="onSubmit($event)">
-            <div class="controls">
+            <div class="controls search-bar" *ngIf="(mode === 'normal')">
                 <app-button primary icon-only><i class="icon-search"></i></app-button>
                 <input type="text" value="" [(ngModel)]="normalQueryString" name="normal_query" placeholder="Rechercher..." class="input-large" autocomplete="off">
                 <a class="info" href="" (click)="toggleMode($event)"><i class="icon-earth"></i></a>
             </div>
         </form>
-        <form class="query-bar" *ngIf="(mode === 'advanced')">
-            <app-button primary><i class="icon-search"></i></app-button>
+        <form class="controls query-bar" *ngIf="(mode === 'advanced')">
+            <app-button primary icon-only><i class="icon-search"></i></app-button>
             <input type="text" value="" [(ngModel)]="cypherQueryString" name="cypher_query" placeholder="Cypher query..." class="input-large" autocomplete="off">
             <a class="info" href="" (click)="toggleMode($event)"><i class="icon-embed2"></i></a>
         </form>
@@ -25,12 +25,6 @@ import { AfterViewInit, Renderer, ViewChild }       from '@angular/core';
 })
 export class SearchComponent implements OnInit, AfterViewInit
 {
-    // @Input('loading') loading: boolean = false;
-    // @Input('options') options: any = {
-    //     iconPosition: 'right',
-    //     emphasis: false,
-    // };
-
     @Input('mode') mode: 'normal'|'advanced' = 'normal';
     @Output('onSearch') onSearch = new EventEmitter();
 

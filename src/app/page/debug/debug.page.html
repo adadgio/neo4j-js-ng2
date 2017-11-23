@@ -4,8 +4,31 @@
         <a href="" class="secondary" (click)="clear($event)">Clear</a>
     </div>
 
-    <div *ngFor="let logText of logs" class="debug-row">
-        <div [innerText]="logText"></div>
+    <div *ngFor="let entries of groups; let i = index" class="debug-group">
+
+
+        <div *ngFor="let entry of entries; let j = index" class="group">
+
+            <div class="infos" [ngClass]="entry.level">
+                <span [innerText]="entry.category"></span>&nbsp;&raquo;&nbsp;
+                <span [innerText]="entry.date"></span>
+                <span [innerText]="entry.level" class="level"></span>
+            </div>
+
+            <div></div>
+
+            <div class="trace" [ngClass]="(false === entry.hidden) ? 'expanded' : 'hidden'">
+                <div>
+                    <a *ngIf="false !== entry.hidden" (click)="toggleTrace($event, i, j)" href="" class="secondary">Toggle details &#9662;</a>
+                    <a *ngIf="false === entry.hidden" (click)="toggleTrace($event, i, j)" href="" class="secondary">Toggle details &#9652;</a>
+                </div>
+                <pre [innerText]="entry.trace | json" ></pre>
+            </div>
+
+        </div>
+
+
+        <!-- <div [innerText]="entry"></div> -->
     </div>
 
 </div>

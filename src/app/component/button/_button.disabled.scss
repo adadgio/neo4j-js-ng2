@@ -5,11 +5,11 @@
     button[disabled] {
 
         cursor: not-allowed;
-        color: #6c7886;
-        background-color: #424952;
+        color: colors(faded);
+        background-color: colors(disabled);
 
         &:hover {
-            background-color: #424952;
+            background-color: colors(disabled-hover);
         }
 
         &:active {

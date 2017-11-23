@@ -3,13 +3,88 @@
 @import "../../../theme/shared/_scrollbars";
 
 :host {
-    @include hostSupportsFullPage()
+    // @include hostSupportsFullPage()
+    @include hostSupportsPageScroll()
 }
 
-.debug-row {
+.debug-group {
+    display: flex;
+    flex-direction: column;
     font-size: $fontSize - 2px;
-    font-family: monospace, "Monospace sans", sans-serif;
     margin-bottom: 16px;
+    padding: 16px;
+    overflow: hidden;
+    background-color: colors(coal);
+
+    .group {
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+        margin-bottom: 16px;
+        background-color: colors(charcoal);
+
+        .infos {
+            color: colors(fullwhite);
+            display: flex;
+            flex-direction: row;
+            padding: 8px;
+            font-size: $fontSize - 2px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            @include border-radius(2px);
+
+            &.info {
+                border: 1px solid #eee;
+                background-color: #49a363;
+            }
+            &.debug {
+                border: 1px solid #89b6c1;
+                background-color: #21a3c3;
+            }
+            &.warning {
+                background-color: #efb83f;
+            }
+            &.critical {
+                background-color: #e03313;
+            }
+
+            .level {
+                margin-left: auto;
+                text-transform: uppercase;
+            }
+        }
+
+        .trace {
+            max-height: 260px;
+            overflow-y: auto;
+            padding-left: 8px;
+            @include scrollbars(.5em, slategray);
+            color: colors(gray);
+
+            pre {
+                color: colors(white);
+                font-size: $fontSize - 4px;
+                margin-top: 8px;
+                font-family: monospace, "Monospace sans", sans-serif;
+            }
+
+            &.hidden {
+                > pre {
+                    display: none;
+                }
+            }
+            &.expanded {
+                // max-height: none;
+                // overflow-y: hidden;
+                > pre {
+                    display: block;
+                }
+            }
+        }
+
+    }
+
+
 }
 
 .actions {

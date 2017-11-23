@@ -35,6 +35,7 @@ export class Neo4jRepository
             this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
 
                 let node = resultSets[0].getDataset('n').first()
+                console.log(node)
                 resolve(node)
 
             }).catch(err => {
@@ -43,7 +44,7 @@ export class Neo4jRepository
         })
     }
 
-    updateNodeById(id: number, properties: any): Promise<Array<ResultSet>>
+    updateNodeById(id: number, changedProperties: any, removedProperties: any): Promise<Array<ResultSet>>
     {
         const builder = new CypherQuery()
 
@@ -51,11 +52,12 @@ export class Neo4jRepository
         const query = builder
             .matches('n')
             .andWhere('n', 'ID(?)', id)
-            .setProperties('n', properties)
+            .setProperties('n', changedProperties)
+            .removeProperties('n', removedProperties)
             .returns('n, ID(n), LABELS(n)')
             .skip(0)
             .limit(1)
-            .getQuery()
+            .getQuery();
 
         const transaction = new Transaction()
         transaction.add(query)
@@ -66,7 +68,7 @@ export class Neo4jRepository
     findRelationshipsById(id: number)
     {
         const transaction = new Transaction()
-        transaction.add(`MATCH (a)-[r]->(b) WHERE ID(a) = ${id} RETURN a, b, ID(a), ID(b), LABELS(a), LABELS(b), r, ID(r), TYPE(r)`)
+        transaction.add(`MATCH (a)-[r]-(b) WHERE ID(a) = ${id} RETURN a, b, ID(a), ID(b), LABELS(a), LABELS(b), r, ID(r), TYPE(r)`)
 
         return new Promise((resolve, reject) => {
             this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {

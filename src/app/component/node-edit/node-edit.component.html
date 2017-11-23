@@ -2,22 +2,35 @@
 
     <div flex flex-columns>
 
+        <div flex flex-columns class="emarged-bottom">
+            <div flex class="gray margin-bottom-8px">Labels</div>
+            
+            <!--
+                availableLabels
+                selectedLabels
+            -->
+            <multi-select
+                [items]="['User', 'Document']"
+                [values]="['Document']"
+                (valuesChanged)="onLabelsChanged($event)"
+            ></multi-select>
+        </div>
+
         <div flex flex-rows class="emarged-bottom">
             <span flex class="gray">Properties</span>
             <a flex pull-right class="secondary" (click)="addProperty($event)" href=""><i class="icon-plus"></i></a>
         </div>
 
-        {{ node.getLabels() | json }}
+        <div *ngFor="let row of properties; let i = index" class="input-group">
 
-        <div *ngFor="let prop of node.properties() | keys" class="input-group">
             <span class="i-col1">
-                <input type="text" [attr.value]="prop" class="input-tiny themed">
+                <input #propNames type="text" [attr.name]="row[0]+'_0'" [attr.value]="row[0]" class="input-small">
             </span>
             <span class="i-col2">
-                <input type="text" [attr.value]="node.get(prop)" class="input-tiny themed" [(ngModel)]="node.props[prop]">
+                <input #propValues type="text" [attr.name]="row[0]+'_1'" [attr.value]="row[1]" class="input-small">
             </span>
             <span class="i-col3">
-                <a class="secondary" (click)="deleteProperty($event, prop)" href=""><i class="icon-cross"></i></a>
+                <a class="secondary" (click)="deleteProperty($event, i)" href=""><i class="icon-cross"></i></a>
             </span>
         </div>
     </div>

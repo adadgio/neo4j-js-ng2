@@ -1,6 +1,7 @@
-import { NgZone, Component }                    from '@angular/core';
+import { Component, ElementRef }                from '@angular/core';
 import { OnChanges, OnInit, AfterViewInit }     from '@angular/core';
 import { Input, Output, EventEmitter }          from '@angular/core';
+import { ViewChildren, QueryList, ContentChildren }        from '@angular/core';
 import { SimpleChanges }                        from '@angular/core';
 import { Neo4jRepository }                      from '../../neo4j';
 import { ResultSet, CypherQuery, Transaction }  from '../../neo4j/orm';
@@ -18,19 +19,43 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
     @Input('node') node: NodeInterface = null;
     @Output('onNodeEdited') onNodeEdited: EventEmitter<Node> = new EventEmitter()
 
+    @ViewChildren('propNames', { read: ElementRef }) propNames: QueryList<ElementRef>;
+    @ViewChildren('propValues', { read: ElementRef }) propValues: QueryList<ElementRef>;
+
     loading: boolean = false;
     cancelable: boolean = false;
 
-    private originalProps: any = null; // NodeInterface = null;
+    selectedLabels: Array<any> = [];
+    availableLabels: Array<any> = [];
 
-    constructor(private repo: Neo4jRepository, private zone: NgZone)
+    private properties: Array<[string, any]> = []
+    private originalProperties: Array<[string, any]> = []
+    private removedProperties : Array<[string, any]> = []
+
+    constructor(private elementRef: ElementRef, private repo: Neo4jRepository)
     {
 
     }
 
     ngOnInit()
     {
+        this.availableLabels = [
+            {
+                id: 1, name: 'User', color: 'blue'
+            },
+            {
+                id: 6, name: 'Document', color: 'red',
+            },
+            {
+                id: 6, name: 'Specialty', color: 'red',
+            },
+        ];
 
+        for (let item of this.availableLabels) {
+            if (this.node.getLabels().indexOf(item.name) > -1) {
+                this.selectedLabels.push(item.id)
+            }
+        }
     }
 
     ngAfterViewInit()
@@ -40,25 +65,45 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
     ngOnChanges(changes: SimpleChanges)
     {
+        if (null !== changes.node.currentValue) {
+            // const entries = Object.entries(this.node.properties())
+            this.properties = Object.entries(this.node.properties())
+        } else {
+            this.properties = [];
+        }
+
         // detect when a node was changed (from null->node, node->node or null->node)
         if (this.gracefulId(changes.node.previousValue) !== this.gracefulId(changes.node.currentValue)) {
             // a new node was really selected, changes do not only concern current node
 
             if (null !== changes.node.currentValue) {
-                let copy = Object.assign({}, changes.node.currentValue.properties());
-                this.originalProps = copy
+                // make a separate copy of the thing
+                this.originalProperties = Object.assign([], this.properties)
             }
         }
+
+    }
+
+    onLabelsChanged(e: any)
+    {
+        console.log(e)
+        this.cancelable = true;
     }
 
     save(e?: any)
     {
         if (e) { e.preventDefault() }
 
-        this.loading = true
-        this.originalProps = this.node.properties()
+        this.loading = true;
+        this.cancelable = false;
 
-        this.repo.updateNodeById(this.node.getId(), this.node.properties()).then((resultSets: Array<ResultSet>) => {
+        const newProperties = this.gatherProperties()
+        const removedProperties = this.gatherRemovedProperties()
+
+        this.originalProperties = newProperties
+        this.removedProperties = []
+
+        this.repo.updateNodeById(this.node.getId(), newProperties, removedProperties).then((resultSets: Array<ResultSet>) => {
 
             const node = resultSets[0].getDataset('n').first()
             this.onNodeEdited.emit(node)
@@ -66,6 +111,7 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
         }).catch(err => {
             this.loading = false
+            console.log(err)
         })
     }
 
@@ -73,24 +119,55 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
     {
         e.preventDefault()
         this.cancelable = true
-        
-        const prop = randomPropNames[Math.floor(Math.random() * randomPropNames.length)];
-        this.node.add(prop, '...')
+
+        const prop = randomPropNames[Math.floor(Math.random() * randomPropNames.length)]
+        this.properties.push([prop, ''])
     }
 
-    deleteProperty(e: any, prop: string)
+    deleteProperty(e: any, index: number)
     {
         e.preventDefault()
         this.cancelable = true
-        this.node.remove(prop)
+
+        this.removedProperties.push(this.properties[index])
+        this.properties.splice(index, 1)
     }
 
     cancel(e?: any)
     {
         if (e) { e.preventDefault() }
 
-        this.cancelable = false
-        this.node.reset(this.originalProps)
+        this.cancelable = false;
+        this.properties = this.originalProperties;
+        // this.selectedLabels = this.node.getLabels(); // @todo Use a label transform...
+    }
+
+    private gatherProperties()
+    {
+        let props: any = {}
+        const propsArray = this.propNames.toArray()
+        const valuesArray = this.propValues.toArray()
+
+        propsArray.forEach((ref: ElementRef, i) => {
+            const prop = ref.nativeElement.value
+            const value = valuesArray[i].nativeElement.value
+            props[prop] = value
+        })
+
+        return props
+    }
+
+    private gatherRemovedProperties()
+    {
+        let props: any = {}
+
+        this.removedProperties.forEach((pair: [string, any]) => {
+            const prop = pair[0]
+            const value = pair[1]
+            props[prop] = null
+        })
+
+        return props
     }
 
     private gracefulId(node: NodeInterface)

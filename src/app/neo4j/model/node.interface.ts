@@ -4,7 +4,7 @@ export interface NodeInterface {
     META: any;
     TYPE?: string;
     props: any;
-    fixed?: false;
+    fixed?: boolean;
     x?: number;
     y?: number;
     hydrate(data: any, allowReplace: boolean): void;
@@ -14,6 +14,7 @@ export interface NodeInterface {
     reset(props: any): any;
     get(prop: string): any;
     remove(prop: string): any;
+    renameProperty(prop: string, newProp: string): any
     getId(): number;
     getType(): string;
     getLabels(): Array<string>;
@@ -22,4 +23,8 @@ export interface NodeInterface {
     addLabel(label: string): any
     metadata(): any
     [prop: string]: any
+
+    setFixed(fixed: boolean): any;
+    setCoords(coords: [number, number]): any;
+    getCoords(): any
 }

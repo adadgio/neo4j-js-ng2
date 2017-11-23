@@ -5,10 +5,10 @@
     button {
 
         color: colors(white);
-        background-color: colors(red);
-
+        background-color: colors(danger);
+        
         &:hover {
-            background-color: colors(red);
+            background-color: colors(danger-hover);
         }
         &:active {
             background-color:colors(red);

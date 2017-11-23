@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
     padding: 16px;
-    
+
     input[type="text"] {
         flex: 1;
         @include border-radius(0px 1px 1px 0px);

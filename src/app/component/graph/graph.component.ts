@@ -34,6 +34,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     @Output('nodeCreated') nodeCreated: EventEmitter<Node> = new EventEmitter()
     @Output('nodeSelected') nodeSelected: EventEmitter<Node> = new EventEmitter()
     @Output('nodeDoubleClicked') nodeDoubleClicked: EventEmitter<Node> = new EventEmitter()
+    @Output('relationshipCreate') relationshipCreate: EventEmitter<any> = new EventEmitter()
 
     @Input('createMode') set createMode(mode: boolean) {
         this.toggleCreateMode(mode)
@@ -48,7 +49,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
     ngOnInit()
     {
-        this.calculateWidthAndHeight()
+        this.calculateWidthAndHeight();
     }
 
     ngAfterViewInit()
@@ -79,6 +80,22 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
                     this.graphOnRelationshipDragEnd()
                 }
             })
+            .on('mouseout', (e) => {
+                // hide cursor
+                if (null !== State.cursor) {
+                    State.cursor.hide()
+                }
+                // nooooo ! prevent any dragline form working!!
+                // if (null !== State.dragline) {
+                //     this.graphOnRelationshipDragFinished()
+                // }
+            })
+            .on('mouseover', (e) => {
+                // re-show cursor if applicable
+                if (null !== State.cursor) {
+                    State.cursor.show()
+                }
+            })
             .on('mousedown', (e) => {
                 this.graphOnMouseDown()
             })
@@ -107,12 +124,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
             })
 
+
+
         this.force = d3.layout.force()
             .nodes([]).links([])
-            .charge(-120).linkDistance(30).size([this.width, this.height])
+            .charge(-80).linkDistance(60).size([this.width, this.height])
             .on('tick', (e) => {
                 this.onTick(this.nodesRef, this.linksRef)
-            })
+            });
+
+            // console.log(this.width, this.height);
+            // let forceCenter = d3.forceCenter(this.width / 2, this.height / 2);
+            // console.log(forceCenter);
 
         this.nodes = this.force.nodes()
         this.links = this.force.links()
@@ -194,17 +217,24 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
                 if (State.createModeEnabled) {
                     State.cursor.show()
                 }
+
+                if (true === State.createModeEnabled) {
+                    d3.select(d3.event.currentTarget).select('.node').transition().duration(150).attr('transform', 'scale(1)')
+                }
             })
             .on('mouseover', (n: NodeInterface) => {
+
                 if (State.createModeEnabled) {
                     State.cursor.hide()
                 }
 
-                if (null !== State.dragline && State.dragline.isBeeingDragged()) {
+                if (true === State.createModeEnabled && null !== State.dragline && State.dragline.isBeeingDragged()) {
                     // enlarge target node
                     // cause bugs and glitches so find another way to do this
-                    // d3.select(d3.event.currentTarget).attr('transform', 'scale(1.1)');
+                    d3.select(d3.event.currentTarget).select('.node').transition().duration(150).attr('transform', 'scale(1.2)')
                 }
+
+                d3.event.stopPropagation()
             })
             .on('mousedown', (n: NodeInterface) => {
                 // this is the node group beeing dragged
@@ -311,6 +341,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         this.nodes.push(n)
         this.update()
         this.nodeAdded.emit(n)
+
+        // fix draggable nodes when added although create mode is enabed
+        // @todo fix does not go far enough, cursor stays on top of the node
+        // if (true === State.createModeEnabled) {
+        //     this.enableCreateMode()
+        // }
     }
 
     updateNode(node: NodeInterface)
@@ -319,7 +355,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         if (null === index) { return }
 
         this.removeNodeByIndex(index)
-        this.addNode(node)
+        this.nodes.push(node)
         this.update()
     }
 
@@ -329,7 +365,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         if (null === index) { return }
 
         this.removeNodeByIndex(index)
-        this.update()
     }
 
     removeNodeByIndex(index: number)
@@ -392,8 +427,13 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     onTick(nodes: any, links: any)
     {
         nodes.attr('transform', function (d) {
+            // let x = Math.max(30, Math.min(this.width - 30, d.x))
+            // let y = Math.max(30, Math.min(this.height - 30, d.y))
             return `translate(${[d.x, d.y]})`
         })
+
+        // nodes.attr("cx", function(d) { return d.x = Math.max(30, Math.min(this.width - 30, d.x)); })
+        //     .attr("cy", function(d) { return d.y = Math.max(30, Math.min(this.height - 30, d.y)); });
 
         links.selectAll('.link')
             .attr('x1', function(d) {
@@ -429,7 +469,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     enableCreateMode()
     {
         State.createModeEnabled = true
-        d3.selectAll('g.node-group').classed('cell', true)
+        d3.selectAll('g.node-group').classed('droppable', true)
 
         // create a hidden drag line to allow linking two nodes
         State.cursor = Shape.createCursor()
@@ -445,7 +485,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     disableCreateMode()
     {
         State.createModeEnabled = false
-        d3.selectAll('g.node-group').classed('cell', false)
+        d3.selectAll('g.node-group').classed('droppable', false)
 
         if (null !== State.cursor) {
             State.cursor.remove()
@@ -524,6 +564,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             return
         }
 
+        const coords = Mouse.getCoords(d3.event.currentTarget)
+
         let clock = 0
         let canCreate: boolean = true
         // start css transition effect on the cursor
@@ -546,6 +588,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
                 // create a node for the graph
                 const newNode = new Node({ name: 'New node' })
+                newNode.setFixed(true).setCoords([coords[0], coords[1]])
                 this.nodeCreated.emit(newNode)
 
                 canCreate = false
@@ -566,6 +609,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         if (false === State.createModeEnabled) { return }
         if (null !== State.dragline) { return } // forbid having two draglines on the graph
 
+        // fix glitch n°g001
+        this.svg.classed('dragging-around-fix', true)
 
         // make dragline start at node position
         // check the node has a valid ID property
@@ -596,13 +641,16 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
         const element = d3.select(d3.event.target)
 
+        // unfix glitch n°g001
+        this.svg.classed('dragging-around-fix', false)
+
         // make sure we release on a circle and a circle of class "node" (just to make sure)
         // cancel everything if the lien is not dragged on a valid node
         if (element.property('nodeName') !== 'circle') {
             this.graphOnRelationshipDragFinished()
             return
         }
-        
+
         const node: NodeInterface = element.datum()
         const sourceId = parseInt(State.dragline.attr('data-source'))
         const targetId = node.getId()
@@ -616,11 +664,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
         const source: NodeInterface = this.findNodeById(sourceId)
         const target: NodeInterface = this.findNodeById(targetId)
-        console.log(source, target)
 
         State.dragline.remove()
         State.dragline = null
 
+        this.relationshipCreate.emit({ source: source, target: target })
         this.graphOnRelationshipDragFinished()
     }
 

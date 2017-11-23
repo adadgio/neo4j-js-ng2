@@ -27,11 +27,11 @@ button {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-
+    
     padding: 8px 12px;
     line-height: 16px;
     border: none;
-    @include border-radius(1px);
+    @include border-radius(2px);
     @include transition(background-color ease 0.3s, color ease 0.3s);
 
     cursor: pointer;
