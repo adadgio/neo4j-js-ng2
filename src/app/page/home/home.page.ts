@@ -6,7 +6,7 @@ import { Neo4jService }             from '../../neo4j';
 import { Neo4jRepository }          from '../../neo4j';
 import { ResultSet, Transaction }   from '../../neo4j/orm';
 import { Node, NodeInterface  }     from '../../neo4j/model';
-import { distinct, crosscut }       from '../../core/array';
+import { crosscut }                 from '../../core/array';
 
 @Component({
     selector: 'home-page',
@@ -23,6 +23,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
     }
     @ViewChild(GraphComponent) graph: GraphComponent;
 
+    // @todo General: sue a setting to discint nodes by propertu (ID) or none, and use distinct INSIDE graph.componenet
     constructor(private neo4j: Neo4jService, private repo: Neo4jRepository, private settings: SettingsService)
     {
 
@@ -33,31 +34,16 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     }
 
+    ngAfterViewChecked()
+    {
+
+    }
+
     ngAfterViewInit()
     {
         this.graph.start()
-
-        const transaction = new Transaction()
-        transaction.add('MATCH (n: Company), (b: Officer) RETURN n, b, n.truc, ID(n), ID(b), LABELS(n), LABELS(b) LIMIT 200')
-
-        this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
-
-            // the number of result sets depends on the number of transactions
-            // const firstResultSet = resultSets[0]
-            let dataset = resultSets[0].getDataset('n')
-            // dataset = distinct('ID', dataset)
-
-            dataset.forEach((node: NodeInterface) => {
-                this.graph.addNode(node)
-            })
-
-            // const newNode = new Node({ 'ID': 3, 'LABELS': ['Person'] })
-            // newNode.setFixed(true)
-            // this.graph.addNode(newNode)
-
-        }).catch(err => console.log(err) )
     }
-
+    
     ngOnChanges()
     {
 
@@ -81,10 +67,28 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     onSearch(e: any)
     {
-        const query = e.query
-        const mode = e.mode
+        // const mode = e.mode;
+        // const queryString = e.queryString;
 
-        console.log(e)
+        this.repo.execute(e.queryString).then((resultSets: Array<ResultSet>) => {
+
+            let links = [];
+            let dataset1 = resultSets[0].getDataset('a')
+            let dataset2 = resultSets[0].getDataset('r')
+            let dataset3 = resultSets[0].getDataset('b')
+
+            dataset2.forEach((rel: NodeInterface, i) => {
+               links.push({ source: dataset3[i], target: dataset1[i] });
+            })
+
+            this.graph.addNodes(dataset1)
+            this.graph.addNodes(dataset3)
+            this.graph.addLinks(links)
+            this.graph.update()
+
+        }).catch(err => {
+            console.log(err)
+        })
     }
 
     onNodeCreated(node: NodeInterface)

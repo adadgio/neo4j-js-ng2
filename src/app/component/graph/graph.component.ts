@@ -1,24 +1,27 @@
 declare var window: any;
 import * as d3 from 'd3';
+import { environment } from '../../../environments/environment';
 
 import { Input, Output, Component }                 from '@angular/core';
 import { OnInit, OnChanges, AfterViewInit }         from '@angular/core';
 import { ElementRef, HostBinding, EventEmitter }    from '@angular/core';
 import { SettingsService }                          from '../../service';
 import { Node, NodeInterface }                      from '../../neo4j/model';
-import { Mouse, State, distance }                   from './graph-utils';
+import { Mouse, State, distance, primary }          from './graph-utils';
 import { Shape }                                    from './graph-utils';
+import { distinct, crosscut}                        from '../../core/array';
 
 @Component({
     selector: 'graph-component',
     styleUrls: ['./graph.component.scss'],
-    template: `<svg id="graph" [ngStyle]="{ 'width': width, 'height': height }"></svg>`,
+    template: `<svg id="graph"></svg>`,
     providers: [],
 })
 export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 {
-    @Input('width') width: number = 50;
-    @Input('height') height: number = 50;
+    private DONT_UPDATE: boolean = false;
+    @Input('width') width: number;
+    @Input('height') height: number;
 
     private selector: string = 'svg#graph';
 
@@ -30,6 +33,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     private nodesRef: any;
     private linksRef: any;
 
+    private primaryKey: string = 'none';
+    private primaryFn: Function = null;
+
     @Output('nodeAdded') nodeAdded: EventEmitter<Node> = new EventEmitter()
     @Output('nodeCreated') nodeCreated: EventEmitter<Node> = new EventEmitter()
     @Output('nodeSelected') nodeSelected: EventEmitter<Node> = new EventEmitter()
@@ -40,21 +46,43 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         this.toggleCreateMode(mode)
     }
 
+    private normalizePrimaryKey(pkey: string): string
+    {
+        if (typeof(pkey) === 'undefined' || null == pkey || pkey === 'none' || pkey.trim() == '') {
+            return 'none';
+        } else {
+            return pkey;
+        }
+    }
+
     // @Output('createModeChanged') createModeChanged: EventEmitter<boolean> = new EventEmitter();
 
     constructor(private elementRef: ElementRef, private settings: SettingsService)
     {
+        this.primaryKey = this.settings.get('graph.nodes.primaryKey');
+        this.primaryKey = this.normalizePrimaryKey(this.primaryKey);
 
+        if (this.primaryKey === 'none') {
+            this.primaryFn = null; // (n) => { console.log(n[this.primaryKey]) };
+        } else {
+            this.primaryFn = (n: NodeInterface) => { return n[this.primaryKey] };
+        }
     }
 
     ngOnInit()
     {
-        this.calculateWidthAndHeight();
+
     }
 
     ngAfterViewInit()
     {
-
+        this.calculateWidthAndHeight()
+        // if (environment.production) {
+        //     this.calculateWidthAndHeight();
+        // } else {
+        //     // after view init hack fix for NON prod mode only
+        //     setTimeout(() => { this.calculateWidthAndHeight() }, 15)
+        // }
     }
 
     ngOnChanges()
@@ -117,29 +145,22 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
                 }
 
-                // console.log(State.cursor)
                 // if (null !== State.cursor && null !== State.dragline && !State.dragline.isBeeingDragged()) {
                 //     State.cursor.classed('hidden', false)
                 // }
 
             })
 
-
-
         this.force = d3.layout.force()
             .nodes([]).links([])
-            .charge(-80).linkDistance(60).size([this.width, this.height])
+            .charge(-130).linkDistance(80).size([this.width, this.height])
             .on('tick', (e) => {
                 this.onTick(this.nodesRef, this.linksRef)
             });
 
-            // console.log(this.width, this.height);
-            // let forceCenter = d3.forceCenter(this.width / 2, this.height / 2);
-            // console.log(forceCenter);
-
         this.nodes = this.force.nodes()
         this.links = this.force.links()
-        this.nodesRef = this.svg.selectAll('circle.node', (n: NodeInterface) => { return n.getId() })
+        this.nodesRef = this.svg.selectAll('circle.node', this.primaryFn)
         this.linksRef = this.svg.selectAll('.link')
 
         // attach drag event handlers
@@ -180,8 +201,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
     update()
     {
+        // apply general update pattern to the nodes
         this.linksRef = this.linksRef.data(this.links)
-        this.nodesRef = this.nodesRef.data(this.nodes, (n: NodeInterface) => { return n.getId() })
+        this.nodesRef = this.nodesRef.data(this.nodes, this.primaryFn)
+        // remove deleted nodes and deleted links
+        this.nodesRef.exit().remove()
+        this.linksRef.exit().remove()
 
         // this.linksRef.enter().append('line')
         //     .attr('class', 'link')
@@ -326,20 +351,33 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             // .classed('draggable', true)
             .call(this.force.drag)
 
-
         Shape.appendNodeGroupShapes(nodeGroupsRefs, this.settings)
-
-        // remove deleted nodes and deleted links
-        this.nodesRef.exit().remove()
-        this.linksRef.exit().remove()
 
         this.force.start();
     }
 
-    addNode(n: NodeInterface)
+    addNodes(nodes: Array<NodeInterface>)
     {
+        for (let i in nodes) {
+            this.addNode(nodes[i], this.DONT_UPDATE)
+        }
+    }
+
+    addLinks(links: Array<any>)
+    {
+        for (let i in links) {
+            this.addLink(links[i].source, links[i].target, null, this.DONT_UPDATE)
+        }
+    }
+
+    addNode(n: NodeInterface, update: boolean = true)
+    {
+        if (this.exists(n)) {
+            return;
+        }
+
         this.nodes.push(n)
-        this.update()
+        if (true === update) { this.update() }
         this.nodeAdded.emit(n)
 
         // fix draggable nodes when added although create mode is enabed
@@ -352,11 +390,31 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     updateNode(node: NodeInterface)
     {
         const index = this.findNodeIndexById(node.getId())
+        const prevNode = this.findNodeById(node.getId());
+
         if (null === index) { return }
 
-        this.removeNodeByIndex(index)
+        // keep node x and y position !
+        State.savedNode = { x: prevNode.x, y: prevNode.y }
+
+        this.removeNodeByIndex(index, this.DONT_UPDATE)
+
+        // set prev coordinates to avoid glitch effect
+        node.setCoords([prevNode.x, prevNode.y]);
+
         this.nodes.push(node)
         this.update()
+    }
+
+    exists(node: NodeInterface)
+    {
+        for (let i in this.nodes) {
+            if (this.nodes[i][this.primaryKey] === node[this.primaryKey]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     removeNode(node: NodeInterface)
@@ -367,7 +425,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         this.removeNodeByIndex(index)
     }
 
-    removeNodeByIndex(index: number)
+    removeNodeByIndex(index: number, update: boolean = true)
     {
         this.nodes.splice(index, 1)
         this.update()
@@ -399,7 +457,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         return null
     }
 
-    addLink(sourceNode: NodeInterface, targetNode: NodeInterface, linkData?: any)
+    addLink(sourceNode: NodeInterface, targetNode: NodeInterface, linkData: any = null, update: boolean = true)
     {
         let source = this.findNodeById(sourceNode.getId())
         let target = this.findNodeById(targetNode.getId())
@@ -421,7 +479,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         };
 
         this.links.push(link);
-        this.update();
+
+        if (true === update) {
+            this.update();
+        }
     }
 
     onTick(nodes: any, links: any)
@@ -429,6 +490,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         nodes.attr('transform', function (d) {
             // let x = Math.max(30, Math.min(this.width - 30, d.x))
             // let y = Math.max(30, Math.min(this.height - 30, d.y))
+            // just avoid infinit loop on user corrupted queries...
+            if (typeof(d.x) === 'undefined' || d.x == null) {
+                throw Error(`graph.component.ts Infinite loop detected`)
+            }
+
             return `translate(${[d.x, d.y]})`
         })
 

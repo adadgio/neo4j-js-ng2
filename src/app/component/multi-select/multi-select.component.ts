@@ -14,7 +14,6 @@ import { MultiSelectOptionComponent }   from './multi-select-option.component';
         <div class="selection">
 
             <input
-                [ngClass]="(false === multiple && selectedItems.length === 0) ? 'visible' : 'hidden'"
                 #input
                 (focus)="onFocus($event)"
                 (keyup)="onSearchKeyup($event)"
@@ -23,9 +22,9 @@ import { MultiSelectOptionComponent }   from './multi-select-option.component';
                 [attr.placeholder]="placeholder">
 
             <div class="selected-items">
-                <ng-container *ngFor="let item of selectedItems">
+                <ng-container *ngFor="let value of values">
                     <multi-select-option
-                        [item]="item"
+                        [value]="value"
                         [type]="'selected'"
                         (onRemove)="removeItem($event)"
                     ></multi-select-option>
@@ -36,17 +35,20 @@ import { MultiSelectOptionComponent }   from './multi-select-option.component';
         <div class="dropdown" *ngIf="dropdownVisible">
             <ul>
                 <li>
-                    <ng-container *ngFor="let item of filter(searchTerm.getValue(), availableItems)">
+                    <!-- filter(searchTerm.getValue(), items) -->
+                    <ng-container *ngFor="let value of items">
                         <multi-select-option
-                            [item]="item"
+                            [value]="value"
                             [type]="'available'"
-                            (click)="addItem(item)"
+                            (click)="addItem(value)"
                         ></multi-select-option>
                     </ng-container>
                 </li>
-                <li *ngIf="searchTerm.getValue() != '' && filter(searchTerm.getValue(), availableItems).length === 0">
+                <!--
+                <li *ngIf="searchTerm.getValue() != '' && filter(searchTerm.getValue(), items).length === 0">
                     <span class="empty-results-text"><i>No results</i></span>
                 </li>
+                -->
             </ul>
         </div>
     </div>`,
@@ -55,9 +57,6 @@ import { MultiSelectOptionComponent }   from './multi-select-option.component';
 export class MultiSelectComponent implements OnInit
 {
     dropdownVisible: boolean = false;
-
-    selectedItems: Array<any> = [];
-    availableItems: Array<any> = [];
     searchTerm: BehaviorSubject<string> = new BehaviorSubject('');
 
     @Input('items') items: Array<any> = [];
@@ -74,31 +73,7 @@ export class MultiSelectComponent implements OnInit
 
     ngOnInit()
     {
-        for (let i in this.items) {
-            let item = this.items[i];
 
-            // crate an object from scalar array if a simple array is passed
-            if (typeof(item) !== 'object') {
-                item = this.scalarToItemObject(item)
-                this.areValuesScalar = true;
-            }
-
-            if (this.values.indexOf(item.id) > -1) {
-                this.selectedItems.push(item)
-            } else {
-                this.availableItems.push(item)
-            }
-        }
-    }
-    
-    scalarToItemObject(value: string|number)
-    {
-        return { id: value, name: value };
-    }
-
-    trackByFn(index, item)
-    {
-        return item.id;
     }
 
     @HostListener('document:click', ['$event'])
@@ -111,9 +86,8 @@ export class MultiSelectComponent implements OnInit
 
     onFocus(e: any)
     {
-        if (this.availableItems.length > 0) {
-            this.dropdownVisible = true;
-        }
+        this.dropdownVisible = true;
+
     }
 
     onSearchKeyup(e: any)
@@ -128,60 +102,41 @@ export class MultiSelectComponent implements OnInit
         }
     }
 
-    filter(term: string, items: Array<any>)
+    filter(term: string, items: Array<string>)
     {
-        if (null === term) {
-            return items;
-        } else {
-            return items.filter((item) => {
-                return (item.name.toLowerCase().indexOf(term) > -1) ? true : false
-            })
+        // if (null === term) {
+        //     return items;
+        // } else {
+        //     return items.filter((item) => {
+        //         return (item.name.toLowerCase().indexOf(term) > -1) ? true : false
+        //     })
+        // }
+    }
+
+    addItem(value: string)
+    {
+        this.dropdownVisible = false;
+
+        if (this.values.indexOf(value) === -1) {
+            this.values.push(value);
+            this.items.splice(this.items.indexOf(value), 1);
+            this.valuesChanged.emit(this.values);
         }
     }
 
-    addItem(item: any)
+    removeItem(value: string)
     {
-        this.dropdownVisible = false;
-        this.selectedItems.push(item)
-        this.removeById(item.id, this.availableItems)
+        const index = this.values.indexOf(value);
+        this.values.splice(index, 1);
 
-        // this.searchTerm.next('')
-        // this.input.nativeElement.focus()
-        // this.input.nativeElement.value = '';
-        this.valuesChanged.emit(this.selectedItems)
-    }
+        if (this.items.indexOf(value) === -1) {
+            this.items.push(value);
+        }
 
-    removeItem(item: any)
-    {
-        this.availableItems.push(item)
-        this.removeById(item.id, this.selectedItems)
-
-        this.valuesChanged.emit(this.selectedItems)
+        this.valuesChanged.emit(this.values);
     }
 
     getValues() {
         return this.values;
-    }
-
-    removeById(id: number, items: Array<any>)
-    {
-        for (let i in items) {
-            const item = items[i];
-
-            if (item.id === id) {
-                items.splice(parseInt(i), 1)
-            }
-        }
-
-        return items;
-    }
-
-    getIndexOf(id: number, items: Array<any>): number {
-        for (let i in items) {
-            if (id === items[i]['id']) {
-                return parseInt(i);
-            }
-        }
-        return null;
     }
 }

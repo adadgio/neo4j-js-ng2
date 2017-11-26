@@ -120,6 +120,11 @@ export class Node implements NodeInterface
         return this.LABELS
     }
 
+    hasLabel(label: string)
+    {
+        return this.LABELS.indexOf(label) > -1 ? true : false;
+    }
+
     setLabels(labels: Array<string>)
     {
         this.LABELS = labels
@@ -150,8 +155,8 @@ export class Node implements NodeInterface
 
     setCoords(coords: [number, number])
     {
-        this.x = coords[0]
-        this.y = coords[1]
+        this.x = coords[0];
+        this.y = coords[1];
         return this
     }
 

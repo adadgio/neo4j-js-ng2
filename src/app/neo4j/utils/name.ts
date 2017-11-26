@@ -7,6 +7,6 @@ export function name(node: NodeInterface, nameOptions: Array<string>) {
             return node['props'][prop]
         }
     }
-
+    
     return '?'
 }

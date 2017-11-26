@@ -21,6 +21,8 @@ class StateSingleton
         touchStartDrag: null,
         mouseDownDrag: null,
     }
+
+    savedNode: any = null;
 }
 
 export let State = new StateSingleton()

@@ -17,6 +17,7 @@ export interface NodeInterface {
     renameProperty(prop: string, newProp: string): any
     getId(): number;
     getType(): string;
+    hasLabel(label:string): boolean;
     getLabels(): Array<string>;
     getFirstLabel(): string;
     setLabels(labels: Array<string>): any;

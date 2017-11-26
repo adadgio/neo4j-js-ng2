@@ -1,8 +1,9 @@
 import { Component, ElementRef }                from '@angular/core';
 import { OnChanges, OnInit, AfterViewInit }     from '@angular/core';
 import { Input, Output, EventEmitter }          from '@angular/core';
-import { ViewChildren, QueryList, ContentChildren }        from '@angular/core';
+import { ViewChildren, QueryList, ContentChildren } from '@angular/core';
 import { SimpleChanges }                        from '@angular/core';
+import { SettingsService }                      from '../../service';
 import { Neo4jRepository }                      from '../../neo4j';
 import { ResultSet, CypherQuery, Transaction }  from '../../neo4j/orm';
 import { Node, NodeInterface }                  from '../../neo4j/model';
@@ -25,37 +26,22 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
     loading: boolean = false;
     cancelable: boolean = false;
 
-    selectedLabels: Array<any> = [];
-    availableLabels: Array<any> = [];
+    selectedLabels: Array<string> = [];
+    availableLabels: Array<string> = [];
+    originalLabels : Array<string> = [];
 
     private properties: Array<[string, any]> = []
     private originalProperties: Array<[string, any]> = []
     private removedProperties : Array<[string, any]> = []
 
-    constructor(private elementRef: ElementRef, private repo: Neo4jRepository)
+    constructor(private settings: SettingsService, private repo: Neo4jRepository)
     {
 
     }
 
     ngOnInit()
     {
-        this.availableLabels = [
-            {
-                id: 1, name: 'User', color: 'blue'
-            },
-            {
-                id: 6, name: 'Document', color: 'red',
-            },
-            {
-                id: 6, name: 'Specialty', color: 'red',
-            },
-        ];
 
-        for (let item of this.availableLabels) {
-            if (this.node.getLabels().indexOf(item.name) > -1) {
-                this.selectedLabels.push(item.id)
-            }
-        }
     }
 
     ngAfterViewInit()
@@ -63,11 +49,19 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
     }
 
+    private parseLabels()
+    {
+        this.availableLabels = this.settings.get('graph.labels');
+        this.selectedLabels = this.node.getLabels();
+    }
+
     ngOnChanges(changes: SimpleChanges)
     {
         if (null !== changes.node.currentValue) {
-            // const entries = Object.entries(this.node.properties())
+            // always copy node properties to properties for the view whenever its not null
+            // also update all labels (available and node labels)
             this.properties = Object.entries(this.node.properties())
+
         } else {
             this.properties = [];
         }
@@ -78,15 +72,16 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
             if (null !== changes.node.currentValue) {
                 // make a separate copy of the thing
-                this.originalProperties = Object.assign([], this.properties)
+                this.originalProperties = Object.assign([], this.properties);
+                this.originalLabels = Object.assign([], this.node.getLabels());
             }
         }
 
+        this.parseLabels();
     }
 
     onLabelsChanged(e: any)
     {
-        console.log(e)
         this.cancelable = true;
     }
 
@@ -103,7 +98,7 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
         this.originalProperties = newProperties
         this.removedProperties = []
 
-        this.repo.updateNodeById(this.node.getId(), newProperties, removedProperties).then((resultSets: Array<ResultSet>) => {
+        this.repo.updateNodeById(this.node.getId(), newProperties, removedProperties, this.selectedLabels).then((resultSets: Array<ResultSet>) => {
 
             const node = resultSets[0].getDataset('n').first()
             this.onNodeEdited.emit(node)
@@ -139,7 +134,7 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
         this.cancelable = false;
         this.properties = this.originalProperties;
-        // this.selectedLabels = this.node.getLabels(); // @todo Use a label transform...
+        this.selectedLabels = this.originalLabels;
     }
 
     private gatherProperties()

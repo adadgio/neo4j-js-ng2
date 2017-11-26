@@ -4,14 +4,10 @@
 
         <div flex flex-columns class="emarged-bottom">
             <div flex class="gray margin-bottom-8px">Labels</div>
-            
-            <!--
-                availableLabels
-                selectedLabels
-            -->
+
             <multi-select
-                [items]="['User', 'Document']"
-                [values]="['Document']"
+                [items]="availableLabels"
+                [values]="selectedLabels"
                 (valuesChanged)="onLabelsChanged($event)"
             ></multi-select>
         </div>

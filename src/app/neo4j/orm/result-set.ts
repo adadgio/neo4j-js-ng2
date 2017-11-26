@@ -121,10 +121,10 @@ export class ResultSet
             return { alias: col, property: null }
         }
     }
-
+    
     getDataset(col: string)
     {
-        return (typeof this.datasets[col] === 'undefined') ? null : this.datasets[col];
+        return (typeof this.datasets[col] === 'undefined') ? [] : this.datasets[col];
     }
 
 }

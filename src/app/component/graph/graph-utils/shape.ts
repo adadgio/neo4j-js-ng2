@@ -152,7 +152,7 @@ class ShapeSingleton
             .style('stroke', (n: NodeInterface) => {
                 return tinycolor(circleColor).lighten(15).toString()
             })
-
+            
         groupsRef.append('circle')
                 .attr('class', 'ring')
                 .attr('r', 23)
@@ -161,7 +161,7 @@ class ShapeSingleton
         groupsRef.append('text')
             .attr('class', 'label')
             .text((n: NodeInterface) => {
-                return truncate(name(n, nameOptions), 12);
+                return `[${n.getId().toString()}] ` + truncate(name(n, nameOptions), 6);
             })
             // .attr('transform', 'translate(0, 34)')
     }

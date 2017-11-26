@@ -9,21 +9,22 @@ import { Input, Output, EventEmitter }  from '@angular/core';
     styleUrls: ['./multi-select-option.component.scss'],
     template: `<div class="multi-select-option"
         [ngClass]="[type]"
-        [ngStyle]="{ 'background-color': (item.color && type === 'selected') ? item.color : 'none' }"
+        
         >
-            <span class="item" [innerText]="item.name"></span>
-            <a *ngIf="type === 'selected'" href="" class="rm" (click)="remove(item, $event)">x</a>
+            <span class="value" [innerText]="value"></span>
+            <a *ngIf="type === 'selected'" href="" class="rm" (click)="remove(value, $event)">x</a>
     </div>`,
+    //[ngStyle]="{ 'background-color': (value.color && type === 'selected') ? value.color : 'none' }"
 })
 export class MultiSelectOptionComponent
 {
-    @Input('item') item: any;
+    @Input('value') value: any;
     @Input('type') type: 'selected'|'available';
     @Output('onRemove') onRemove: EventEmitter<any> = new EventEmitter();
 
-    remove(item, e?: MouseEvent)
+    remove(value, e?: MouseEvent)
     {
         e.preventDefault()
-        this.onRemove.emit(this.item)
+        this.onRemove.emit(this.value)
     }
 }

@@ -3,6 +3,7 @@ import { HostListener, ElementRef }                 from '@angular/core';
 import { Input, Output, Component }                 from '@angular/core';
 import { OnInit, HostBinding, EventEmitter }        from '@angular/core';
 import { AfterViewInit, Renderer, ViewChild }       from '@angular/core';
+import { CypherQuery, SimpleQuery }                 from '../../neo4j/orm';
 
 @Component({
     selector: 'search-component',
@@ -33,12 +34,15 @@ export class SearchComponent implements OnInit, AfterViewInit
     normalQueryString: string = '';
     cypherQueryString: string = '';
 
+    normalQueryRelLevel: number = 0;
+    normalQueryLimit: number = null;
+    normalQuerySkip: number = null;
+
     ngKlasses: string;
     term: Subject<string> = new Subject();
 
     constructor(private renderer: Renderer, private elementRef: ElementRef)
     {
-
 
     }
 
@@ -56,7 +60,7 @@ export class SearchComponent implements OnInit, AfterViewInit
     {
 
     }
-
+    
     toggleMode(e: any)
     {
         e.preventDefault()
@@ -66,7 +70,19 @@ export class SearchComponent implements OnInit, AfterViewInit
     onSubmit(e: any)
     {
         e.preventDefault()
-        const query = (this.mode === 'normal') ? this.normalQueryString : this.cypherQueryString;
-        this.onSearch.emit({ mode: this.mode, query: query })
+        let queryString: string;
+
+        if (this.mode === 'normal') {
+
+            const simple = new SimpleQuery(this.normalQueryString, this.normalQueryRelLevel, this.normalQueryLimit, this.normalQuerySkip)
+            queryString = simple.getQuery();
+
+        } else {
+
+            const builder = new CypherQuery();
+            queryString = builder.rawCypher(e.query).getQuery();
+        }
+
+        this.onSearch.emit({ mode: this.mode, queryString: queryString })
     }
 }
