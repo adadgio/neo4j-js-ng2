@@ -21,9 +21,10 @@ export interface NodeInterface {
     getLabels(): Array<string>;
     getFirstLabel(): string;
     setLabels(labels: Array<string>): any;
-    addLabel(label: string): any
-    metadata(): any
-    [prop: string]: any
+    addLabel(label: string): any;
+    removeLabel(label: string): any;
+    metadata(): any;
+    [prop: string]: any;
 
     setFixed(fixed: boolean): any;
     setCoords(coords: [number, number]): any;

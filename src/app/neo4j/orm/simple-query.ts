@@ -39,7 +39,7 @@ export class SimpleQuery
             queryString += `)-[r]->(b) RETURN a, b, r, ID(a), ID(b), TYPE(r), LABELS(a), LABELS(b)${this.addLimitAndSkip(limit, skip)}`;
 
         } else {
-
+            
             queryString += `) RETURN a, ID(a), LABELS(a)${this.addLimitAndSkip(limit, skip)}`;
         }
 

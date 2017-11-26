@@ -48,7 +48,7 @@ export class Neo4jRepository
     updateNodeById(id: number, changedProperties: any, removedProperties: any, labels: Array<string> = null): Promise<Array<ResultSet>>
     {
         const builder = new CypherQuery()
-        
+
         // build a query string to pass to a transaction
         const query = builder
             .matches('n')
@@ -63,32 +63,32 @@ export class Neo4jRepository
 
         const transaction = new Transaction()
         transaction.add(query)
-        console.log(query)
-
+        
         return this.neo4j.commit(transaction)
     }
 
-    findRelationshipsById(id: number)
+    findRelationships(node: NodeInterface)
     {
         const transaction = new Transaction()
-        transaction.add(`MATCH (a)-[r]-(b) WHERE ID(a) = ${id} RETURN a, b, ID(a), ID(b), LABELS(a), LABELS(b), r, ID(r), TYPE(r)`)
+        transaction.add(`MATCH (a)-[r]-(b) WHERE ID(a) = ${node.getId()} RETURN a, b, ID(a), ID(b), LABELS(a), LABELS(b), r, ID(r), TYPE(r)`)
 
         return new Promise((resolve, reject) => {
             this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
 
                  // "r" dataset (relationship nodes) should match number of "b" nodes...)
                  // @todo ...what happens with multiple relationships then?
-                let dataset = resultSets[0].getDataset('b')
+                let dataset1 = resultSets[0].getDataset('a')
                 let dataset2 = resultSets[0].getDataset('r')
+                let dataset3 = resultSets[0].getDataset('b')
 
-                let linkedNodes = []
+                let links = [];
 
                 dataset2.forEach((rel: NodeInterface, i) => {
-                    const targetNode = dataset[i]
-                    linkedNodes.push(targetNode)
+                    const targetNode = dataset3[i]
+                    links.push({ source: node, target: dataset3[i], relationship: dataset2[i] })
                 })
 
-                resolve(linkedNodes)
+                resolve(links)
 
             }).catch(err => {
                 throw new Error(err)

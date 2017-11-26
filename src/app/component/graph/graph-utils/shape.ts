@@ -139,7 +139,7 @@ class ShapeSingleton
         // find node default label shown on the ui
         const nameOptions = settings.get('graph.nodes.displayNameOptions')
         const colorOptions = settings.get('graph.nodes.displayColorOptions')
-        let circleColor: string;
+        let circleColor: string = '';
 
         // then append a circle to the group
         groupsRef.append('circle')
@@ -152,7 +152,7 @@ class ShapeSingleton
             .style('stroke', (n: NodeInterface) => {
                 return tinycolor(circleColor).lighten(15).toString()
             })
-            
+
         groupsRef.append('circle')
                 .attr('class', 'ring')
                 .attr('r', 23)
@@ -163,12 +163,27 @@ class ShapeSingleton
             .text((n: NodeInterface) => {
                 return `[${n.getId().toString()}] ` + truncate(name(n, nameOptions), 6);
             })
-            // .attr('transform', 'translate(0, 34)')
     }
 
-    appendShapesToLinkGroups(group: any, link: any)
+    appendShapesToLinkGroups(group: any, settings: any)
     {
+        group
+            .append('line')
+            .attr('class', 'link')
+            .attr('marker-end', 'url(#arrow-marker)')
 
+        group.append('line')
+            .attr('class', 'link-overlay')
+
+        group.append('text')
+            .attr('class', 'link-text')
+            .attr('dy', 14)
+            .text((l) => {
+                // @todo Get label/link name from settings
+                console.log('@todo Get label/link name from settings')
+                return l.relationship.TYPE; // l.TYPE;
+            })
+            .attr('text-anchor', 'middle')
     }
 }
 

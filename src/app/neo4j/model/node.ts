@@ -92,7 +92,7 @@ export class Node implements NodeInterface
     remove(prop: string)
     {
         delete(this.props[prop])
-        return this
+        return this;
     }
 
     properties()
@@ -107,17 +107,17 @@ export class Node implements NodeInterface
 
     getId()
     {
-        return this.ID
+        return this.ID;
     }
 
     getType()
     {
-        return this.TYPE
+        return this.TYPE;
     }
 
     getLabels()
     {
-        return this.LABELS
+        return this.LABELS;
     }
 
     hasLabel(label: string)
@@ -128,36 +128,47 @@ export class Node implements NodeInterface
     setLabels(labels: Array<string>)
     {
         this.LABELS = labels
-        return this
+        return this;
     }
 
     addLabel(label: string)
     {
         this.LABELS.push(label)
-        return this
+        return this;
+    }
+    
+    removeLabel(label: string)
+    {
+        const index = this.LABELS.indexOf(label);
+
+        if (this.LABELS.indexOf(label) > -1) {
+            this.LABELS.splice(index, 1);
+        }
+
+        return this;
     }
 
     getFirstLabel()
     {
-        return (this.LABELS.length > 0) ? this.LABELS[0] : null
+        return (this.LABELS.length > 0) ? this.LABELS[0] : null;
     }
 
     metadata()
     {
-        return this.META
+        return this.META;
     }
 
     setFixed(fixed: boolean)
     {
-        this.fixed = fixed
-        return this
+        this.fixed = fixed;
+        return this;
     }
 
     setCoords(coords: [number, number])
     {
         this.x = coords[0];
         this.y = coords[1];
-        return this
+        return this;
     }
 
     getCoords()

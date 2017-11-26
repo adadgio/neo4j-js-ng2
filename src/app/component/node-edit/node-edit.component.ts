@@ -28,7 +28,8 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
     selectedLabels: Array<string> = [];
     availableLabels: Array<string> = [];
-    originalLabels : Array<string> = [];
+    private originalLabels: Array<string> = [];
+    private removedLabels: Array<string> = [];
 
     private properties: Array<[string, any]> = []
     private originalProperties: Array<[string, any]> = []
@@ -94,9 +95,11 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
         const newProperties = this.gatherProperties()
         const removedProperties = this.gatherRemovedProperties()
+        const removedLabels = this.gatherRemovedLabels()
+        console.log('@todo Removed labels to add in node edit AND in repository updateNodeById query as well');
 
-        this.originalProperties = newProperties
-        this.removedProperties = []
+        this.originalProperties = newProperties;
+        this.removedProperties = [];
 
         this.repo.updateNodeById(this.node.getId(), newProperties, removedProperties, this.selectedLabels).then((resultSets: Array<ResultSet>) => {
 
@@ -149,7 +152,7 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
             props[prop] = value
         })
 
-        return props
+        return props;
     }
 
     private gatherRemovedProperties()
@@ -162,11 +165,16 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
             props[prop] = null
         })
 
-        return props
+        return props;
+    }
+
+    private gatherRemovedLabels()
+    {
+
     }
 
     private gracefulId(node: NodeInterface)
     {
-        return (node !== null && typeof(node) !== 'undefined' && node.getId() != null) ? node.getId() : null
+        return (node !== null && typeof(node) !== 'undefined' && node.getId() != null) ? node.getId() : null;
     }
 }

@@ -42,8 +42,9 @@ export class HomePageComponent implements OnInit, AfterViewInit
     ngAfterViewInit()
     {
         this.graph.start()
+        // this.onSearch({ queryString: 'MATCH (n:Officer) RETURN n LIMIT 5'})
     }
-    
+
     ngOnChanges()
     {
 
@@ -78,7 +79,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
             let dataset3 = resultSets[0].getDataset('b')
 
             dataset2.forEach((rel: NodeInterface, i) => {
-               links.push({ source: dataset3[i], target: dataset1[i] });
+               links.push({ source: dataset3[i], target: dataset1[i], relationship: dataset2[i] });
             })
 
             this.graph.addNodes(dataset1)
@@ -146,11 +147,11 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     private findRelationships(sourceNode: NodeInterface)
     {
-        this.repo.findRelationshipsById(sourceNode.getId()).then((linkedNodes: Array<NodeInterface>) => {
+        this.repo.findRelationships(sourceNode).then((links: Array<NodeInterface>) => {
 
-            linkedNodes.forEach((targetNode, i) => {
-                this.graph.addNode(targetNode)
-                this.graph.addLink(sourceNode, targetNode)
+            links.forEach((result, i) => {
+                this.graph.addNode(result.target)
+                this.graph.addLink(result.source, result.target, result.relationship)
             })
 
         }).catch(err => {

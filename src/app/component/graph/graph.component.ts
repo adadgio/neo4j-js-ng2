@@ -153,7 +153,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
         this.force = d3.layout.force()
             .nodes([]).links([])
-            .charge(-130).linkDistance(80).size([this.width, this.height])
+            .charge(-130).linkDistance(120).size([this.width, this.height])
             .on('tick', (e) => {
                 this.onTick(this.nodesRef, this.linksRef)
             });
@@ -204,23 +204,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         // apply general update pattern to the nodes
         this.linksRef = this.linksRef.data(this.links)
         this.nodesRef = this.nodesRef.data(this.nodes, this.primaryFn)
-        // remove deleted nodes and deleted links
-        this.nodesRef.exit().remove()
-        this.linksRef.exit().remove()
-
-        // this.linksRef.enter().append('line')
-        //     .attr('class', 'link')
-        //     .attr('marker-end', 'url(#arrow-marker)')
-            // .style('stroke-width', function(d) { return Math.sqrt(d.value); });
-
-        let linksGroupsRef = this.linksRef
-            .enter().append('g')
-            .attr('class', 'link-group')
-
-        linksGroupsRef
-            .append('line')
-            .attr('class', 'link')
-            .attr('marker-end', 'url(#arrow-marker)')
 
         // first append a group in which to fit the colored
         // circle the node text label and the outer ring
@@ -345,13 +328,24 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
                         this.selectNode(element)
                         this.nodeSelected.emit(n)
                         Mouse.dblClickTimeout = null
-                    }, 170)
+                    }, 205)
                 }
             })
             // .classed('draggable', true)
             .call(this.force.drag)
 
+        // add ui elements to group and apply general remove pattern to nodes
         Shape.appendNodeGroupShapes(nodeGroupsRefs, this.settings)
+        this.nodesRef.exit().remove()
+        
+
+        let linksGroupsRef = this.linksRef
+            .enter().append('g')
+            .attr('class', 'link-group')
+
+        // add ui elements to group and apply general remove pattern to links
+        Shape.appendShapesToLinkGroups(linksGroupsRef, this.settings)
+        this.linksRef.exit().remove()
 
         this.force.start();
     }
@@ -366,7 +360,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     addLinks(links: Array<any>)
     {
         for (let i in links) {
-            this.addLink(links[i].source, links[i].target, null, this.DONT_UPDATE)
+            this.addLink(links[i].source, links[i].target, links[i].relationship, this.DONT_UPDATE)
         }
     }
 
@@ -457,11 +451,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         return null
     }
 
-    addLink(sourceNode: NodeInterface, targetNode: NodeInterface, linkData: any = null, update: boolean = true)
+    addLink(sourceNode: NodeInterface, targetNode: NodeInterface, relationship: any = null, update: boolean = true)
     {
         let source = this.findNodeById(sourceNode.getId())
         let target = this.findNodeById(targetNode.getId())
 
+        // @todo Optmization, but not working (??)
         // if (null === source) {
         //     this.addNode(target)
         //     source = this.findNodeById(sourceNode.getId())
@@ -476,6 +471,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         const link = {
             source: source,
             target: target,
+            relationship: relationship,
         };
 
         this.links.push(link);
@@ -490,7 +486,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         nodes.attr('transform', function (d) {
             // let x = Math.max(30, Math.min(this.width - 30, d.x))
             // let y = Math.max(30, Math.min(this.height - 30, d.y))
-            // just avoid infinit loop on user corrupted queries...
+            // just avoid infinite loop on user corrupted queries...
             if (typeof(d.x) === 'undefined' || d.x == null) {
                 throw Error(`graph.component.ts Infinite loop detected`)
             }
@@ -498,10 +494,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             return `translate(${[d.x, d.y]})`
         })
 
-        // nodes.attr("cx", function(d) { return d.x = Math.max(30, Math.min(this.width - 30, d.x)); })
-        //     .attr("cy", function(d) { return d.y = Math.max(30, Math.min(this.height - 30, d.y)); });
-
-        links.selectAll('.link')
+        links.selectAll('.link,.link-overlay')
             .attr('x1', function(d) {
                 var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
                 return d.source.x + Math.cos(angle) * (20);
@@ -518,6 +511,14 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
                 var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
                 return d.target.y - Math.sin(angle) * (20 + 4);
             })
+
+        links.selectAll('.link-text')
+            .attr('transform', function(d) {
+                // console.log(g, e, i)
+                // calcul de l'angle du label
+                var angle = Math.atan((d.source.y - d.target.y) / (d.source.x - d.target.x)) * 180 / Math.PI;
+                return 'translate(' + [((d.source.x + d.target.x) / 2), ((d.source.y + d.target.y) / 2)] + ')rotate(' + angle + ')';
+            });
     }
 
     selectNode(element: any)

@@ -35,7 +35,7 @@ export class SearchComponent implements OnInit, AfterViewInit
     cypherQueryString: string = '';
 
     normalQueryRelLevel: number = 0;
-    normalQueryLimit: number = null;
+    normalQueryLimit: number = 10;
     normalQuerySkip: number = null;
 
     ngKlasses: string;
@@ -60,7 +60,7 @@ export class SearchComponent implements OnInit, AfterViewInit
     {
 
     }
-    
+
     toggleMode(e: any)
     {
         e.preventDefault()
