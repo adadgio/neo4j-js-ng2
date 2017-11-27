@@ -39,6 +39,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     @Output('nodeAdded') nodeAdded: EventEmitter<Node> = new EventEmitter()
     @Output('nodeCreated') nodeCreated: EventEmitter<Node> = new EventEmitter()
     @Output('nodeSelected') nodeSelected: EventEmitter<Node> = new EventEmitter()
+    @Output('linkSelected') linkSelected: EventEmitter<Node> = new EventEmitter()
     @Output('nodeDoubleClicked') nodeDoubleClicked: EventEmitter<Node> = new EventEmitter()
     @Output('relationshipCreate') relationshipCreate: EventEmitter<any> = new EventEmitter()
 
@@ -337,11 +338,14 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         // add ui elements to group and apply general remove pattern to nodes
         Shape.appendNodeGroupShapes(nodeGroupsRefs, this.settings)
         this.nodesRef.exit().remove()
-        
 
         let linksGroupsRef = this.linksRef
             .enter().append('g')
             .attr('class', 'link-group')
+            .on('click', (g) => {
+                // "g" contains source, target and relationship
+                this.linkSelected.emit(g);
+            })
 
         // add ui elements to group and apply general remove pattern to links
         Shape.appendShapesToLinkGroups(linksGroupsRef, this.settings)

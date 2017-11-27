@@ -115,6 +115,11 @@ export class HomePageComponent implements OnInit, AfterViewInit
         this.selectedNode = node
     }
 
+    onLinkSelected(g: any)
+    {
+        console.log('Link selected', g)
+    }
+
     onNodeDoubleClicked(node: NodeInterface)
     {
         this.findRelationships(node)

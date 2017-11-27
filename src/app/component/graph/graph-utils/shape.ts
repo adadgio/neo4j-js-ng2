@@ -167,6 +167,8 @@ class ShapeSingleton
 
     appendShapesToLinkGroups(group: any, settings: any)
     {
+        const nameOptions = settings.get('graph.links.displayNameOptions')
+
         group
             .append('line')
             .attr('class', 'link')
@@ -179,9 +181,7 @@ class ShapeSingleton
             .attr('class', 'link-text')
             .attr('dy', 14)
             .text((l) => {
-                // @todo Get label/link name from settings
-                console.log('@todo Get label/link name from settings')
-                return l.relationship.TYPE; // l.TYPE;
+                return name(l.relationship, nameOptions);
             })
             .attr('text-anchor', 'middle')
     }
