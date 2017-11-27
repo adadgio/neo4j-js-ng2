@@ -62,6 +62,8 @@ export class MultiSelectComponent implements OnInit
     @Input('items') items: Array<any> = [];
     @Input('values') values: Array<string|number> = [];
     @Output('valuesChanged') valuesChanged: EventEmitter<any> = new EventEmitter();
+    @Output('valueAdded') valueAdded: EventEmitter<any> = new EventEmitter();
+    @Output('valueRemoved') valueRemoved: EventEmitter<any> = new EventEmitter();
     @ViewChild('input') input: ElementRef;
 
     areValuesScalar: boolean = false;
@@ -121,6 +123,7 @@ export class MultiSelectComponent implements OnInit
             this.values.push(value);
             this.items.splice(this.items.indexOf(value), 1);
             this.valuesChanged.emit(this.values);
+            this.valueAdded.emit(value)
         }
     }
 
@@ -133,6 +136,7 @@ export class MultiSelectComponent implements OnInit
             this.items.push(value);
         }
 
+        this.valueRemoved.emit(value)
         this.valuesChanged.emit(this.values);
     }
 

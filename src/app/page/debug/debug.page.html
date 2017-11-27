@@ -1,27 +1,25 @@
 <div flex flex-columns>
 
     <div class="actions">
-        <a href="" class="secondary" (click)="clear($event)">Clear</a>
+        <a href="" class="danger" (click)="clear($event)">Clear logs</a>
     </div>
 
     <div *ngFor="let entries of groups; let i = index" class="debug-group">
 
+        <div flex flex-rows flex-align-center class="margin-bottom-16px">
+            <span class="title">Debug group</span>&nbsp;
+            <span class="title" *ngIf="entries[0].timestamp" [innerText]="entries[0].timestamp | nicedate"></span>
+        </div>
 
         <div *ngFor="let entry of entries; let j = index" class="group">
 
-            <div class="infos" [ngClass]="entry.level">
+            <div class="infos" [ngClass]="entry.level" (click)="toggleTrace($event, i, j)">
                 <span [innerText]="entry.category"></span>&nbsp;&raquo;&nbsp;
-                <span [innerText]="entry.date"></span>
+                <span [innerText]="entry.timestamp"></span>
                 <span [innerText]="entry.level" class="level"></span>
             </div>
 
-            <div></div>
-
             <div class="trace" [ngClass]="(false === entry.hidden) ? 'expanded' : 'hidden'">
-                <div>
-                    <a *ngIf="false !== entry.hidden" (click)="toggleTrace($event, i, j)" href="" class="secondary">Toggle details &#9662;</a>
-                    <a *ngIf="false === entry.hidden" (click)="toggleTrace($event, i, j)" href="" class="secondary">Toggle details &#9652;</a>
-                </div>
                 <pre [innerText]="entry.trace | json" ></pre>
             </div>
 

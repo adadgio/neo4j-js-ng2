@@ -7,6 +7,7 @@ import { SettingsService }                      from '../../service';
 import { Neo4jRepository }                      from '../../neo4j';
 import { ResultSet, CypherQuery, Transaction }  from '../../neo4j/orm';
 import { Node, NodeInterface }                  from '../../neo4j/model';
+import { diff }                                 from '../../core/array';
 
 const randomPropNames = ['jumpy', 'flashbull', 'mourn', 'ugliest', 'furry', 'chew', 'equable', 'puzzling', 'oranges']
 
@@ -75,15 +76,33 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
                 // make a separate copy of the thing
                 this.originalProperties = Object.assign([], this.properties);
                 this.originalLabels = Object.assign([], this.node.getLabels());
+
+                this.removedProperties = [];
+                this.removedLabels = [];
             }
         }
 
         this.parseLabels();
     }
 
-    onLabelsChanged(e: any)
+    onLabelsChanged(values: Array<string>)
     {
         this.cancelable = true;
+    }
+
+    onLabelRemoved(label: string)
+    {
+        // add value to the labels to remove if the node original
+        // labels did contain this value
+        if (this.originalLabels.indexOf(label) > -1) {
+            this.removedLabels.push(label);
+        }
+    }
+
+    onLabelAdded(label: string)
+    {
+        // there is no need to update this manually because
+        // selected labels is already two-way bounded
     }
 
     save(e?: any)
@@ -95,13 +114,11 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
         const newProperties = this.gatherProperties()
         const removedProperties = this.gatherRemovedProperties()
-        const removedLabels = this.gatherRemovedLabels()
-        console.log('@todo Removed labels to add in node edit AND in repository updateNodeById query as well');
 
         this.originalProperties = newProperties;
         this.removedProperties = [];
 
-        this.repo.updateNodeById(this.node.getId(), newProperties, removedProperties, this.selectedLabels).then((resultSets: Array<ResultSet>) => {
+        this.repo.updateNodeById(this.node.getId(), newProperties, removedProperties, this.selectedLabels, this.removedLabels).then((resultSets: Array<ResultSet>) => {
 
             const node = resultSets[0].getDataset('n').first()
             this.onNodeEdited.emit(node)
@@ -110,6 +127,7 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
         }).catch(err => {
             this.loading = false
             console.log(err)
+            this.onNodeEdited.emit(null)
         })
     }
 

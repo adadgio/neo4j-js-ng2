@@ -9,6 +9,7 @@ export class CypherQuery
     queryCreateClauses: Array<string> = [];
     queryWhereClauses: Array<string> = [];
     querySetLabelsClause: string = null;
+    queryRmLabelsClause: string = null;
     querySetPropsClauses: Array<string> = [];
     queryReturnClauses: Array<string> = [];
     queryRemovePropsClauses: Array<string> = [];
@@ -38,6 +39,7 @@ export class CypherQuery
         this.queryReturnClauses = [];
         this.queryRemovePropsClauses = [];
         this.querySetLabelsClause = null;
+        this.queryRmLabelsClause = null;
 
         this.queryLimit = null;
         this.querySkip = null;
@@ -84,14 +86,6 @@ export class CypherQuery
         return this
     }
 
-    removeProperties(alias: string, properties: any): CypherQuery
-    {
-        for (let prop in properties) {
-            this.queryRemovePropsClauses.push(`REMOVE ${alias}.${prop}`)
-        }
-        return this
-    }
-
     getQuery(): string
     {
         if (null !== this.queryString) {
@@ -100,10 +94,14 @@ export class CypherQuery
 
         this.addQueryParts(null, this.queryCreateClauses)
         this.addQueryParts('WHERE', this.queryWhereClauses)
+
         this.addQueryParts(null, this.querySetPropsClauses)
-        this.addQueryParts(null, [this.querySetLabelsClause]);
         this.addQueryParts(null, this.queryRemovePropsClauses)
-        this.addQueryParts('RETURN', this.queryReturnClauses);
+
+        this.addQueryParts(null, [this.querySetLabelsClause])
+        this.addQueryParts(null, [this.queryRmLabelsClause])
+
+        this.addQueryParts('RETURN', this.queryReturnClauses)
 
         if (null !== this.querySkip) {
             this.queryParts.push(`SKIP ${this.querySkip}`)
@@ -142,9 +140,17 @@ export class CypherQuery
         return this
     }
 
+    removeProperties(alias: string, properties: any): CypherQuery
+    {
+        for (let prop in properties) {
+            this.queryRemovePropsClauses.push(`REMOVE ${alias}.${prop}`)
+        }
+        return this
+    }
+
     setLabels(alias: string, labels: Array<string> = null)
     {
-        if (null === labels) {
+        if (null === labels || labels.length === 0) {
             return this;
         }
 
@@ -153,9 +159,15 @@ export class CypherQuery
         return this;
     }
 
-    hasLabel(label: string)
+    removeLabels(alias: string, labels: Array<string> = null)
     {
+        if (null === labels || labels.length === 0) {
+            return this;
+        }
 
+        let labelsSuite = labels.join(':');
+        this.queryRmLabelsClause = `REMOVE ${alias}:${labelsSuite}`;
+        return this;
     }
 
     setParameter()

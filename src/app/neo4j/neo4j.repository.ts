@@ -36,7 +36,6 @@ export class Neo4jRepository
             this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
 
                 let node = resultSets[0].getDataset('n').first()
-                console.log(node)
                 resolve(node)
 
             }).catch(err => {
@@ -45,7 +44,7 @@ export class Neo4jRepository
         })
     }
 
-    updateNodeById(id: number, changedProperties: any, removedProperties: any, labels: Array<string> = null): Promise<Array<ResultSet>>
+    updateNodeById(id: number, changedProperties: any, removedProperties: any, labels: Array<string> = null, removedLabels: Array<string> = null): Promise<Array<ResultSet>>
     {
         const builder = new CypherQuery()
 
@@ -54,6 +53,7 @@ export class Neo4jRepository
             .matches('n')
             .andWhere('n', 'ID(?)', id)
             .setLabels('n', labels)
+            .removeLabels('n', removedLabels)
             .setProperties('n', changedProperties)
             .removeProperties('n', removedProperties)
             .returns('n, ID(n), LABELS(n)')
@@ -63,7 +63,7 @@ export class Neo4jRepository
 
         const transaction = new Transaction()
         transaction.add(query)
-        
+
         return this.neo4j.commit(transaction)
     }
 

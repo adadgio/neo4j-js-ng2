@@ -1,90 +1,94 @@
 import { Node, NodeInterface }  from '../model';
-import { escape }               from '../utils';
+import { escape, quote }        from '../utils';
 
 export class SimpleQuery
 {
     queryString: string;
 
-    constructor(string: string, relLevel: number = 1, limit: number = null, skip: number = null)
+    constructor(string: string, relLevel: number = 1)
     {
         // simple query expression looks like
         // ":Person id=3 name=3"
 
         let labels = '';
+        let where: string = null;
         let properties  = [];
+        let limit: number = null;
+        let skip: number = null;
 
         // match labels filter like ":Label1:Label2:..."
         const labelsRegex = new RegExp(/(:[a-zA-Z0-9_:]+)\s{0,}/);
-        const propertiesMatch = new RegExp(/\s([a-z\]+)=([a-z0-9A-Z\s]+)\s?/);
-
+        const propertiesMatch = new RegExp(/((?:[a-z0-9]+)=(("[\w\s]+"){1}|([\S]+)))/gi);
+        const limitSkipMatch = new RegExp(/([0-9,\s]+)$/i);
 
         const labelsMatch = string.match(labelsRegex);
         labels = (labelsMatch) ? labelsMatch[1] : '';
 
-        const propMatch = string.match(propertiesMatch);
-        if (propMatch) {
-            properties = this.matchPropsToArrayOfEqualities(propMatch[1])
+        const propsMatch = string.match(propertiesMatch);
+        if (propsMatch) {
+            const whereClauses = this.andWhereProps(propsMatch)
+            if (whereClauses.length > 0) {
+                where = `${whereClauses.join(' AND ')}`;
+            }
         }
 
+        const skipLimitMatch = string.match(limitSkipMatch);
+        if (skipLimitMatch) {
+            const parts = skipLimitMatch[0].split(',').map(v => { return v.trim() });
 
-        // start building the full cypher query string
-        let queryString = `MATCH (a${labels}`;
-
-        if (properties.length > 0) {
-            queryString += ` {${properties.join(', ')}}`;
+            if (parts.length === 2) {
+                limit = parseInt(parts[0])
+                skip = parseInt(parts[1])
+            } else if (parts.length === 1) {
+                limit = parseInt(parts[0])
+                skip = null
+            }
         }
 
+        // build cypher query string
+        let queryString = `MATCH (a${labels})`;
+        if (null !== where) {
+            queryString += ` WHERE ${where}`;
+        }
+        
         // @todo only one level of relationships is supported
         if (relLevel === 1) {
-            queryString += `)-[r]->(b) RETURN a, b, r, ID(a), ID(b), TYPE(r), LABELS(a), LABELS(b)${this.addLimitAndSkip(limit, skip)}`;
-
+            queryString += `-[r]->(b) RETURN a, b, r, ID(a), ID(b), TYPE(r), LABELS(a), LABELS(b)`;
         } else {
-            
-            queryString += `) RETURN a, ID(a), LABELS(a)${this.addLimitAndSkip(limit, skip)}`;
+            queryString += ` RETURN a, ID(a), LABELS(a)`;
         }
 
         if (relLevel > 1) {
             console.warn(`simple-query.ts Only one level of relationship is supported in a simple query expression`)
         }
 
-        this.queryString = queryString;
-    }
-
-    private addLimitAndSkip(limit: number = null, skip: number = null)
-    {
-        let str = '';
-
+        console.log(limit, skip)
         if (null !== limit) {
-            str = ` LIMIT ${limit}`;
+            queryString += ` LIMIT ${limit}`;
         }
-
         if (null !== skip) {
-            str = ` SKIP ${skip}`;
+            queryString += ` SKIP ${skip}`;
         }
 
-        return str;
+        this.queryString = queryString;
     }
 
     /**
      * Turn a string like "id=3, name=ben" into
      * an array of ["id=3", "name='Ben'"]
      */
-    private matchPropsToArrayOfEqualities(propMatch: string): Array<any>
+    private andWhereProps(matches: any): Array<any>
     {
-        let properties  = [];
+        let whereClauses  = [];
 
-
-
-        let props = propMatch[1].split(' ');
-
-        for (let i=0; i < props.length; i++) {
-            const expl  = props[i].split('=');
-            const exprs = expl[0] + ":'" + escape(expl[1]) + "'";
-
-            properties.push(exprs);
+        for (let i=0; i < matches.length; i++) {
+            const parts = matches[i].split('=').map(v => { return v.trim() } );
+            let value = parts[1].replace(/"/g, '');
+            const prop = parts[0].trim() // { property: parts[0].trim(), value: escape(value) }
+            whereClauses.push(`a.${prop}=${quote(escape(value))}`)
         }
 
-        return properties;
+        return whereClauses;
     }
 
     getQuery()

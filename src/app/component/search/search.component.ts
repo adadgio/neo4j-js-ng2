@@ -12,7 +12,7 @@ import { CypherQuery, SimpleQuery }                 from '../../neo4j/orm';
         <form (ngSubmit)="onSubmit($event)">
             <div class="controls search-bar" *ngIf="(mode === 'normal')">
                 <app-button primary icon-only><i class="icon-search"></i></app-button>
-                <input type="text" value="" [(ngModel)]="normalQueryString" name="normal_query" placeholder="Rechercher..." class="input-large" autocomplete="off">
+                <input type="text" value="" [(ngModel)]="normalQueryString" name="normal_query" placeholder=":Person id=5 name=Bernie 10,5" class="input-large" autocomplete="off">
                 <a class="info" href="" (click)="toggleMode($event)"><i class="icon-earth"></i></a>
             </div>
         </form>
@@ -31,7 +31,7 @@ export class SearchComponent implements OnInit, AfterViewInit
 
     @ViewChild('searchInput') searchInput: ElementRef;
 
-    normalQueryString: string = '';
+    normalQueryString: string = ':Officer id=5 name="Leyla Aliyeva" 10,5';
     cypherQueryString: string = '';
 
     normalQueryRelLevel: number = 0;
@@ -74,7 +74,7 @@ export class SearchComponent implements OnInit, AfterViewInit
 
         if (this.mode === 'normal') {
 
-            const simple = new SimpleQuery(this.normalQueryString, this.normalQueryRelLevel, this.normalQueryLimit, this.normalQuerySkip)
+            const simple = new SimpleQuery(this.normalQueryString, this.normalQueryRelLevel)
             queryString = simple.getQuery();
 
         } else {

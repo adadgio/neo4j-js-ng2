@@ -1,27 +1,34 @@
+import * as moment from 'moment';
 import { LocalStorage } from './local.storage';
+import { uuid } from '../core';
+import { orderBy } from '../core/array';
 
 class DebugSingleton
 {
-    messages: Array<string> = []
-    private date: string;
-    private storageKey: string = 'neo4j_debug_log'
+    private uuid: string;
+    private timestamp: number;
+    private groupName: string;
+
+    private messages: Array<string> = [];
+    private storageKey: string = 'neo4j_debug_log';
 
     constructor()
     {
+        this.uuid = uuid()
         const localMessages = LocalStorage.get(this.storageKey, null)
 
         if (null !== localMessages) {
-            this.messages = localMessages
+            this.messages = localMessages;
         }
 
-        const d = new Date()
-        this.date = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()} ${d.getHours()}-${d.getMinutes()}-${d.getSeconds()}`
+        this.timestamp = moment().valueOf();
     }
 
-    next()
+    group(name: string = 'Debug group')
     {
-        const d = new Date()
-        this.date = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()} ${d.getHours()}-${d.getMinutes()}-${d.getSeconds()}`
+        this.groupName = name;
+        this.uuid = uuid();
+        this.timestamp = moment().valueOf();
         return this
     }
 
@@ -32,14 +39,14 @@ class DebugSingleton
         if (typeof(msg) === 'object') {
             logEntry = {
                 level: level,
-                date: this.date,
+                timestamp: this.timestamp,
                 trace: msg,
                 category: category,
             }
         } else {
             logEntry = {
                 level: level,
-                date: this.date,
+                timestamp: this.timestamp,
                 trace: msg,
                 category: category,
             }
@@ -51,7 +58,21 @@ class DebugSingleton
 
     getMessages(format: string = 'json')
     {
-        return (format === 'string') ? this.messages : this.messages.map(msg => { return JSON.parse(msg) })
+        const messages = this.messages.map(msg => { return JSON.parse(msg) })
+        return orderBy('timestamp', messages)
+    }
+
+    countErrorsByLevel(level: string)
+    {
+        let count: number = 0;
+        const messages = this.messages.map(msg => { return JSON.parse(msg) })
+
+        for (let i in messages) {
+            if (messages[i].level === level) {
+                count++;
+            }
+        }
+        return count;
     }
 
     clear()

@@ -23,6 +23,9 @@ export class HomePageComponent implements OnInit, AfterViewInit
     }
     @ViewChild(GraphComponent) graph: GraphComponent;
 
+    saveErrorText: string = null;
+    saveSuccessText: string = null;
+
     // @todo General: sue a setting to discint nodes by propertu (ID) or none, and use distinct INSIDE graph.componenet
     constructor(private neo4j: Neo4jService, private repo: Neo4jRepository, private settings: SettingsService)
     {
@@ -38,11 +41,10 @@ export class HomePageComponent implements OnInit, AfterViewInit
     {
 
     }
-
+    
     ngAfterViewInit()
     {
         this.graph.start()
-        // this.onSearch({ queryString: 'MATCH (n:Officer) RETURN n LIMIT 5'})
     }
 
     ngOnChanges()
@@ -133,8 +135,16 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     onNodeEdited(node: NodeInterface)
     {
-        console.log(node)
-        this.graph.updateNode(node)
+        if (null === node) {
+            //then an error occured
+            this.saveSuccessText = null;
+            this.saveErrorText = 'An error occured';
+        } else {
+            this.graph.updateNode(node)
+            this.saveSuccessText = null;
+            this.saveSuccessText = 'Node saved';
+        }
+
     }
 
     onRlationshipCreate(e: any)

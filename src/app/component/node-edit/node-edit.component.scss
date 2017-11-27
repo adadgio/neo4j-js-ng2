@@ -30,12 +30,12 @@
         margin-right: 8px;
     }
     .i-col3 {
-        width: 15px;
         display: flex;
         flex-direction: row;
         align-items: center;
         text-align: right;
         font-size: $fontSize - 2px;
+        margin-left: 4px;
     }
 }
 

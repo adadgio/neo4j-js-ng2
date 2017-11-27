@@ -11,9 +11,10 @@
         width:  $size;
         height: $size;
     }
-    
+
     &::-webkit-scrollbar-thumb {
         background: $foreground-color;
+        border-radius: 6px;
     }
 
     &::-webkit-scrollbar-track {

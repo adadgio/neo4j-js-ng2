@@ -11,8 +11,10 @@ import { SettingsService }                      from '../../service';
 })
 export class SettingsPageComponent implements OnInit, AfterViewInit, OnChanges
 {
-    error: string = null;
     settingsString: string;
+    errorText: string = null;
+    successText: string = null;
+
     @ViewChild('settingsEditor') settingsEditor: ElementRef;
 
     constructor(private elementRef: ElementRef, private settings: SettingsService, private router: Router)
@@ -20,7 +22,7 @@ export class SettingsPageComponent implements OnInit, AfterViewInit, OnChanges
         const data = settings.get()
         this.settingsString = JSON.stringify(data, null, 2)
     }
-
+    
     ngOnInit()
     {
 
@@ -43,7 +45,8 @@ export class SettingsPageComponent implements OnInit, AfterViewInit, OnChanges
         const data = this.settingsEditor.nativeElement.innerText
 
         try {
-            this.error = null
+            this.errorText = null;
+            this.successText = `Settings saved`;
 
             const json = JSON.parse(data)
 
@@ -51,13 +54,16 @@ export class SettingsPageComponent implements OnInit, AfterViewInit, OnChanges
             this.settingsString = JSON.stringify(json, null, 2)
 
         } catch (e) {
-            this.error = 'Invalid JSON'
+            this.errorText = 'Invalid JSON';
+            this.successText = null;
         }
     }
 
     reset(e?: any)
     {
         if (e) { e.preventDefault() }
+        this.errorText = null;
+        this.successText = `Settings reset to defaults`;
         this.settings.reset()
     }
 

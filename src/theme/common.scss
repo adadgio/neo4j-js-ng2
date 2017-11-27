@@ -35,6 +35,9 @@ $radius: 1px;
 .small {
     font-size: $fontSize - 2px
 }
+.center {
+    text-align: center;
+}
 
 .emarged {
     margin-top: 16px;
@@ -64,6 +67,15 @@ $radius: 1px;
 .margin-bottom-8px {
     margin-bottom: 8px;
 }
+.margin-bottom-16px {
+    margin-bottom: 16px;
+}
+.relative {
+    position: relative;
+}
+.absolute {
+    position: absolute;
+}
 
 .primary {
     color: colors(primary);
@@ -73,6 +85,12 @@ $radius: 1px;
 }
 .secondary {
     color: colors(secondary);
+}
+a.secondary {
+    @include transition(color ease 0.2s);
+    &:hover {
+        color: colors(white);
+    }
 }
 .warning {
     color: colors(warning);
@@ -89,4 +107,39 @@ $radius: 1px;
 }
 .red {
     color: colors(red);
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    padding: 2px 6px;
+    @include border-radius(2px);
+
+    &.cleared {
+        padding: 2px 0px;
+    }
+    &.toast-small {
+        font-size: $fontSize - 2px;
+    }
+
+    &.primary {
+        color: colors(fullwhite);
+        background-color: colors(primary);
+    }
+    &.secondary {
+        color: colors(fullwhite);
+        background-color: colors(secondary);
+    }
+    &.success {
+        color: colors(fullwhite);
+        background-color: colors(success);
+    }
+    &.warning {
+        color: colors(fullwhite);
+        background-color: colors(warning);
+    }
+    &.danger {
+        color: colors(fullwhite);
+        background-color: colors(danger);
+    }
 }

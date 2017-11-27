@@ -16,14 +16,26 @@
     overflow: hidden;
     background-color: colors(coal);
 
+    .title {
+        color: colors(secondary);
+        margin: 0px;
+        padding: 0px;
+        font-size: $fontSize;
+    }
+
     .group {
         display: flex;
         flex-direction: column;
-        padding: 16px;
-        margin-bottom: 16px;
-        background-color: colors(charcoal);
+        // padding: 16px;
+        margin-bottom: 8px;
+        // background-color: colors(charcoal);
+
+        &:last-of-type {
+            margin-bottom: 0px;
+        }
 
         .infos {
+            cursor: pointer;
             color: colors(fullwhite);
             display: flex;
             flex-direction: row;
@@ -34,17 +46,20 @@
             @include border-radius(2px);
 
             &.info {
-                border: 1px solid #eee;
+                border: 1px solid #49a363;
                 background-color: #49a363;
+                // &:hover { border: 1px solid colors(white) }
             }
             &.debug {
-                border: 1px solid #89b6c1;
+                border: 1px solid #21a3c3;
                 background-color: #21a3c3;
             }
             &.warning {
+                border: 1px solid #efb83f;
                 background-color: #efb83f;
             }
             &.critical {
+                border: 1px solid #e03313;
                 background-color: #e03313;
             }
 
@@ -58,7 +73,7 @@
             max-height: 260px;
             overflow-y: auto;
             padding-left: 8px;
-            @include scrollbars(.5em, slategray);
+            @include scrollbars(.5em, #6f7f8f, #222222);
             color: colors(gray);
 
             pre {

@@ -23,9 +23,9 @@ nav {
             background-color: colors(nemo-hover);
         }
 
-        > i[class^="icon-"], div[class*="icon-"] {
-            margin-right: 8px
-        }
+        // > i[class^="flaticon-"], div[class*="flaticon-"] {
+        //     margin-right: 8px;
+        // }
 
         &.main {
             font-size: $fontSize + 4px;

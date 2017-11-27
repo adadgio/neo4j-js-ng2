@@ -21,7 +21,7 @@ export class DebugPageComponent implements OnInit, AfterViewInit
     ngOnInit()
     {
         const messages = Debug.getMessages()
-        this.groups = group('date', messages)
+        this.groups = group('timestamp', messages)
     }
 
     ngAfterViewInit()

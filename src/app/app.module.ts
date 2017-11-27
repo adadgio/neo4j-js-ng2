@@ -10,6 +10,7 @@ import { AppRoutingModule }     from './app.routing.module';
 
 import { KeysPipe }             from './core/pipe';
 import { EntriesPipe }          from './core/pipe';
+import { NiceDate }             from './core/pipe';
 import { SettingsService }      from './service';
 
 import { Neo4jService }         from './neo4j';
@@ -19,10 +20,11 @@ import { HomePageComponent }        from './page';
 import { DebugPageComponent }       from './page';
 import { SettingsPageComponent }    from './page';
 
-import { HeaderComponent }      from './component';
-import { SearchComponent }      from './component';
-import { SwitchComponent }      from './component';
-import { ButtonComponent }      from './component';
+import { HeaderComponent }              from './component';
+import { SearchComponent }              from './component';
+import { TutorialComponent }            from './component';
+import { SwitchComponent }              from './component';
+import { ButtonComponent }              from './component';
 import { NodeEditComponent }            from './component';
 import { MultiSelectComponent }         from './component';
 import { MultiSelectOptionComponent }   from './component';
@@ -37,9 +39,11 @@ import { GraphComponent }               from './component';
 
         KeysPipe,
         EntriesPipe,
+        NiceDate,
 
         HeaderComponent,
         SearchComponent,
+        TutorialComponent,
         SwitchComponent,
         ButtonComponent,
 

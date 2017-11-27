@@ -9,12 +9,14 @@
                 [items]="availableLabels"
                 [values]="selectedLabels"
                 (valuesChanged)="onLabelsChanged($event)"
+                (valueAdded)="onLabelAdded($event)"
+                (valueRemoved)="onLabelRemoved($event)"
             ></multi-select>
         </div>
 
         <div flex flex-rows class="emarged-bottom">
             <span flex class="gray">Properties</span>
-            <a flex pull-right class="secondary" (click)="addProperty($event)" href=""><i class="icon-plus"></i></a>
+            <a flex pull-right class="secondary" (click)="addProperty($event)" href=""><i class="flaticon-plus"></i></a>
         </div>
 
         <div *ngFor="let row of properties; let i = index" class="input-group">
@@ -26,7 +28,7 @@
                 <input #propValues type="text" [attr.name]="row[0]+'_1'" [attr.value]="row[1]" class="input-small">
             </span>
             <span class="i-col3">
-                <a class="secondary" (click)="deleteProperty($event, i)" href=""><i class="icon-cross"></i></a>
+                <a class="secondary" (click)="deleteProperty($event, i)" href=""><i class="flaticon-minus"></i></a>
             </span>
         </div>
     </div>

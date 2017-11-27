@@ -18,7 +18,7 @@
     padding-right: 2px;
     width: ($size * 2) - 10px;
 
-    background-color: colors(red);
+    background-color: colors(danger);
     @include border-radius($size / 2);
 
     .knob {
@@ -33,7 +33,7 @@
     }
 
     &.on {
-        background-color: colors(blue);
+        background-color: colors(success);
 
         .knob {
             margin-left: auto;
