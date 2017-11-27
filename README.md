@@ -2,6 +2,8 @@
 
 A Neo4j graph database explorer, editor and admin dashboard written in Javascript.
 
+[Features and bugs roadmap](https://trello.com/b/NLtaurIH/neo4j-js-https-githubcom-adadgio-neo4j-js-ng2)
+
 Table of Contents
 =================
 
