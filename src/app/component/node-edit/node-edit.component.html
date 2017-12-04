@@ -3,11 +3,15 @@
     <div flex flex-columns>
 
         <div flex flex-columns class="emarged-bottom">
-            <div flex class="gray margin-bottom-8px">Labels</div>
+            <div flex class="gray margin-bottom-8px">
+                <span flex class="gray">Labels</span>
+                <a flex pull-right class="secondary" (click)="toggleLabelsDropdown($event)" href=""><i class="flaticon-plus"></i></a>
+            </div>
 
             <multi-select
                 [items]="availableLabels"
                 [values]="selectedLabels"
+                [dropdownVisible]="labelsDropdownVisible"
                 (valuesChanged)="onLabelsChanged($event)"
                 (valueAdded)="onLabelAdded($event)"
                 (valueRemoved)="onLabelRemoved($event)"
@@ -22,10 +26,10 @@
         <div *ngFor="let row of properties; let i = index" class="input-group">
 
             <span class="i-col1">
-                <input #propNames type="text" [attr.name]="row[0]+'_0'" [attr.value]="row[0]" class="input-small">
+                <input #propNames type="text" [attr.name]="row[0]+'_0'" [attr.value]="row[0]" class="input-small input-dark">
             </span>
             <span class="i-col2">
-                <input #propValues type="text" [attr.name]="row[0]+'_1'" [attr.value]="row[1]" class="input-small">
+                <input #propValues type="text" [attr.name]="row[0]+'_1'" [attr.value]="row[1]" class="input-small input-dark">
             </span>
             <span class="i-col3">
                 <a class="secondary" (click)="deleteProperty($event, i)" href=""><i class="flaticon-minus"></i></a>

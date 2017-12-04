@@ -24,12 +24,14 @@ Table of Contents
 
 - Settings can now be updated on the fly via the UI.
 - Better separated components thanks to Angular2.
-- **Much much cleaner code** for developers including core features.
-- Better events handling in graph user interactions, and an easier way to hook into those events.
+- **Much much cleaner code** for developers to build upon.
+- Better events handling in graph and database interaction.
 - Annoying bugs and annoying features fixed from v1.
 
 **New features**
 
+- Links details are no editable.
+- Links can be created in the create mode.
 - Added a plain *cypher query* mode in the main search bar.
 - Settings are served from a `settings.json` file but are then loaded/edited from local storage.
 
@@ -66,9 +68,11 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
-## Graph events
+## Known issues
 
+- Chrome:  **Compatibility OK** (no known issues)
 - In Firefox local storage is not shared between tabs so you might experience settings or debug logs inconsistent views.
+- There is a bug in Firefox when you create relationships between nodes. The dragline randomly stays stuck on the node (1/2 times).
 
 ## Licence
 

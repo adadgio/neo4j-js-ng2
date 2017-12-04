@@ -2,26 +2,41 @@
 
 <div flex flex-columns class="tutorial-content">
     <div flex flex-rows flex-align-center class="header">
-        <span flex>Help & tutorials</span>
+
+        <h2 *ngIf="step === 1" flex class="tuto-title center">Simple queries language</h2>
+        <h2 *ngIf="step === 2" flex class="tuto-title center">Create mode</h2>
+        <h2 *ngIf="step === 3" flex class="tuto-title center">Node & link edition</h2>
+
         <a flex pull-right href="" title="Neo4j settings" (click)="dismiss($event)">
             <i class="flaticon-cancel"></i>
         </a>
     </div>
 
-    <div flex flex-fill class="sub-content">
-        <div *ngIf="step === 1">
-            1. Search and explore<br>
-            2. Search and explore<br>
-            3s. Search and explore<br>
-            1. Search and explore<br>
+    <div flex flex-fill flex-columns class="sub-content">
+        <div *ngIf="step === 1" flex flex-columns>
 
+            <div class="tuto-gif">
+                <img src="./assets/tutos/neo4j-js-tuto-00.gif" alt="Tuto gif" height="260">
+            </div>
+            <p class="tuto-text">
+                Simple queries let you find nodes without typing long cypher queries.
+            </p>
+        </div>
+
+        <div *ngIf="step === 2">
+            <div class="tuto-gif">
+                <img src="./assets/tutos/neo4j-js-tuto-02.gif" alt="Tuto gif" height="260">
+            </div>
+            <p class="tuto-text">
+                Create mode lets you create new nodes and relationships
+            </p>
         </div>
     </div>
 
 
     <div flex flex-rows flex-alig-center class="bubbles">
-        <a class="bubble active" href=""></a>
-        <a class="bubble" href=""></a>
-        <a class="bubble" href=""></a>
+        <a class="bubble" href="" (click)="next($event, 1)" [ngClass]="(step === 1) ? 'active' : ''"></a>
+        <a class="bubble" href="" (click)="next($event, 2)" [ngClass]="(step === 2) ? 'active' : ''"></a>
+        <a class="bubble" href="" (click)="next($event, 3)" [ngClass]="(step === 3) ? 'active' : ''"></a>
     </div>
 </div>

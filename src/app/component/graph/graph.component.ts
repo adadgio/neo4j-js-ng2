@@ -119,8 +119,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             .on('mousemove', (e) => {
                 const coords = Mouse.getCoords(d3.event.currentTarget)
 
-                // State.dragPos = coords
-
                 // let the cursor follow the mouse if it exist
                 if (null !== State.cursor) {
                     State.cursor.attr('transform', `translate(${coords})`)
@@ -129,15 +127,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
                 // let dragline follow mouse position on drag and
                 if (null !== State.dragline && State.dragline.isBeeingDragged()) {
                     // needs to be called inside a "mouse event" such as here
-                    State.dragline.followMousePointer(d3.event)
+                    State.dragline.attr('x2', coords[0] - 2).attr('y2', coords[1] - 2)
                     State.cursor.classed('hidden', true)
 
                 }
-
-                // if (null !== State.cursor && null !== State.dragline && !State.dragline.isBeeingDragged()) {
-                //     State.cursor.classed('hidden', false)
-                // }
-
             })
 
         this.force = d3.layout.force()
@@ -532,6 +525,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     {
         // select all node groups and unselect them
         this.unselectNodes()
+        this.unselectLinks()
         element.classed('selected', true)
     }
 
@@ -542,6 +536,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
     selectLink(element: any)
     {
+        this.unselectNodes()
         this.unselectLinks()
         element.classed('selected', true)
     }

@@ -19,20 +19,21 @@
         color: colors(grayish);
         position: absolute;
         right: 10px;
-        top: 10px;
+        top: 9px;
         display: flex;
         align-items: center;
         line-height: 1em;
         font-size: $fontSize + 4px;
+
+        &.info-loader {
+            background-color: colors(charcoal);
+            padding: 4px;
+            border-radius: 10px;
+        }
     }
 }
 
-.search-bar {
-    display: flex;
-    position: relative;
-}
-
-.query-bar {
+.search-bar, .query-bar {
     display: flex;
     position: relative;
 }

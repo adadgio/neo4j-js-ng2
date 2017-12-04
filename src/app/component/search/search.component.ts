@@ -9,30 +9,43 @@ import { CypherQuery, SimpleQuery }                 from '../../neo4j/orm';
     selector: 'search-component',
     styleUrls: ['./search.component.scss'],
     template: `<div class="search">
-        <form (ngSubmit)="onSubmit($event)">
-            <div class="controls search-bar" *ngIf="(mode === 'normal')">
+        <form (ngSubmit)="onSubmit($event)" *ngIf="(mode === 'normal')">
+            <div class="controls search-bar">
                 <app-button primary icon-only><i class="icon-search"></i></app-button>
                 <input type="text" value="" [(ngModel)]="normalQueryString" name="normal_query" placeholder=":Person id=5 name=Bernie 10,5" class="input-large" autocomplete="off">
-                <a class="info" href="" (click)="toggleMode($event)"><i class="icon-earth"></i></a>
+                <a *ngIf="!loading" class="info" href="" (click)="toggleMode($event)">
+                    <i class="icon-earth"></i>
+                </a>
+                <a *ngIf="loading" class="info info-loader" href="#">
+                    <img class="svg-loader" src="assets/svg/three-dots.svg" width="20" alt="Loading...">
+                </a>
             </div>
         </form>
-        <form class="controls query-bar" *ngIf="(mode === 'advanced')">
-            <app-button primary icon-only><i class="icon-search"></i></app-button>
-            <input type="text" value="" [(ngModel)]="cypherQueryString" name="cypher_query" placeholder="Cypher query..." class="input-large" autocomplete="off">
-            <a class="info" href="" (click)="toggleMode($event)"><i class="icon-embed2"></i></a>
+        <form (ngSubmit)="onSubmit($event)" *ngIf="(mode === 'advanced')">
+            <div class="controls query-bar">
+                <app-button primary icon-only><i class="icon-search"></i></app-button>
+                <input type="text" value="" [(ngModel)]="cypherQueryString" name="cypher_query" placeholder="MATCH (n) RETURN n, LABELS(n), ID(n)" class="input-large input-code" autocomplete="off">
+                <a *ngIf="!loading" class="info" href="" (click)="toggleMode($event)">
+                    <i class="icon-embed2"></i>
+                </a>
+                <a *ngIf="loading" class="info info-loader" href="#">
+                    <img class="svg-loader" src="assets/svg/three-dots.svg" width="20" alt="Loading...">
+                </a>
+            </div>
         </form>
     </div>`,
     providers: [],
 })
 export class SearchComponent implements OnInit, AfterViewInit
 {
+    @Input('loading') loading: boolean = false;
     @Input('mode') mode: 'normal'|'advanced' = 'normal';
     @Output('onSearch') onSearch = new EventEmitter();
 
     @ViewChild('searchInput') searchInput: ElementRef;
 
     normalQueryString: string = ':Ad'; //  name="Planning de garde" 10,0
-    cypherQueryString: string = '';
+    cypherQueryString: string = 'MATCH (a) RETURN a, LABELS(a), ID(a) LIMIT 10';
 
     normalQueryRelLevel: number = 0;
     normalQueryLimit: number = 30;
@@ -53,11 +66,6 @@ export class SearchComponent implements OnInit, AfterViewInit
 
     ngAfterViewInit()
     {
-        // this.renderer.setElementStyle(this.el.nativeElement, 'width', '200px');
-    }
-
-    ngOnDestroy()
-    {
 
     }
 
@@ -76,13 +84,13 @@ export class SearchComponent implements OnInit, AfterViewInit
 
             const simple = new SimpleQuery(this.normalQueryString, this.normalQueryRelLevel)
             queryString = simple.getQuery();
+            this.onSearch.emit({ mode: this.mode, queryString: queryString })
 
         } else {
 
-            const builder = new CypherQuery();
-            queryString = builder.rawCypher(e.query).getQuery();
+            this.onSearch.emit({ mode: this.mode, queryString: this.cypherQueryString })
         }
 
-        this.onSearch.emit({ mode: this.mode, queryString: queryString })
+
     }
 }

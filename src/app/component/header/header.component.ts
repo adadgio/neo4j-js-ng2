@@ -22,7 +22,6 @@ export class HeaderComponent
         }, (res: any) => {
             this.neo4jOk = false
         }).catch(err => {
-            console.log(err)
             this.neo4jOk = false
         })
     }
@@ -30,11 +29,6 @@ export class HeaderComponent
     ngOnInit()
     {
         this.criticalErrorsCount = Debug.countErrorsByLevel('critical')
-    }
-
-    onOptionSelected(e: any)
-    {
-        console.log(e)
     }
 
     logout(e: Event)

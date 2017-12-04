@@ -1,9 +1,8 @@
-<div flex flex-fill *ngIf="(null !== node)">
+<div flex flex-fill *ngIf="(null !== link)">
 
     <div flex flex-columns>
-
-        <div flex flex-rows>
-            <span [innerText]="link.getId()"></span>
+        
+        <div flex flex-rows class="emarged-bottom">
             <input type="text" name="link_type" [(ngModel)]="type" class="input-small" (keyup)="onTypeKeyup($event)">
         </div>
 
@@ -27,7 +26,7 @@
     </div>
 </div>
 
-<div  *ngIf="(null !== node)" flex flex-rows class="charcoal" flex-space-between>
+<div  *ngIf="(null !== link)" flex flex-rows class="charcoal" flex-space-between>
     <app-button (click)="save($event)" [loading]="loading" primary>Save</app-button>
     <app-button (click)="cancel($event)" danger [disabled]="(!cancelable)">Reset</app-button>
 </div>

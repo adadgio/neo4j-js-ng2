@@ -26,6 +26,13 @@ export class ResultSet
             if (typeof datasets[alias] === 'undefined') {
                 datasets[alias] = []
 
+                Object.defineProperty(datasets[alias], 'alias', {
+                    configurable: false,
+                    enumerable: false,
+                    writable: false,
+                    value: alias
+                })
+
                 Object.defineProperty(datasets[alias], 'first', {
                     configurable: false,
                     enumerable: false,
@@ -89,7 +96,8 @@ export class ResultSet
 
             }
         }
-
+        
+        this.datasets = datasets;
         return datasets;
     }
 
@@ -120,6 +128,11 @@ export class ResultSet
         } else {
             return { alias: col, property: null }
         }
+    }
+
+    getDatasets()
+    {
+        return this.datasets;
     }
 
     getDataset(col: string)

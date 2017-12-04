@@ -7,7 +7,6 @@ import { Neo4jRepository }          from '../../neo4j';
 import { ResultSet, Transaction }   from '../../neo4j/orm';
 import { Node, NodeInterface  }     from '../../neo4j/model';
 import { Link, LinkInterface  }     from '../../neo4j/model';
-
 import { crosscut }                 from '../../core/array';
 
 import { LinkUpdatedEvent }         from '../../component/link-edit/link-edit.component';
@@ -32,6 +31,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     saveErrorText: string = null;
     saveSuccessText: string = null;
+    searchLoading: boolean = false;
 
     // @todo General: sue a setting to discint nodes by propertu (ID) or none, and use distinct INSIDE graph.componenet
     constructor(private neo4j: Neo4jService, private repo: Neo4jRepository, private settings: SettingsService)
@@ -42,13 +42,6 @@ export class HomePageComponent implements OnInit, AfterViewInit
     ngOnInit()
     {
 
-    }
-
-    ngAfterViewChecked()
-    {
-        // setTimeout(() => {
-        //     this.onSearch({ queryString: 'MATCH (n: Ad) RETURN n, ID(n), LABELS(n) LIMIT 15' })
-        // }, 900)
     }
 
     ngAfterViewInit()
@@ -79,10 +72,13 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     onSearch(e: any)
     {
+        this.searchLoading = true;
+
         // const mode = e.mode;
         // const queryString = e.queryString;
-
         this.repo.execute(e.queryString).then((resultSets: Array<ResultSet>) => {
+
+            this.searchLoading = false;
 
             let links = [];
             let dataset1 = resultSets[0].getDataset('a')
@@ -100,6 +96,8 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
         }).catch(err => {
             console.log(err)
+            this.searchLoading = false;
+            this.toastError(err)
         })
     }
 
@@ -173,7 +171,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
             this.toastSuccess('Relationship saved')
         }
     }
-    
+
     onLinkCreated(e: any)
     {
         this.repo.createRelationship(e.source, e.target, '->', this.createModeDefaults.relationshipType).then((link: Link) => {
@@ -182,8 +180,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
             this.toastSuccess('Relationship saved')
 
         }).catch(err => {
-            console.log(err)
-            this.toastError('An error occured')
+            this.toastError(err)
         })
     }
 
@@ -206,7 +203,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
             })
 
         }).catch(err => {
-            console.log(err)
+            this.toastError(err)
         })
 
         this.repo.findRelationships(sourceNode, '<-').then((links: Array<LinkInterface>) => {
@@ -217,7 +214,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
             })
 
         }).catch(err => {
-            console.log(err)
+            this.toastError(err)
         })
     }
 

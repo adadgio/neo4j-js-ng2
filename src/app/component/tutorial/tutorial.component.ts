@@ -7,6 +7,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 })
 export class TutorialComponent
 {
+    step: number = 1;
     @Output('onDismiss') onDismiss: EventEmitter<any> = new EventEmitter();
 
     constructor()
@@ -18,5 +19,11 @@ export class TutorialComponent
     {
         e.preventDefault()
         this.onDismiss.emit()
+    }
+
+    next(e: any, step: number)
+    {
+        e.preventDefault();
+        this.step = step;
     }
 }
