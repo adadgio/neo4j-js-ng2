@@ -25,7 +25,7 @@ export class Neo4jService
         this.url = `${endpoint}/transaction/commit`
     }
 
-    commit(trans: Transaction): Promise<any>
+    commit(trans: Transaction, rawRes: boolean = false): Promise<any>
     {
         Debug.group('neo4j.service.commit').log(trans.getStatements(), 'Statements info', 'info')
 
@@ -40,6 +40,11 @@ export class Neo4jService
                 })
                 .toPromise()
                 .then((response: any) => {
+
+                    if (rawRes === true) {
+                        resolve(response.results)
+                        return;
+                    }
 
                     const result = this.handleResults(response)
 

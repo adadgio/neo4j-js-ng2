@@ -7,7 +7,7 @@ import { Neo4jRepository }          from '../../neo4j';
 import { ResultSet, Transaction }   from '../../neo4j/orm';
 import { Node, NodeInterface  }     from '../../neo4j/model';
 import { Link, LinkInterface  }     from '../../neo4j/model';
-import { crosscut }                 from '../../core/array';
+import { unique, crosscut }         from '../../core/array';
 
 import { LinkUpdatedEvent }         from '../../component/link-edit/link-edit.component';
 
@@ -33,6 +33,8 @@ export class HomePageComponent implements OnInit, AfterViewInit
     saveSuccessText: string = null;
     searchLoading: boolean = false;
 
+    labels: Array<any> = [];
+
     // @todo General: sue a setting to discint nodes by propertu (ID) or none, and use distinct INSIDE graph.componenet
     constructor(private neo4j: Neo4jService, private repo: Neo4jRepository, private settings: SettingsService)
     {
@@ -41,7 +43,20 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     ngOnInit()
     {
+        this.repo.findAllLabels().then((results) => {
 
+            let labels = [];
+
+            for (let i in results[0].data) {
+                const row = results[0].data[i].row;
+                labels.push({ name: row[0], count: row[1] })
+            }
+
+            this.labels = labels;
+
+        }).catch(err => {
+            this.toastError(err)
+        })
     }
 
     ngAfterViewInit()
@@ -68,6 +83,13 @@ export class HomePageComponent implements OnInit, AfterViewInit
         if (crosscut(inputCombination, createModeCombination)) {
             this.onCreateModeChanged(!this.createModeEnabled)
         }
+    }
+
+    filterByLabel(e: any, label: string)
+    {
+        e.preventDefault()
+        this.graph.clear();
+        this.onSearch({ mode: 'normal', queryString: `MATCH (a:${label}) RETURN a, LABELS(a), ID(a)` })
     }
 
     onSearch(e: any)

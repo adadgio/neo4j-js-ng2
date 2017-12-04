@@ -15,6 +15,16 @@
             <p *ngIf="(null === selectedNode && false === createModeEnabled)" class="center">
                 Click on a node to edit its details.
             </p>
+
+            <div *ngIf="(null === selectedNode && false === createModeEnabled)">
+                <ul>
+                    <li *ngFor="let label of labels">
+                        <a (click)="filterByLabel($event, label.name)" [innerText]="label.name + ' (' + label.count + ')'" href=""></a>
+                    </li>
+                </ul>
+            </div>
+
+
             <node-edit
                 *ngIf="(null !== selectedNode)"
                 [node]="selectedNode"

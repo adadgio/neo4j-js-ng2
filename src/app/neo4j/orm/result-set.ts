@@ -96,7 +96,7 @@ export class ResultSet
 
             }
         }
-        
+
         this.datasets = datasets;
         return datasets;
     }

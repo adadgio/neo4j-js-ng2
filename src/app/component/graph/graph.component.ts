@@ -31,8 +31,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
     private nodes: Array<any> = []; // force.nodes()
     private links: Array<any> = [];
-    private nodesRef: any;
-    private linksRef: any;
+    private nodesRef: any = [];
+    private linksRef: any = [];
 
     private primaryKey: string = 'none';
 
@@ -68,6 +68,24 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     ngOnChanges()
     {
 
+    }
+    
+    clear()
+    {
+        // @todo This is a mess !
+        // this.nodesRef = this.svg.selectAll('circle.node')
+        // this.linksRef = this.svg.selectAll('line.link')
+        //
+        // this.force = d3.layout.force()
+        //     .nodes([]).links([])
+        //     .charge(-130).linkDistance(120).size([this.width, this.height])
+        //     .on('tick', (e) => {
+        //         return null
+        //     });
+        //
+        // this.nodes = this.force.nodes()
+        // this.links = this.force.links()
+        // this.start()
     }
 
     start()
@@ -133,8 +151,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
                 }
             })
 
+        this.nodesRef = this.svg.selectAll('circle.node')
+        this.linksRef = this.svg.selectAll('line.link')
+
         this.force = d3.layout.force()
-            .nodes([]).links([])
+            .nodes(this.nodes).links(this.links)
             .charge(-130).linkDistance(120).size([this.width, this.height])
             .on('tick', (e) => {
                 this.onTick(this.nodesRef, this.linksRef)
@@ -142,8 +163,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
         this.nodes = this.force.nodes()
         this.links = this.force.links()
-        this.nodesRef = this.svg.selectAll('circle.node')
-        this.linksRef = this.svg.selectAll('line.link')
 
         // attach drag event handlers
         this.force
@@ -437,6 +456,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         this.update()
     }
 
+    removeAllNodes()
+    {
+
+    }
+
     exists(node: NodeInterface)
     {
         for (let i in this.nodes) {
@@ -484,11 +508,15 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
     onTick(nodes: any, links: any)
     {
+        // console.log(nodes.length, links.length)
+        // console.log(nodes[0])
+
         nodes.attr('transform', function (d) {
             // let x = Math.max(30, Math.min(this.width - 30, d.x))
             // let y = Math.max(30, Math.min(this.height - 30, d.y))
             // just avoid infinite loop on user corrupted queries...
             if (typeof(d.x) === 'undefined' || d.x == null) {
+                console.log(d)
                 throw Error(`graph.component.ts Infinite loop detected`)
             }
 

@@ -18,6 +18,24 @@ export class Neo4jRepository
 
     }
 
+    findAllLabels()
+    {
+        const transaction = new Transaction()
+        transaction.add(`MATCH (a) WITH DISTINCT LABELS(a) AS tmp, COUNT(a) AS tmpCnt
+            UNWIND tmp AS label
+            RETURN label, SUM(tmpCnt) AS cnt`)
+
+        return new Promise((resolve, reject) => {
+            this.neo4j.commit(transaction, true).then(rawResults => {
+                
+                resolve(rawResults)
+
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+
     persistNode(node: NodeInterface): Promise<NodeInterface>
     {
         const builder = new CypherQuery()
