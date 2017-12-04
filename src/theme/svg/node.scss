@@ -1,0 +1,59 @@
+g.node-group {
+    cursor: grab;
+    // cursor: -webkit-grab;
+    // cursor:-moz-grab;
+
+    &.selected {
+        circle.ring {
+            stroke: #F7E0A8;
+        }
+    }
+    
+    &.fixed {
+        circle.node {
+            stroke: #fff;
+        }
+    }
+    &.droppable {
+        cursor: pointer;
+    }
+    &.beeing-dragged {
+        cursor: grabbing
+    }
+}
+
+circle {
+    &.node {
+        stroke-width: 3px;
+    }
+
+    &.ring {
+        fill: transparent;
+        stroke: transparent;
+        stroke-width: 3px;
+    }
+
+    &.cursor {
+        fill: none;
+        stroke: #ABB1BB;
+        stroke-width: 1.4px;
+
+        &.hidden {
+            display: none;
+        }
+    }
+}
+
+text.label {
+    fill: #808080;
+    font-size: 11px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    baseline-shift: -3px;
+    transform: translate(0px, 30px);
+    text-anchor: middle;
+}
+
+// .dragged {
+//     pointer-events: none;
+// }

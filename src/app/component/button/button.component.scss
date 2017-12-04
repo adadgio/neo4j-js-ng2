@@ -1,0 +1,74 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+@import "./_button.neutral";
+@import "./_button.primary";
+@import "./_button.secondary";
+@import "./_button.danger";
+@import "./_button.disabled";
+@import "./_button.icon";
+
+:host {
+    display: flex;
+    align-items: stretch;
+    flex-direction: row;
+}
+
+.visible { visibility: visible }
+.hidden { visibility: hidden }
+
+
+button {
+    position: relative;
+    cursor: pointer;
+    min-width: 75px;
+
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
+    padding: 8px 12px;
+    line-height: 16px;
+    border: none;
+    @include border-radius(2px);
+    @include transition(background-color ease 0.3s, color ease 0.3s);
+
+    cursor: pointer;
+    font-family: inherit;
+    font-size: $fontSize;
+
+    span {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    span.loader {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+
+        img.svg-loader {
+            width: 20px;
+        }
+    }
+
+    /deep/ .icon {
+        margin-right: 5px;
+        line-height: 16px;
+        font-size: $fontSize + 3px;
+    }
+}
+
+:host[dropdown-button] {
+    flex: 1;
+    flex-direction: column;
+}

@@ -1,0 +1,68 @@
+/* Mixins and function */
+
+@mixin border-radius($size: 3px) {
+    -webkit-border-radius: $size;
+    -moz-border-radius: $size;
+    border-radius: $size;
+}
+
+@mixin transition($args...) {
+    -webkit-transition: $args;
+    -moz-transition: $args;
+    transition: $args;
+}
+@mixin rotate($degrees) {
+    -webkit-transform: rotate($degrees);
+   -moz-transform: rotate($degrees);
+   -ms-transform: rotate($degrees);
+   -o-transform: rotate($degrees);
+   transform: rotate($degrees);
+}
+
+@mixin box-sizing($value: border-box) {
+    box-sizing: $value;
+    -moz-box-sizing: $value;
+    -webkit-box-sizing: $value;
+}
+
+@mixin text-antialias() {
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -o-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin box-shadow($top, $left, $blur, $color, $inset: false) {
+    @if $inset {
+        -webkit-box-shadow:inset $top $left $blur $color;
+        -moz-box-shadow:inset $top $left $blur $color;
+        box-shadow:inset $top $left $blur $color;
+    } @else {
+        -webkit-box-shadow: $top $left $blur $color;
+        -moz-box-shadow: $top $left $blur $color;
+        box-shadow: $top $left $blur $color;
+    }
+}
+
+@mixin hostSupportsFullPage() {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+@mixin hostSupportsPageScroll() {
+    display: block;
+    flex: none;
+    overflow-y: auto;
+    margin-bottom: 16px;
+}
+
+@mixin hostSupportsFullHeight() {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+@mixin hostDefaults() {
+    flex: none
+}

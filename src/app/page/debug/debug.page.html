@@ -1,0 +1,32 @@
+<div flex flex-columns>
+
+    <div class="actions">
+        <a href="" class="danger" (click)="clear($event)">Clear logs</a>
+    </div>
+
+    <div *ngFor="let entries of groups; let i = index" class="debug-group">
+
+        <div flex flex-rows flex-align-center class="margin-bottom-16px">
+            <span class="title">Debug group</span>&nbsp;
+            <span class="title" *ngIf="entries[0].timestamp" [innerText]="entries[0].timestamp | nicedate"></span>
+        </div>
+
+        <div *ngFor="let entry of entries; let j = index" class="group">
+
+            <div class="infos" [ngClass]="entry.level" (click)="toggleTrace($event, i, j)">
+                <span [innerText]="entry.category"></span>&nbsp;&raquo;&nbsp;
+                <span [innerText]="entry.timestamp"></span>
+                <span [innerText]="entry.level" class="level"></span>
+            </div>
+
+            <div class="trace" [ngClass]="(false === entry.hidden) ? 'expanded' : 'hidden'">
+                <pre [innerText]="entry.trace | json" ></pre>
+            </div>
+
+        </div>
+
+
+        <!-- <div [innerText]="entry"></div> -->
+    </div>
+
+</div>

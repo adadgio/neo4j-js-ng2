@@ -1,3 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+@import "./normalize";
+@import "./layout";
+@import "./flex";
+@import "./common";
+@import "./form";
 
-.test {}
+@import "./svg/svg";
+@import "./svg/node";
+@import "./svg/links";
+@import "./svg/cursors";

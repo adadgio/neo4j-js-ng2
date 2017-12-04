@@ -1,0 +1,27 @@
+<nav flex flex-rows>
+    <div flex flex-rows flex-align-center flex-align-stretch>
+        <a flex flex-align-center href="" title="Neo4j settings" routerLink="/" class="main">360 Medical Graph DB explorer</a>
+    </div>
+
+    <div flex flex-rows flex-align-center pull-right flex-align-stretch>
+
+        <a flex flex-rows flex-align-center href="" title="View tutorial" (click)="showTutorial($event)">
+            <i class="flaticon-info-1"></i>
+        </a>
+
+        <a flex flex-align-center href="" title="Neo4j settings" routerLink="/settings">
+            <i class="flaticon-settings"></i>&nbsp; Settings
+        </a>
+
+        <a flex flex-align-center href="" title="Debug log" routerLink="/debug">
+            <i class="flaticon-ladybug"></i>&nbsp; Logs ({{ criticalErrorsCount }})
+        </a>
+
+        <a *ngIf="(false === neo4jOk)" href="" class="red">
+            <i class="icon-bell"></i>&nbsp; Neo4j OFFLINE
+        </a>
+
+    </div>
+</nav>
+
+<tutorial-component *ngIf="(true === tutorialIsVisible)" (onDismiss)="dismissTutorial()"></tutorial-component>

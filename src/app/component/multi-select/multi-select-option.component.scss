@@ -1,0 +1,48 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+
+.multi-select-option {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    line-height: 1em;
+    font-size: $fontSize - 1px;
+    @include border-radius(2px);
+
+    &:hover {
+        background-color: colors(charcoal);
+    }
+
+    &.available {
+        flex-direction: column;
+        padding: 8px 16px;
+    }
+
+    span.item {
+        display: flex;
+        flex-direction: row;
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    &.selected {
+        padding: 4px 8px 4px 8px;
+        flex-direction: row;
+        align-items: center;
+        margin-right: 4px;
+        margin-bottom: 4px;
+        background-color: colors(coal);
+
+        a.rm {
+            margin-left: 4px;
+            color: colors(gray); color: colors(gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            &:hover { color: colors(success); }
+        }
+    }
+
+}

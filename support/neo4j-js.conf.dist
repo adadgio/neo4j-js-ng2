@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot "/Users/adadgio/WebServer/projects/adadgio/neo4j-js-ng2/dist"
+    ServerName neo4j-js.dev
+    ServerAlias www.neo4j-js-2.dev
+    
+    <Directory /Users/adadgio/WebServer/projects/adadgio/neo4j-js-ng2/dist>
+        AllowOverride All
+        Require all granted
+        Allow from All
+    </Directory>
+
+</VirtualHost>

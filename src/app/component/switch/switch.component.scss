@@ -1,0 +1,42 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+:host {
+
+}
+
+.switch {
+    $size: $fontSize + 10px;
+
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: $size;
+    line-height: $size;
+    padding-left: 2px;
+    padding-right: 2px;
+    width: ($size * 2) - 10px;
+
+    background-color: colors(danger);
+    @include border-radius($size / 2);
+
+    .knob {
+        width: $size - 4px;
+        height: $size - 4px;
+        background-color: colors(coal);
+        @include border-radius($size / 2);
+
+        &.right {
+
+        }
+    }
+
+    &.on {
+        background-color: colors(success);
+
+        .knob {
+            margin-left: auto;
+        }
+    }
+}

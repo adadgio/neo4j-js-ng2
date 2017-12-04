@@ -1,1 +1,72 @@
-<svg id="graph" style="width:400px;height:400px"></svg>
+<div flex flex-fill flex-rows>
+
+    <div flex flex-columns class="column-left radiusize coal-border">
+
+        <div flex flex-rows class="coal padding-8-16px box-title gray">
+            <span class="toast cleared">Node details</span>
+            <span class="toast cleared" *ngIf="(null !== selectedNode)"><i [innerText]="' [' + selectedNode.getId() + ']'"></i></span>
+            <span pull-right class="toast success pull-right" [innerText]="saveSuccessText" *ngIf="saveSuccessText"></span>
+            <span pull-right class="toast danger pull-right" [innerText]="saveErrorText" *ngIf="saveErrorText"></span>
+        </div>
+        <div flex flex-fill flex-columns class="charcoal padding-8-16px">
+            <p *ngIf="(null === selectedNode && true === createModeEnabled)" class="center warning">
+                Can't edit nodes in create mode.
+            </p>
+            <p *ngIf="(null === selectedNode && false === createModeEnabled)" class="center">
+                Click on a node to edit its details.
+            </p>
+            <node-edit
+                *ngIf="(null !== selectedNode)"
+                [node]="selectedNode"
+                (onNodeEdited)="onNodeEdited($event)">
+            </node-edit>
+            <link-edit
+                *ngIf="(null !== selectedLink)"
+                [link]="selectedLink"
+                (onLinkEdited)="onLinkEdited($event)">
+            </link-edit>
+        </div>
+
+    </div>
+
+
+    <div flex flex-fill flex-columns class="coal-border radiusize">
+        <div class="coal radiusize-top">
+            <search-component [mode]="'normal'" (onSearch)="onSearch($event)"></search-component>
+        </div>
+        <div flex flex-fill class="charcoal">
+
+            <graph-component
+                [createMode]="createModeEnabled"
+                (nodeCreated)="onNodeCreated($event)"
+                (nodeSelected)="onNodeSelected($event)"
+                (linkSelected)="onLinkSelected($event)"
+                (nodeDoubleClicked)="onNodeDoubleClicked($event)"
+                (nodeAdded)="onNodeAdded($event)"
+                (relationshipCreate)="onLinkCreated($event)"
+            ></graph-component>
+        </div>
+    </div>
+
+
+    <div flex  flex-columns class="column-right coal-border radiusize">
+        <div flex flex-rows flex-align-center class="coal padding-8-16px box-title gray">
+            <span>Create mode</span>
+            <switch-component pull-right [value]="createModeEnabled" (change)="onCreateModeChanged($event)"></switch-component>
+        </div>
+
+        <div flex flex-fill class="charcoal padding-16px">
+            <div *ngIf="createModeEnabled">
+                <div flex flex-columns>
+                    <label class="first gray">Default label</label>
+                    <input type="text" class="input-small input-dark" [(ngModel)]="createModeDefaults.label">
+                </div>
+                <div flex flex-columns>
+                    <label class="gray">Default rel. type</label>
+                    <input type="text" class="input-small input-dark" [(ngModel)]="createModeDefaults.relationshipType">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

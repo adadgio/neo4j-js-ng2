@@ -1,0 +1,58 @@
+@import "./shared/_mixins";
+@import "./shared/_variables";
+
+form {
+    display: flex;
+    flex-direction: column;
+    // align-items: stretch;
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    // align-items: stretch;
+}
+
+label {
+    margin-bottom: 8px;
+    margin-top: 16px;
+
+    &.first {
+        margin-top: 0px;
+    }
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="email"] {
+    color: #313131;
+    height: 27px;
+    display: flex;
+    line-height: 1em;
+    align-items: center;
+    border: none;
+    font-family: inherit;
+    font-size: $fontSize;
+    padding: 8px 10px 8px 10px;
+    background-color: #eaeaea;
+    border: none;
+    @include box-sizing();
+    @include border-radius(2px);
+
+    &.input-small {
+        font-size: $fontSize - 1px;
+        padding: 6px 7px;
+    }
+
+    &.input-large {
+        height: auto;
+        font-size: $fontSize + 1px;
+        padding: 10px 12px 10px 12px;
+    }
+
+    &.input-dark {
+        color: #b4b4b4;
+        background-color: colors(midnight);
+    }
+}

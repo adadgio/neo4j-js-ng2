@@ -1,0 +1,35 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+nav {
+    position: fixed;
+    width: 100%;
+    height: $headerHeight;
+    background-color: colors(nemo);
+    z-index: 9;
+    color: colors(white);
+    padding-left: 8px;
+    padding-right: 8px;
+    @include box-sizing();
+
+    a {
+        color: inherit;
+        display: flex;
+        align-items: center;
+        margin: 0px;
+        padding: 0px 16px;
+
+        &:hover {
+            background-color: colors(nemo-hover);
+        }
+
+        // > i[class^="flaticon-"], div[class*="flaticon-"] {
+        //     margin-right: 8px;
+        // }
+
+        &.main {
+            font-size: $fontSize + 4px;
+            font-weight: 200;
+        }
+    }
+}

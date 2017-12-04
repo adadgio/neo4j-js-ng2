@@ -1,0 +1,19 @@
+{
+    "client": {
+        "apiEndpoint": "http://127.0.0.1:7474/db/data",
+        "authBasic": "Basic qwerty=="
+    },
+    "graph": {
+        "node": {
+            "labels": ["Person", "Car", "Animal"]
+        },
+        "ui": {
+            "primaryNodeLabel": "name",
+            "secondary": ""
+        }
+    },
+    "test": [
+        { "id": 5, "name": "Bernie" },
+        { "id": 6, "name": "Malcom" }
+    ]
+}

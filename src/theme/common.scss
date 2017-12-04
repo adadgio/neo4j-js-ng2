@@ -1,0 +1,145 @@
+@import "./shared/_mixins";
+@import "./shared/_variables";
+
+/**
+ * Commpon classes and styles.
+ */
+$radius: 1px;
+.radiusize {
+    @include border-radius($radius)
+}
+.radiusize-top {
+    @include border-radius($radius $radius 0px 0px)
+}
+.radiusize-bottom {
+    @include border-radius(0px 0px $radius $radius)
+}
+
+.coal {
+    background-color: colors(coal)
+}
+.coal-border {
+    border: 1px solid colors(coal);
+}
+
+.charcoal {
+    background-color: colors(charcoal)
+}
+
+.gray {
+    color: colors(gray);
+}
+.box-title {
+    font-size: $fontSize + 1;
+}
+.small {
+    font-size: $fontSize - 2px
+}
+.center {
+    text-align: center;
+}
+
+.emarged {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+.emarged-bottom {
+    margin-bottom: 16px;
+}
+.padding-8px {
+    padding: 8px;
+}
+.padding-16px {
+    padding: 16px;
+}
+.padding-8-16px {
+    padding: 16px;
+}
+.margin-right-8px {
+    margin-right: 8px;
+}
+.margin-left-8px {
+    margin-left: 8px;
+}
+.margin-top-8px {
+    margin-top: 8px;
+}
+.margin-bottom-8px {
+    margin-bottom: 8px;
+}
+.margin-bottom-16px {
+    margin-bottom: 16px;
+}
+.relative {
+    position: relative;
+}
+.absolute {
+    position: absolute;
+}
+
+.primary {
+    color: colors(primary);
+}
+.success {
+    color: colors(success);
+}
+.secondary {
+    color: colors(secondary);
+}
+a.secondary {
+    @include transition(color ease 0.2s);
+    &:hover {
+        color: colors(white);
+    }
+}
+.warning {
+    color: colors(warning);
+}
+.danger {
+    color: colors(danger);
+}
+.info {
+    color: colors(info);
+}
+
+.green {
+    color: colors(green);
+}
+.red {
+    color: colors(red);
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    padding: 2px 6px;
+    @include border-radius(2px);
+
+    &.cleared {
+        padding: 2px 0px;
+    }
+    &.toast-small {
+        font-size: $fontSize - 2px;
+    }
+
+    &.primary {
+        color: colors(fullwhite);
+        background-color: colors(primary);
+    }
+    &.secondary {
+        color: colors(fullwhite);
+        background-color: colors(secondary);
+    }
+    &.success {
+        color: colors(fullwhite);
+        background-color: colors(success);
+    }
+    &.warning {
+        color: colors(fullwhite);
+        background-color: colors(warning);
+    }
+    &.danger {
+        color: colors(fullwhite);
+        background-color: colors(danger);
+    }
+}

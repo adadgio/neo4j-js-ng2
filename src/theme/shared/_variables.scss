@@ -1,0 +1,45 @@
+/**
+ * Variables, colors and theme.
+ */
+$fontSize: 14px;
+$fontColor: #545454;
+$headerHeight: 55px;
+
+$theme: (
+    fullwhite:  #f9f9f9,
+    gray:       #8c8c8c,
+    grayish:    #868686,
+    white:      #d2d2d2,
+    black:      $fontColor,
+    whitesmoke: whitesmoke,
+    midnight:   #222222,
+    coal:       #464545,
+    charcoal:   #303030,
+    nemo:       #375a7f,
+    nemo-hover: #28415b,
+    green:      #148014,
+
+    night:      #1b1b1b,  //#232323,
+
+    faded:      #6c7886,
+
+    primary:    #37597e,
+    // secondary:  #444444,
+    secondary:  #8e8e8e,
+    success:    #26bc8c,
+    danger:     #e43826,
+    warning:    #f49b13,
+    info:       #3497db,
+    disabled:   #424952,
+
+    primary-hover:  #29405a,
+    success-hover:  #009670,
+    warning-hover:  #d4860b,
+    danger-hover:   #e12e1c,
+    info-hover:     #2384c6,
+    disabled-hover: #424952,
+);
+
+@function colors($colorName) {
+    @return map-get($theme, $colorName);
+}

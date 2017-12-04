@@ -1,0 +1,6 @@
+<button [disabled]="disabled" [attr.id]="id" type="submit">
+    <span [ngClass]="(!loading) ? 'visible' : 'hidden'"><ng-content></ng-content></span>
+    <ng-container *ngIf="loading">
+        <span class="loader"><img class="svg-loader" src="assets/svg-loaders/three-dots.svg" width="20" alt="Loading..."></span>
+    </ng-container>
+</button>

@@ -1,0 +1,27 @@
+<div class="tutorial-overlay"></div>
+
+<div flex flex-columns class="tutorial-content">
+    <div flex flex-rows flex-align-center class="header">
+        <span flex>Help & tutorials</span>
+        <a flex pull-right href="" title="Neo4j settings" (click)="dismiss($event)">
+            <i class="flaticon-cancel"></i>
+        </a>
+    </div>
+
+    <div flex flex-fill class="sub-content">
+        <div *ngIf="step === 1">
+            1. Search and explore<br>
+            2. Search and explore<br>
+            3s. Search and explore<br>
+            1. Search and explore<br>
+
+        </div>
+    </div>
+
+
+    <div flex flex-rows flex-alig-center class="bubbles">
+        <a class="bubble active" href=""></a>
+        <a class="bubble" href=""></a>
+        <a class="bubble" href=""></a>
+    </div>
+</div>

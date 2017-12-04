@@ -1,0 +1,105 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+@import "../../../theme/shared/_scrollbars";
+
+:host {
+    // @include hostSupportsFullPage()
+    @include hostSupportsPageScroll()
+}
+
+.debug-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    padding: 16px;
+    overflow: hidden;
+    background-color: colors(coal);
+
+    .title {
+        color: colors(secondary);
+        margin: 0px;
+        padding: 0px;
+        font-size: $fontSize;
+    }
+
+    .group {
+        display: flex;
+        flex-direction: column;
+        // padding: 16px;
+        margin-bottom: 8px;
+        // background-color: colors(charcoal);
+
+        &:last-of-type {
+            margin-bottom: 0px;
+        }
+
+        .infos {
+            cursor: pointer;
+            color: colors(fullwhite);
+            display: flex;
+            flex-direction: row;
+            padding: 8px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            @include border-radius(2px);
+
+            &.info {
+                border: 1px solid #49a363;
+                background-color: #49a363;
+                // &:hover { border: 1px solid colors(white) }
+            }
+            &.debug {
+                border: 1px solid #21a3c3;
+                background-color: #21a3c3;
+            }
+            &.warning {
+                border: 1px solid #efb83f;
+                background-color: #efb83f;
+            }
+            &.critical {
+                border: 1px solid #e03313;
+                background-color: #e03313;
+            }
+
+            .level {
+                margin-left: auto;
+                text-transform: uppercase;
+            }
+        }
+
+        .trace {
+            max-height: 260px;
+            overflow-y: auto;
+            padding-left: 8px;
+            @include scrollbars(.5em, #6f7f8f, #222222);
+            color: colors(gray);
+
+            pre {
+                color: colors(white);
+                font-size: $fontSize - 2px;
+                margin-top: 8px;
+                font-family: monospace, "Monospace sans", sans-serif;
+            }
+
+            &.hidden {
+                > pre {
+                    display: none;
+                }
+            }
+            &.expanded {
+                // max-height: none;
+                // overflow-y: hidden;
+                > pre {
+                    display: block;
+                }
+            }
+        }
+
+    }
+
+
+}
+
+.actions {
+    margin-bottom: 16px;
+}

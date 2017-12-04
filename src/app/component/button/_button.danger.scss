@@ -1,0 +1,17 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+:host[danger] {
+    button {
+
+        color: colors(white);
+        background-color: colors(danger);
+        
+        &:hover {
+            background-color: colors(danger-hover);
+        }
+        &:active {
+            background-color:colors(red);
+        }
+    }
+}
