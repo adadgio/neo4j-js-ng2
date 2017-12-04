@@ -65,7 +65,8 @@ export class MultiSelectComponent implements OnInit
     @Output('valueAdded') valueAdded: EventEmitter<any> = new EventEmitter();
     @Output('valueRemoved') valueRemoved: EventEmitter<any> = new EventEmitter();
     @ViewChild('input') input: ElementRef;
-
+    
+    placeholder: string;
     areValuesScalar: boolean = false;
 
     constructor(private elementRef: ElementRef)
