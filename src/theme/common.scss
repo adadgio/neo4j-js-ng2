@@ -29,6 +29,9 @@ $radius: 1px;
 .gray {
     color: colors(gray);
 }
+.red {
+    color: colors(red);
+}
 .box-title {
     font-size: $fontSize + 1;
 }
@@ -104,9 +107,6 @@ a.secondary {
 
 .green {
     color: colors(green);
-}
-.red {
-    color: colors(red);
 }
 
 .toast {

@@ -20,4 +20,10 @@ export class TutorialComponent
         e.preventDefault()
         this.onDismiss.emit()
     }
+
+    next(e: any, step: number)
+    {
+        e.preventDefault();
+        this.step = step;
+    }
 }

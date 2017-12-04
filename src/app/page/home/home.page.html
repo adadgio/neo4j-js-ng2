@@ -32,7 +32,7 @@
 
     <div flex flex-fill flex-columns class="coal-border radiusize">
         <div class="coal radiusize-top">
-            <search-component [mode]="'normal'" (onSearch)="onSearch($event)"></search-component>
+            <search-component [mode]="'normal'" [loading]="searchLoading" (onSearch)="onSearch($event)"></search-component>
         </div>
         <div flex flex-fill class="charcoal">
 
@@ -51,7 +51,7 @@
 
     <div flex  flex-columns class="column-right coal-border radiusize">
         <div flex flex-rows flex-align-center class="coal padding-8-16px box-title gray">
-            <span>Create mode</span>
+            <span>Create (Ctrl+C)</span>
             <switch-component pull-right [value]="createModeEnabled" (change)="onCreateModeChanged($event)"></switch-component>
         </div>
 

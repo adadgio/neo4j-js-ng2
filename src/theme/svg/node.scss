@@ -1,14 +1,16 @@
+@import "./../shared/_variables";
+
 g.node-group {
     cursor: grab;
-    // cursor: -webkit-grab;
-    // cursor:-moz-grab;
+    cursor: -webkit-grab;
+    cursor:-moz-grab;
 
     &.selected {
         circle.ring {
             stroke: #F7E0A8;
         }
     }
-    
+
     &.fixed {
         circle.node {
             stroke: #fff;
@@ -18,7 +20,15 @@ g.node-group {
         cursor: pointer;
     }
     &.beeing-dragged {
-        cursor: grabbing
+        cursor: grabbing;
+        cursor: -webkit-grabbing;
+        cursor:-moz-grabbing;
+    }
+
+    &:hover {
+        circle.expander {
+            display: block;
+        }
     }
 }
 
@@ -42,6 +52,15 @@ circle {
             display: none;
         }
     }
+
+    &.expander {
+        display: none;
+        cursor: pointer;
+        fill: colors(primary);
+    }
+    &.expander.expander-inner {
+        fill: colors(info);
+    }
 }
 
 text.label {
@@ -54,6 +73,6 @@ text.label {
     text-anchor: middle;
 }
 
-// .dragged {
+// .dragged, .beeing-dragged {
 //     pointer-events: none;
 // }

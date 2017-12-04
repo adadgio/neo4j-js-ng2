@@ -13,19 +13,30 @@ import { CypherQuery, SimpleQuery }                 from '../../neo4j/orm';
             <div class="controls search-bar" *ngIf="(mode === 'normal')">
                 <app-button primary icon-only><i class="icon-search"></i></app-button>
                 <input type="text" value="" [(ngModel)]="normalQueryString" name="normal_query" placeholder=":Person id=5 name=Bernie 10,5" class="input-large" autocomplete="off">
-                <a class="info" href="" (click)="toggleMode($event)"><i class="icon-earth"></i></a>
+                <a *ngIf="!loading" class="info" href="" (click)="toggleMode($event)">
+                    <i class="icon-earth"></i>
+                </a>
+                <a  *ngIf="loading" class="info info-loader" href="#">
+                    <img class="svg-loader" src="assets/svg/three-dots.svg" width="20" alt="Loading...">
+                </a>
             </div>
         </form>
         <form class="controls query-bar" *ngIf="(mode === 'advanced')">
             <app-button primary icon-only><i class="icon-search"></i></app-button>
             <input type="text" value="" [(ngModel)]="cypherQueryString" name="cypher_query" placeholder="Cypher query..." class="input-large" autocomplete="off">
-            <a class="info" href="" (click)="toggleMode($event)"><i class="icon-embed2"></i></a>
+            <a *ngIf="!loading" class="info" href="" (click)="toggleMode($event)">
+                <i class="icon-embed2"></i>
+            </a>
+            <a  *ngIf="loading" class="info info-loader" href="#">
+                <img class="svg-loader" src="assets/svg/three-dots.svg" width="20" alt="Loading...">
+            </a>
         </form>
     </div>`,
     providers: [],
 })
 export class SearchComponent implements OnInit, AfterViewInit
 {
+    @Input('loading') loading: boolean = false;
     @Input('mode') mode: 'normal'|'advanced' = 'normal';
     @Output('onSearch') onSearch = new EventEmitter();
 

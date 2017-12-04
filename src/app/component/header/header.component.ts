@@ -20,6 +20,7 @@ export class HeaderComponent
         this.neo4j.ping().then((yes: boolean) => {
             this.neo4jOk = yes
         }, (res: any) => {
+            console.log(res)
             this.neo4jOk = false
         }).catch(err => {
             console.log(err)

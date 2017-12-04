@@ -28,12 +28,19 @@ export class Neo4jService
     commit(trans: Transaction): Promise<any>
     {
         Debug.group('neo4j.service.commit').log(trans.getStatements(), 'Statements info', 'info')
-        
+
         return new Promise((resolve, reject) => {
             this.http.post(this.url, { statements: trans.getStatements() }, { headers: this.headers })
-                .map(res => res.json())
+                .map(res => {
+                    if (res) {
+                        return res.json()
+                    } else {
+                        reject(res)
+                    }
+                })
                 .toPromise()
                 .then((response: any) => {
+
                     const result = this.handleResults(response)
 
                     if (response.errors.length > 0) {
@@ -46,7 +53,7 @@ export class Neo4jService
 
                 }).catch(err => {
                     Debug.log(err, 'Caught error', 'critical')
-                    throw new Error(err)
+                    reject(err)
                 })
         })
 
@@ -74,12 +81,18 @@ export class Neo4jService
 
         return new Promise((resolve, reject) => {
             this.http.post(this.url, { statements: trans.getStatements() }, { headers: this.headers })
-                .map(res => res.json())
+                .map(res => {
+                    if (res) {
+                        return res.json()
+                    } else {
+                        reject(res)
+                    }
+                })
                 .toPromise()
                 .then((response: Response) => {
                     resolve(true)
                 }).catch(err => {
-                    throw new Error(err)
+                    reject(err)
                 })
         })
 

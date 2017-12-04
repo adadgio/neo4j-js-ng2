@@ -56,12 +56,6 @@ class ShapeSingleton
             return dragline.currentlyBeeingDragged
         }
 
-        dragline.followMousePointer = (mouseEvent: MouseEvent) => {
-            // current target is mousemove event currentTarget, ie the mouse
-            const coords = Mouse.getCoords(mouseEvent.currentTarget)
-            dragline.attr('x2', coords[0] - 2).attr('y2', coords[1] - 2)
-        }
-
         return dragline;
     }
 
@@ -98,26 +92,6 @@ class ShapeSingleton
         return cursor;
     }
 
-    /**
-     * Create arrow marker on (links?)
-     */
-    createArrowMarker()
-    {
-        // let marker = this.svg.append('defs').append('marker')
-        //     .attr('id', 'arrow-marker')
-        //     .attr('class', 'arrow-marker')
-        //     .attr('viewBox', '0 0 10 10')
-        //     .attr('refX', 0)
-        //     .attr('refY', 5)
-        //     .attr('markerWidth', 4)
-        //     .attr('markerHeight', 4)
-        //     .attr('orient', 'auto')
-        //     .append('path')
-        //     .attr('d', 'M 0 0 L 10 5 L 0 10 z')
-        //
-        // return marker;
-    }
-
     appendNodeGroupShapes(groupsRef: any, settings: any)
     {
         // find node default label shown on the ui
@@ -141,16 +115,29 @@ class ShapeSingleton
                 .attr('class', 'ring')
                 .attr('r', 23)
 
-
         groupsRef.append('text')
             .attr('class', 'label')
             .text((n: NodeInterface) => {
                 return `[${n.getId().toString()}] ` + truncate(name(n, nameOptions), 6);
             })
+            
+        // groupsRef.append('circle')
+        //     .attr('class', 'expander')
+        //     .attr('r', 7)
+        //     .attr('cx', 22)
+        //     .attr('cy', -18)
+        // groupsRef.append('circle')
+        //     .attr('class', 'expander expander-inner')
+        //     .attr('r', 3)
+        //     .attr('cx', 22)
+        //     .attr('cy', -18)
 
-        groupsRef.update = function(d) {
-
-        }
+        // groupsRef.append('svg:image')
+        //     .attr('xlink:href', './assets/svg/icon8-plus.svg')
+        //     .attr('width', 17)
+        //     .attr('height', 17)
+        //     .attr('cx', 10)
+        //     .attr('cy', -5)
     }
 
     appendShapesToLinkGroups(group: any, settings: any)

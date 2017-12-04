@@ -24,6 +24,12 @@
         align-items: center;
         line-height: 1em;
         font-size: $fontSize + 4px;
+
+        &.info-loader {
+            background-color: colors(charcoal);
+            padding: 4px;
+            border-radius: 10px;
+        }
     }
 }
 
