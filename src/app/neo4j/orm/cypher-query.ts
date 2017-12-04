@@ -17,6 +17,10 @@ export class CypherQuery
     queryLimit: number = null;
     querySkip: number = null;
 
+    queryNativeParts: Array<string> = [];
+
+    public static RAW_QUERY_PART = true;
+
     constructor()
     {
         this.clear()
@@ -44,7 +48,15 @@ export class CypherQuery
         this.queryLimit = null;
         this.querySkip = null;
 
+        this.queryNativeParts = [];
+
         return this
+    }
+
+    addNative(queryString: string)
+    {
+        this.queryNativeParts.push(queryString)
+        return this;
     }
 
     create(alias: string, labels: Array<string> = null): CypherQuery
@@ -59,31 +71,32 @@ export class CypherQuery
         }
 
         this.queryCreateClauses = [clause]
-        return this
+        return this;
     }
 
-    matches(alias: string): CypherQuery
+    matches(alias: string, raw: boolean = false): CypherQuery
     {
-        this.queryParts = [`MATCH (${alias})`]
+        this.queryParts = (raw === CypherQuery.RAW_QUERY_PART) ? [alias] : [`MATCH (${alias})`];
+
         return this
     }
 
     returns(clause: string)
     {
         this.queryReturnClauses.push(clause)
-        return this
+        return this;
     }
 
     skip(skip: number)
     {
         this.querySkip = skip
-        return this
+        return this;
     }
 
     limit(limit: number)
     {
         this.queryLimit = limit
-        return this
+        return this;
     }
 
     getQuery(): string
@@ -100,6 +113,8 @@ export class CypherQuery
 
         this.addQueryParts(null, [this.querySetLabelsClause])
         this.addQueryParts(null, [this.queryRmLabelsClause])
+        
+        this.addQueryParts(null, this.queryNativeParts)
 
         this.addQueryParts('RETURN', this.queryReturnClauses)
 
@@ -111,8 +126,7 @@ export class CypherQuery
         }
 
         this.queryString = this.queryParts.join(' ')
-
-        return this.queryString
+        return this.queryString;
     }
 
     andWhere(alias: string, prop: string, value: string|number): CypherQuery
@@ -126,7 +140,7 @@ export class CypherQuery
         }
 
         this.queryWhereClauses.push(`${aliasedProp} = ${quote(escape(value))}`)
-        return this
+        return this;
     }
 
     setProperties(alias: string, properties: any): CypherQuery
@@ -137,7 +151,7 @@ export class CypherQuery
             this.querySetPropsClauses.push(`SET ${alias}.${prop} = ${value}`)
         }
 
-        return this
+        return this;
     }
 
     removeProperties(alias: string, properties: any): CypherQuery
@@ -145,7 +159,7 @@ export class CypherQuery
         for (let prop in properties) {
             this.queryRemovePropsClauses.push(`REMOVE ${alias}.${prop}`)
         }
-        return this
+        return this;
     }
 
     setLabels(alias: string, labels: Array<string> = null)

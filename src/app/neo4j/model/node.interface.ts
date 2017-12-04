@@ -9,6 +9,7 @@ export interface NodeInterface {
     y?: number;
     hydrate(data: any, allowReplace: boolean): void;
     properties(): any;
+    propertiesAsArray(): any;
     add(prop: string, value: any): any
     set(prop: string, value: any, enumerable?: boolean): any;
     reset(props: any): any;

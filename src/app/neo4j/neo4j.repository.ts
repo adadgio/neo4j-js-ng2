@@ -3,6 +3,7 @@ import { Neo4jService }             from './neo4j.service';
 import { ResultSet, Transaction }   from '../neo4j/orm';
 import { CypherQuery, SimpleQuery } from '../neo4j/orm';
 import { Node, NodeInterface }      from '../neo4j/model';
+import { Link, LinkInterface }      from '../neo4j/model';
 import { distinct, crosscut }       from '../core/array';
 
 /**
@@ -84,8 +85,8 @@ export class Neo4jRepository
                 let links = [];
 
                 dataset2.forEach((rel: NodeInterface, i) => {
-                    const targetNode = dataset3[i]
-                    links.push({ source: node, target: dataset3[i], relationship: dataset2[i] })
+                    const targetNode = dataset3[i];
+                    links.push(new Link({ source: node, target: dataset3[i], relationship: dataset2[i] }))
                 })
 
                 resolve(links)
@@ -96,6 +97,51 @@ export class Neo4jRepository
 
         })
 
+    }
+
+
+    updateRelationshipById(id: number, type: string|String, changedType: string|String = null, changedProperties: any, removedProperties: any)
+    {
+        const transaction01 = new Transaction()
+
+        // make a cypher query to update relationship type
+        if (null != changedType) {
+
+            transaction01.add(`MATCH (a)-[r1:${type}]->(b) WHERE ID(r1) = ${id} CREATE (a)-[r:${changedType}]->(b) SET r = r1
+                WITH r1, r DELETE r1 RETURN r, TYPE(r), ID(r)`)
+
+        } else if (type != null) {
+            transaction01.add(`MATCH (a)-[r:${type}]->(b) WHERE ID(r) = ${id} RETURN r, TYPE(r), ID(r)`)
+
+        } else {
+            transaction01.add(`MATCH (a)-[r]->(b) WHERE ID(r) = ${id} RETURN r, TYPE(r), ID(r)`)
+        }
+
+        return new Promise((resolve, reject) => {
+            this.neo4j.commit(transaction01).then((resultSets: Array<ResultSet>) => {
+
+                let dataset: Node = resultSets[0].getDataset('r').first()
+                resolve(dataset)
+
+            }).catch(err => {
+                reject(err)
+            })
+        }).then((link: Node) => {
+            const transaction = new Transaction()
+            const builder = new CypherQuery()
+
+            builder
+                .matches(`MATCH (n)-[r:${link.getType()}]-(b)`, CypherQuery.RAW_QUERY_PART)
+                .andWhere('r', 'ID(?)', link.getId())
+                .setProperties('r', changedProperties)
+                .removeProperties('r', removedProperties)
+                .returns('r, ID(r), TYPE(r)')
+
+            let query = builder.getQuery()
+            transaction.add(query)
+
+            return this.neo4j.commit(transaction);
+        })
     }
 
     execute(queryString: string)

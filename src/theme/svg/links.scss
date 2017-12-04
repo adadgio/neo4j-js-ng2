@@ -15,13 +15,23 @@ g.link-group {
     }
 
     line.link-overlay {
-        stroke:#25a4ca;
+        stroke: #25a4ca;
         stroke-width: 6px;
         stroke-opacity: 0;
     }
 
     &:hover {
         line.link-overlay {
+            stroke-opacity: 0.2;
+        }
+    }
+
+    &.selected {
+        line.link {
+            stroke: #097bb5;
+        }
+        line.link-overlay {
+
             stroke-opacity: 0.4;
         }
     }

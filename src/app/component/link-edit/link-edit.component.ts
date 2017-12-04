@@ -1,7 +1,8 @@
 import { Component, ElementRef }                from '@angular/core';
 import { OnChanges, OnInit, AfterViewInit }     from '@angular/core';
+import { HostListener  }                        from '@angular/core';
 import { Input, Output, EventEmitter }          from '@angular/core';
-import { ViewChildren, QueryList, ContentChildren } from '@angular/core';
+import { ViewChildren, QueryList, }             from '@angular/core';
 import { SimpleChanges }                        from '@angular/core';
 import { SettingsService }                      from '../../service';
 import { Neo4jRepository }                      from '../../neo4j';
@@ -11,15 +12,20 @@ import { diff }                                 from '../../core/array';
 
 const randomPropNames = ['jumpy', 'flashbull', 'mourn', 'ugliest', 'furry', 'chew', 'equable', 'puzzling', 'oranges']
 
+export type LinkUpdatedEvent = {
+    currentValue: NodeInterface;
+    previousValue: NodeInterface;
+}
+
 @Component({
-    selector: 'node-edit',
-    templateUrl: './node-edit.component.html',
-    styleUrls: ['./node-edit.component.scss']
+    selector: 'link-edit',
+    templateUrl: './link-edit.component.html',
+    styleUrls: ['./link-edit.component.scss']
 })
-export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
+export class LinkEditComponent implements OnInit, AfterViewInit, OnChanges
 {
-    @Input('node') node: NodeInterface = null;
-    @Output('onNodeEdited') onNodeEdited: EventEmitter<Node> = new EventEmitter()
+    @Input('link') link: NodeInterface = null;
+    @Output('onLinkEdited') onLinkEdited: EventEmitter<any> = new EventEmitter();
 
     @ViewChildren('propNames', { read: ElementRef }) propNames: QueryList<ElementRef>;
     @ViewChildren('propValues', { read: ElementRef }) propValues: QueryList<ElementRef>;
@@ -27,14 +33,13 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
     loading: boolean = false;
     cancelable: boolean = false;
 
-    selectedLabels: Array<string> = [];
-    availableLabels: Array<string> = [];
-    private originalLabels: Array<string> = [];
-    private removedLabels: Array<string> = [];
+    originalLink: any;
+    originalType: string|String = null;
+    originalProperties: Array<any> = [];
+    removedProperties: Array<any> = [];
 
-    private properties: Array<[string, any]> = [];
-    private originalProperties: Array<[string, any]> = [];
-    private removedProperties : Array<[string, any]> = [];
+    type: string|String = null;
+    properties: Array<any> = []
 
     constructor(private settings: SettingsService, private repo: Neo4jRepository)
     {
@@ -51,89 +56,79 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
     }
 
-    private parseLabels()
-    {
-        this.availableLabels = this.settings.get('graph.labels');
-        this.selectedLabels = this.node.getLabels();
-    }
-
     ngOnChanges(changes: SimpleChanges)
     {
-        if (null !== changes.node.currentValue) {
-            // always copy node properties to properties for the view whenever its not null
-            // also update all labels (available and node labels)
-            this.properties = this.node.propertiesAsArray()
-
-        } else {
+        if (null === changes.link.currentValue) {
+            this.type = null;
             this.properties = [];
+
         }
 
         // detect when a node was changed (from null->node, node->node or null->node)
-        if (this.gracefulId(changes.node.previousValue) !== this.gracefulId(changes.node.currentValue)) {
-            // a new node was really selected, changes do not only concern current node
+        if (this.gracefulId(changes.link.previousValue) !== this.gracefulId(changes.link.currentValue)) {
 
-            if (null !== changes.node.currentValue) {
-                // make a separate copy of the thing
-                this.originalProperties = Object.assign([], this.properties);
-                this.originalLabels = Object.assign([], this.node.getLabels());
+            // a new node was really selected
+            if (null !== changes.link.currentValue) {
 
-                this.removedProperties = [];
-                this.removedLabels = [];
+                this.assignValue(this.link)
+                this.cancelable = false;
             }
         }
-
-        this.parseLabels()
     }
 
-    onLabelsChanged(values: Array<string>)
+    assignValue(link: Node)
+    {
+        this.originalLink = Object.assign({}, link)
+        this.originalType = link.getType()
+        Object.assign(this.originalProperties, link.propertiesAsArray())
+
+        this.link = link;
+        this.type = this.link.getType()
+        this.properties = this.link.propertiesAsArray()
+    }
+
+    onTypeKeyup(e: any)
     {
         this.cancelable = true;
-    }
-
-    onLabelRemoved(label: string)
-    {
-        // add value to the labels to remove if the node original
-        // labels did contain this value
-        if (this.originalLabels.indexOf(label) > -1) {
-            this.removedLabels.push(label);
-        }
-    }
-
-    onLabelAdded(label: string)
-    {
-        // there is no need to update this manually because
-        // selected labels is already two-way bounded
     }
 
     save(e?: any)
     {
         if (e) { e.preventDefault() }
-
         this.loading = true;
         this.cancelable = false;
 
-        const newProperties = this.gatherProperties()
-        const removedProperties = this.gatherRemovedProperties()
+        // if link type must be changed...
+        let changedType = null;
+        if (this.type !== this.originalType) {
+            changedType = this.type;
+        }
+
+        const newProperties = this.gatherProperties();
+        const removedProperties = this.gatherRemovedProperties();
 
         this.originalProperties = newProperties;
 
-        this.repo.updateNodeById(this.node.getId(), newProperties, removedProperties, this.selectedLabels, this.removedLabels).then((resultSets: Array<ResultSet>) => {
+        this.repo.updateRelationshipById(this.link.getId(), this.originalType, changedType, newProperties, removedProperties).then((resultSets: Array<ResultSet>) => {
 
-            const node = resultSets[0].getDataset('n').first()
-            this.onNodeEdited.emit(node)
-            this.loading = false
+            const link = resultSets[0].getDataset('r').first()
+            
+            // update current link
+            this.loading = false;
+            this.onLinkEdited.emit({ currentValue: link, previousValue: this.link })
+            this.assignValue(link)
 
         }).catch(err => {
             this.loading = false
+            // @todo An error to show?
             console.log(err)
-            this.onNodeEdited.emit(null)
         })
     }
 
     addProperty(e: any)
     {
-        e.preventDefault()
-        this.cancelable = true
+        e.preventDefault();
+        this.cancelable = true;
 
         const prop = randomPropNames[Math.floor(Math.random() * randomPropNames.length)]
         this.properties.push([prop, ''])
@@ -148,15 +143,13 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
         this.properties.splice(index, 1)
     }
 
-    cancel(e?: any)
+    cancel(e: any)
     {
-        if (e) { e.preventDefault() }
-
+        e.preventDefault();
         this.cancelable = false;
 
+        this.type = this.originalType;
         this.properties = Object.assign([], this.originalProperties)
-        this.selectedLabels = Object.assign([], this.originalLabels)
-
     }
 
     private gatherProperties()

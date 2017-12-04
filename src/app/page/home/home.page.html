@@ -20,6 +20,11 @@
                 [node]="selectedNode"
                 (onNodeEdited)="onNodeEdited($event)">
             </node-edit>
+            <link-edit
+                *ngIf="(null !== selectedLink)"
+                [link]="selectedLink"
+                (onLinkEdited)="onLinkEdited($event)">
+            </link-edit>
         </div>
 
     </div>

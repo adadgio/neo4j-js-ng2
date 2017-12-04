@@ -6,7 +6,11 @@ import { Neo4jService }             from '../../neo4j';
 import { Neo4jRepository }          from '../../neo4j';
 import { ResultSet, Transaction }   from '../../neo4j/orm';
 import { Node, NodeInterface  }     from '../../neo4j/model';
+import { Link, LinkInterface  }     from '../../neo4j/model';
+
 import { crosscut }                 from '../../core/array';
+
+import { LinkUpdatedEvent }         from '../../component/link-edit/link-edit.component';
 
 @Component({
     selector: 'home-page',
@@ -17,6 +21,8 @@ import { crosscut }                 from '../../core/array';
 export class HomePageComponent implements OnInit, AfterViewInit
 {
     selectedNode: Node = null;
+    selectedLink: Node = null;
+
     createModeEnabled: boolean = false
     createModeDefaults: any = {
         label: 'Test'
@@ -39,9 +45,11 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     ngAfterViewChecked()
     {
-
+        // setTimeout(() => {
+        //     this.onSearch({ queryString: 'MATCH (n: Ad) RETURN n, ID(n), LABELS(n) LIMIT 15' })
+        // }, 900)
     }
-    
+
     ngAfterViewInit()
     {
         this.graph.start()
@@ -114,12 +122,17 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     onNodeSelected(node: NodeInterface)
     {
+        this.selectedLink = null
         this.selectedNode = node
     }
 
     onLinkSelected(g: any)
     {
-        console.log('Link selected', g)
+        this.selectedNode = null;
+
+        if (null !== g) {
+            this.selectedLink = g.relationship;
+        }
     }
 
     onNodeDoubleClicked(node: NodeInterface)
@@ -144,7 +157,22 @@ export class HomePageComponent implements OnInit, AfterViewInit
             this.saveSuccessText = null;
             this.saveSuccessText = 'Node saved';
         }
+    }
 
+    /**
+     * @param e { link: NodeInterface, previousLink: NodeInterface }
+     */
+    onLinkEdited(e: LinkUpdatedEvent)
+    {
+        if (null === e.currentValue) {
+            //then an error occured
+            this.saveSuccessText = null;
+            this.saveErrorText = 'An error occured';
+        } else {
+            this.graph.updateLink(e.currentValue, e.previousValue)
+            this.saveSuccessText = null;
+            this.saveSuccessText = 'Relationship saved';
+        }
     }
 
     onRlationshipCreate(e: any)
@@ -162,11 +190,11 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     private findRelationships(sourceNode: NodeInterface)
     {
-        this.repo.findRelationships(sourceNode).then((links: Array<NodeInterface>) => {
+        this.repo.findRelationships(sourceNode).then((links: Array<LinkInterface>) => {
 
-            links.forEach((result, i) => {
-                this.graph.addNode(result.target)
-                this.graph.addLink(result.source, result.target, result.relationship)
+            links.forEach((link: LinkInterface, i) => {
+                this.graph.addNode(link.target)
+                this.graph.addLink(link)
             })
 
         }).catch(err => {

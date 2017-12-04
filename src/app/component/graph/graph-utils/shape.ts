@@ -129,11 +129,6 @@ class ShapeSingleton
         return marker;
     }
 
-    appendLinkGroupShapes(groupsRef: any, settings: any)
-    {
-
-    }
-
     appendNodeGroupShapes(groupsRef: any, settings: any)
     {
         // find node default label shown on the ui
@@ -163,6 +158,10 @@ class ShapeSingleton
             .text((n: NodeInterface) => {
                 return `[${n.getId().toString()}] ` + truncate(name(n, nameOptions), 6);
             })
+
+        groupsRef.update = function(d) {
+            console.log(d)
+        }
     }
 
     appendShapesToLinkGroups(group: any, settings: any)
@@ -180,8 +179,8 @@ class ShapeSingleton
         group.append('text')
             .attr('class', 'link-text')
             .attr('dy', 14)
-            .text((l) => {
-                return name(l.relationship, nameOptions);
+            .text((l, i) => {
+                return name(l.relationship, nameOptions) + ` [${l.relationship.ID} / ${i}]`;
             })
             .attr('text-anchor', 'middle')
     }

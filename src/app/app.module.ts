@@ -26,11 +26,11 @@ import { TutorialComponent }            from './component';
 import { SwitchComponent }              from './component';
 import { ButtonComponent }              from './component';
 import { NodeEditComponent }            from './component';
+import { LinkEditComponent }            from './component';
 import { MultiSelectComponent }         from './component';
 import { MultiSelectOptionComponent }   from './component';
 
 import { GraphComponent }               from './component';
-
 
 
 @NgModule({
@@ -49,6 +49,7 @@ import { GraphComponent }               from './component';
 
         GraphComponent,
         NodeEditComponent,
+        LinkEditComponent,
 
         HomePageComponent,
         DebugPageComponent,

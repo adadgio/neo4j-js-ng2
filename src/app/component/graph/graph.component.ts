@@ -7,9 +7,10 @@ import { OnInit, OnChanges, AfterViewInit }         from '@angular/core';
 import { ElementRef, HostBinding, EventEmitter }    from '@angular/core';
 import { SettingsService }                          from '../../service';
 import { Node, NodeInterface }                      from '../../neo4j/model';
-import { Mouse, State, distance, primary }          from './graph-utils';
-import { Shape }                                    from './graph-utils';
-import { distinct, crosscut}                        from '../../core/array';
+import { Link, LinkInterface }                      from '../../neo4j/model';
+import { Finder, Mouse, State, Shape }              from './graph-utils';
+import { distance }                                 from './graph-utils';
+import { distinct, crosscut }                       from '../../core/array';
 
 @Component({
     selector: 'graph-component',
@@ -34,7 +35,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     private linksRef: any;
 
     private primaryKey: string = 'none';
-    private primaryFn: Function = null;
 
     @Output('nodeAdded') nodeAdded: EventEmitter<Node> = new EventEmitter()
     @Output('nodeCreated') nodeCreated: EventEmitter<Node> = new EventEmitter()
@@ -47,27 +47,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         this.toggleCreateMode(mode)
     }
 
-    private normalizePrimaryKey(pkey: string): string
-    {
-        if (typeof(pkey) === 'undefined' || null == pkey || pkey === 'none' || pkey.trim() == '') {
-            return 'none';
-        } else {
-            return pkey;
-        }
-    }
-
     // @Output('createModeChanged') createModeChanged: EventEmitter<boolean> = new EventEmitter();
 
     constructor(private elementRef: ElementRef, private settings: SettingsService)
     {
+        // define primary keys for links and nodes
         this.primaryKey = this.settings.get('graph.nodes.primaryKey');
-        this.primaryKey = this.normalizePrimaryKey(this.primaryKey);
-
-        if (this.primaryKey === 'none') {
-            this.primaryFn = null; // (n) => { console.log(n[this.primaryKey]) };
-        } else {
-            this.primaryFn = (n: NodeInterface) => { return n[this.primaryKey] };
-        }
     }
 
     ngOnInit()
@@ -78,12 +63,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     ngAfterViewInit()
     {
         this.calculateWidthAndHeight()
-        // if (environment.production) {
-        //     this.calculateWidthAndHeight();
-        // } else {
-        //     // after view init hack fix for NON prod mode only
-        //     setTimeout(() => { this.calculateWidthAndHeight() }, 15)
-        // }
     }
 
     ngOnChanges()
@@ -102,6 +81,15 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             })
 
         this.svg = d3.select(this.selector)
+            .on('click', (e)=> {
+                if (d3.event.target.tagName === 'svg') {
+                    // deselect all link groups and node groups
+                    this.unselectNodes()
+                    this.unselectLinks()
+                    this.nodeSelected.emit(null)
+                    this.linkSelected.emit(null)
+                }
+            })
             .on('mouseup', (e) => {
                 this.graphOnMouseUp()
 
@@ -161,8 +149,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
         this.nodes = this.force.nodes()
         this.links = this.force.links()
-        this.nodesRef = this.svg.selectAll('circle.node', this.primaryFn)
-        this.linksRef = this.svg.selectAll('.link')
+        this.nodesRef = this.svg.selectAll('circle.node')
+        this.linksRef = this.svg.selectAll('line.link')
 
         // attach drag event handlers
         this.force
@@ -203,8 +191,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     update()
     {
         // apply general update pattern to the nodes
-        this.linksRef = this.linksRef.data(this.links)
-        this.nodesRef = this.nodesRef.data(this.nodes, this.primaryFn)
+        this.nodesRef = this.nodesRef.data(this.nodes, (d) => { return d[this.primaryKey] })
+        this.linksRef = this.linksRef.data(this.links, (d) => { return d.relationship[this.primaryKey] })
 
         // first append a group in which to fit the colored
         // circle the node text label and the outer ring
@@ -344,7 +332,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             .attr('class', 'link-group')
             .on('click', (g) => {
                 // "g" contains source, target and relationship
-                this.linkSelected.emit(g);
+                const element = d3.select(d3.event.currentTarget)
+                this.selectLink(element)
+                this.linkSelected.emit(g)
             })
 
         // add ui elements to group and apply general remove pattern to links
@@ -354,6 +344,26 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         this.force.start();
     }
 
+    /**
+     * Add a single node.
+     *
+     * @param node NodeInterface
+     * @param update boolean
+     */
+    addNode(node: NodeInterface, update: boolean = true)
+    {
+        if (this.exists(node)) { return }
+
+        this.nodes.push(node)
+        if (true === update) { this.update() }
+        this.nodeAdded.emit(node)
+    }
+
+    /**
+     * Add multiple nodes.
+     *
+     * @param nodes Array<NodeInterface>
+     */
     addNodes(nodes: Array<NodeInterface>)
     {
         for (let i in nodes) {
@@ -361,46 +371,76 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         }
     }
 
-    addLinks(links: Array<any>)
+    /**
+     * Add single link.
+     *
+     * @param link LinkType such as { source: NodeInterface, target: NodeInterface, relationship: NodeInterface }
+     * @param update boolean Update the graph wiith d3js
+     */
+    addLink(link: LinkInterface, update: boolean = true)
+    {
+        let source = Finder.in(this.nodes).findById(link.source.getId())
+        let target = Finder.findById(link.target.getId())
+
+        this.links.push({
+            source: source,
+            target: target,
+            relationship: link.relationship,
+        });
+
+        if (true === update) {
+            this.update();
+        }
+    }
+
+    /**
+     * Add multiple links.
+     *
+     * @param links Array<LinkType>
+     * @param update boolean Update the graph wiith d3js
+     */
+    addLinks(links: Array<LinkInterface>)
     {
         for (let i in links) {
-            this.addLink(links[i].source, links[i].target, links[i].relationship, this.DONT_UPDATE)
+            this.addLink(links[i], this.DONT_UPDATE)
         }
     }
 
-    addNode(n: NodeInterface, update: boolean = true)
-    {
-        if (this.exists(n)) {
-            return;
-        }
-
-        this.nodes.push(n)
-        if (true === update) { this.update() }
-        this.nodeAdded.emit(n)
-
-        // fix draggable nodes when added although create mode is enabed
-        // @todo fix does not go far enough, cursor stays on top of the node
-        // if (true === State.createModeEnabled) {
-        //     this.enableCreateMode()
-        // }
-    }
-
+    /**
+     * Update a node on the graph.
+     *
+     * @param node NodeInterface
+     */
     updateNode(node: NodeInterface)
     {
-        const index = this.findNodeIndexById(node.getId())
-        const prevNode = this.findNodeById(node.getId());
+        const index: number = Finder.in(this.nodes).findIndexById(node.getId())
+        const prevNode: Node = Finder.findById(node.getId());
 
         if (null === index) { return }
 
         // keep node x and y position !
         State.savedNode = { x: prevNode.x, y: prevNode.y }
 
-        this.removeNodeByIndex(index, this.DONT_UPDATE)
+        this.removeNodeByIndex(index) //  this.DONT_UPDATE
 
         // set prev coordinates to avoid glitch effect
         node.setCoords([prevNode.x, prevNode.y]);
 
         this.nodes.push(node)
+        this.update()
+    }
+
+    updateLink(relationship: NodeInterface, previousValue: NodeInterface, update: boolean = true)
+    {
+        const index: number = Finder.in(this.links).findIndexById(previousValue.getId())
+        const link: Link = Finder.in(this.links).findById(previousValue.getId())
+
+        const sourceNode = link.source;
+        const targetNode = link.target;
+
+        this.removeLinkById(previousValue.getId(), this.DONT_UPDATE)
+
+        this.links.push(new Link({ source: sourceNode, target: targetNode, relationship: relationship }))
         this.update()
     }
 
@@ -415,73 +455,37 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         return false;
     }
 
-    removeNode(node: NodeInterface)
+    removeNode(node: NodeInterface, update: boolean = true)
     {
-        const index = this.findNodeIndexById(node.getId())
-        if (null === index) { return }
-
-        this.removeNodeByIndex(index)
+        const index = Finder.in(this.nodes).findIndexById(node.getId())
+        this.removeNodeByIndex(index, update)
     }
 
     removeNodeByIndex(index: number, update: boolean = true)
     {
         this.nodes.splice(index, 1)
-        this.update()
-    }
-
-    findNodeById(id: number)
-    {
-        for (let i in this.nodes) {
-            if (this.nodes[i].getId() === id) {
-                return this.nodes[i]
-            }
-        }
-
-        return null
-    }
-
-    findNodeIndexById(id: number)
-    {
-        if (typeof id === 'undefined') {
-            console.warn(`graph.components.ts Trying to find a node by id but id is undefined, did you return ID(n) in your query?`)
-        }
-
-        for (let i in this.nodes) {
-            if (this.nodes[i].getId() === id) {
-                return parseInt(i)
-            }
-        }
-
-        return null
-    }
-
-    addLink(sourceNode: NodeInterface, targetNode: NodeInterface, relationship: any = null, update: boolean = true)
-    {
-        let source = this.findNodeById(sourceNode.getId())
-        let target = this.findNodeById(targetNode.getId())
-
-        // @todo Optmization, but not working (??)
-        // if (null === source) {
-        //     this.addNode(target)
-        //     source = this.findNodeById(sourceNode.getId())
-        // }
-        //
-        // // add target node if it does not exist yet
-        // if (null === target) {
-        //     this.addNode(target)
-        //     target = this.findNodeById(targetNode.getId())
-        // }
-
-        const link = {
-            source: source,
-            target: target,
-            relationship: relationship,
-        };
-
-        this.links.push(link);
 
         if (true === update) {
-            this.update();
+            this.update()
+        }
+    }
+
+    removeLinkById(id: number, update: boolean = true)
+    {
+        const index = Finder.in(this.links).indexOf(id)
+        this.links.splice(index, 1)
+
+        if (true === update) {
+            this.update()
+        }
+    }
+
+    removeLinkByIndex(index: number,  update: boolean = true)
+    {
+        this.links.splice(index, 1)
+
+        if (true === update) {
+            this.update()
         }
     }
 
@@ -535,6 +539,17 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     unselectNodes()
     {
         this.svg.selectAll('.node-group').classed('selected', false)
+    }
+
+    selectLink(element: any)
+    {
+        this.unselectLinks()
+        element.classed('selected', true)
+    }
+
+    unselectLinks()
+    {
+        this.svg.selectAll('.link-group').classed('selected', false)
     }
 
     enableCreateMode()
@@ -733,8 +748,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             return
         }
 
-        const source: NodeInterface = this.findNodeById(sourceId)
-        const target: NodeInterface = this.findNodeById(targetId)
+        const source: NodeInterface = Finder.in(this.nodes).findById(sourceId)
+        const target: NodeInterface = Finder.findById(targetId)
 
         State.dragline.remove()
         State.dragline = null

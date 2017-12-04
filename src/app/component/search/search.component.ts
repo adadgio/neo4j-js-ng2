@@ -31,11 +31,11 @@ export class SearchComponent implements OnInit, AfterViewInit
 
     @ViewChild('searchInput') searchInput: ElementRef;
 
-    normalQueryString: string = ':Officer id=5 name="Leyla Aliyeva" 10,5';
+    normalQueryString: string = ':Ad'; //  name="Planning de garde" 10,0
     cypherQueryString: string = '';
 
     normalQueryRelLevel: number = 0;
-    normalQueryLimit: number = 10;
+    normalQueryLimit: number = 30;
     normalQuerySkip: number = null;
 
     ngKlasses: string;

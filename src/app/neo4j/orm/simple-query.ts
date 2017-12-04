@@ -50,7 +50,7 @@ export class SimpleQuery
         if (null !== where) {
             queryString += ` WHERE ${where}`;
         }
-        
+
         // @todo only one level of relationships is supported
         if (relLevel === 1) {
             queryString += `-[r]->(b) RETURN a, b, r, ID(a), ID(b), TYPE(r), LABELS(a), LABELS(b)`;
@@ -61,14 +61,14 @@ export class SimpleQuery
         if (relLevel > 1) {
             console.warn(`simple-query.ts Only one level of relationship is supported in a simple query expression`)
         }
-
-        console.log(limit, skip)
-        if (null !== limit) {
-            queryString += ` LIMIT ${limit}`;
-        }
+        
         if (null !== skip) {
             queryString += ` SKIP ${skip}`;
         }
+        if (null !== limit) {
+            queryString += ` LIMIT ${limit}`;
+        }
+
 
         this.queryString = queryString;
     }

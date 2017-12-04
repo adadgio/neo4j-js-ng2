@@ -38,8 +38,8 @@ export class ResultSet
 
             for (let i in data) {
 
-                let row = data[i].row
-                const meta = data[i].meta
+                let row = data[i].row;
+                const meta = data[i].meta;
 
                 // meta data from the neo4j rest api tells us if
                 // current row a node or a relationship
@@ -121,10 +121,14 @@ export class ResultSet
             return { alias: col, property: null }
         }
     }
-    
+
     getDataset(col: string)
     {
         return (typeof this.datasets[col] === 'undefined') ? [] : this.datasets[col];
     }
 
+    size()
+    {
+        return Object.keys(this.datasets).length;
+    }
 }

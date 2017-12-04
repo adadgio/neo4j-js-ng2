@@ -100,6 +100,11 @@ export class Node implements NodeInterface
         return this.props;
     }
 
+    propertiesAsArray()
+    {
+        return Object.entries(this.props);
+    }
+
     get(prop: string)
     {
         return (typeof this.props[prop] === 'undefined') ? null : this.props[prop]
@@ -136,7 +141,7 @@ export class Node implements NodeInterface
         this.LABELS.push(label)
         return this;
     }
-    
+
     removeLabel(label: string)
     {
         const index = this.LABELS.indexOf(label);
