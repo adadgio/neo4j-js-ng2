@@ -1,6 +1,6 @@
 # Neo4jJs (v2)
 
-A Neo4j graph database explorer, editor and admin dashboard written in Javascript.
+A Neo4j graph database explorer, editor and dashboard.
 
 [Features and bugs roadmap](https://trello.com/b/NLtaurIH/neo4j-js-https-githubcom-adadgio-neo4j-js-ng2)
 
