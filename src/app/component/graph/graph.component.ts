@@ -370,7 +370,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             this.addNode(nodes[i], this.DONT_UPDATE)
         }
     }
-
+    
     /**
      * Add single link.
      *
@@ -385,7 +385,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         this.links.push({
             source: source,
             target: target,
-            relationship: link.relationship,
+            relationship: link.relationship
         });
 
         if (true === update) {
@@ -505,19 +505,19 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         links.selectAll('.link,.link-overlay')
             .attr('x1', function(d) {
                 var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                return d.source.x + Math.cos(angle) * (20);
+                return d.source.x + Math.cos(angle) * (20 + 2);
             })
             .attr('y1', function(d) {
                 var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                return d.source.y + Math.sin(angle) * (20);
+                return d.source.y + Math.sin(angle) * (20 + 2);
             })
             .attr('x2', function(d) {
                 var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                return d.target.x - Math.cos(angle) * (20 + 4);
+                return d.target.x - Math.cos(angle) * (20 + 2);
             })
             .attr('y2', function(d) {
                 var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
-                return d.target.y - Math.sin(angle) * (20 + 4);
+                return d.target.y - Math.sin(angle) * (20 + 2);
             })
 
         links.selectAll('.link-text')

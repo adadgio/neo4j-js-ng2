@@ -166,18 +166,24 @@ export class HomePageComponent implements OnInit, AfterViewInit
     {
         if (null === e.currentValue) {
             //then an error occured
-            this.saveSuccessText = null;
-            this.saveErrorText = 'An error occured';
+            this.toastError('An error occured')
         } else {
             this.graph.updateLink(e.currentValue, e.previousValue)
-            this.saveSuccessText = null;
-            this.saveSuccessText = 'Relationship saved';
+            this.toastSuccess('Relationship saved')
         }
     }
 
-    onRlationshipCreate(e: any)
+    onLinkCreated(e: any)
     {
-        console.log(e)
+        this.repo.createRelationship(e.source, e.target, '->', 'TEST_REL').then((link: Link) => {
+
+            this.graph.addLink(link)
+            this.toastSuccess('Relationship saved')
+
+        }).catch(err => {
+            console.log(err)
+            this.toastError('An error occured')
+        })
     }
 
     onCreateModeChanged(e: boolean)
@@ -190,7 +196,8 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     private findRelationships(sourceNode: NodeInterface)
     {
-        this.repo.findRelationships(sourceNode).then((links: Array<LinkInterface>) => {
+        // query relationships in both ways
+        this.repo.findRelationships(sourceNode, '->').then((links: Array<LinkInterface>) => {
 
             links.forEach((link: LinkInterface, i) => {
                 this.graph.addNode(link.target)
@@ -200,5 +207,28 @@ export class HomePageComponent implements OnInit, AfterViewInit
         }).catch(err => {
             console.log(err)
         })
+
+        this.repo.findRelationships(sourceNode, '<-').then((links: Array<LinkInterface>) => {
+            
+            links.forEach((link: LinkInterface, i) => {
+                this.graph.addNode(link.source)
+                this.graph.addLink(link)
+            })
+
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    private toastError(msg: string)
+    {
+        this.saveSuccessText = null;
+        this.saveErrorText = msg;
+    }
+
+    private toastSuccess(msg: string)
+    {
+        this.saveSuccessText = msg;
+        this.saveErrorText = null;
     }
 }

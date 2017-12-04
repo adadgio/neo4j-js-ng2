@@ -15,6 +15,7 @@ Table of Contents
 * [Running in production](#running-in-production)
 * [Running in development](#running-in-development)
 * [Graph events](#graph-events)
+* [Known issues](#known-issues)
 * [License](#license)
 
 ## Improvements over v1
@@ -62,6 +63,10 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+
+## Graph events
+
+- In Firefox local storage is not shared between tabs so you might experience settings or debug logs inconsistent views.
 
 ## Licence
 

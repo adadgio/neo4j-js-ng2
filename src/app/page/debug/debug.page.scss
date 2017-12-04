@@ -10,7 +10,6 @@
 .debug-group {
     display: flex;
     flex-direction: column;
-    font-size: $fontSize - 2px;
     margin-bottom: 16px;
     padding: 16px;
     overflow: hidden;
@@ -40,7 +39,6 @@
             display: flex;
             flex-direction: row;
             padding: 8px;
-            font-size: $fontSize - 2px;
             font-weight: bold;
             margin-bottom: 8px;
             @include border-radius(2px);
@@ -78,7 +76,7 @@
 
             pre {
                 color: colors(white);
-                font-size: $fontSize - 4px;
+                font-size: $fontSize - 2px;
                 margin-top: 8px;
                 font-family: monospace, "Monospace sans", sans-serif;
             }

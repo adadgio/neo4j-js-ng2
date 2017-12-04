@@ -26,6 +26,10 @@ g.link-group {
         }
     }
 
+    .link-arrow {
+        fill: #dedede;
+    }
+
     &.selected {
         line.link {
             stroke: #097bb5;

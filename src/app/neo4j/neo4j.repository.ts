@@ -40,7 +40,7 @@ export class Neo4jRepository
                 resolve(node)
 
             }).catch(err => {
-                throw new Error(err)
+                reject(err)
             })
         })
     }
@@ -68,10 +68,55 @@ export class Neo4jRepository
         return this.neo4j.commit(transaction)
     }
 
-    findRelationships(node: NodeInterface)
+    createRelationship(source: NodeInterface, target: NodeInterface, direction: '->'|'<-', type: string)
     {
+        let createDir: string;
+
+        if (direction === '->') {
+            createDir = `(a)-[r:${type}]->(b)`;
+        } else if (direction === '<-') {
+            createDir = `(a)<-[r:${type}]-(b)`;
+        }
+        
         const transaction = new Transaction()
-        transaction.add(`MATCH (a)-[r]-(b) WHERE ID(a) = ${node.getId()} RETURN a, b, ID(a), ID(b), LABELS(a), LABELS(b), r, ID(r), TYPE(r)`)
+        transaction.add(`MATCH (a), (b) WHERE ID(a)=${source.getId()} AND ID(b)=${target.getId()} CREATE ${createDir} RETURN r, ID(r), TYPE(r)`)
+
+        return new Promise((resolve, reject) => {
+            this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
+
+                let link: Link = null;
+                let relationship = resultSets[0].getDataset('r').first()
+
+                console.log(resultSets[0].getDataset('r'))
+                if (null !== relationship) {
+                    resolve(new Link({ source: source, target: target, relationship: relationship }))
+                } else {
+                    reject('Could not creaete relationship')
+                }
+
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+
+    findRelationships(node: NodeInterface, direction: '->'|'<-' = '->')
+    {
+        let match: string;
+
+        if (direction === '->') {
+            match = '(a)-[r]->(b)';
+
+        } else if (direction === '<-') {
+            match = '(a)<-[r]-(b)';
+
+        } else {
+            // cant happen
+            match = '(a)-[r]-(b)';
+        }
+
+        const transaction = new Transaction()
+        transaction.add(`MATCH ${match} WHERE ID(a) = ${node.getId()} RETURN a, b, ID(a), ID(b), LABELS(a), LABELS(b), r, ID(r), TYPE(r)`)
 
         return new Promise((resolve, reject) => {
             this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
@@ -85,14 +130,18 @@ export class Neo4jRepository
                 let links = [];
 
                 dataset2.forEach((rel: NodeInterface, i) => {
-                    const targetNode = dataset3[i];
-                    links.push(new Link({ source: node, target: dataset3[i], relationship: dataset2[i] }))
+                    const sourceNode = (direction === '->') ? node : dataset3[i];
+                    const targetNode = (direction === '->') ? dataset3[i] : node;
+
+                    // direction always stays the same
+                    links.push(new Link({ source: sourceNode, target: targetNode, relationship: dataset2[i] }))
+
                 })
 
                 resolve(links)
 
             }).catch(err => {
-                throw new Error(err)
+                reject(err)
             })
 
         })

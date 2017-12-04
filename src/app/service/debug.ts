@@ -59,7 +59,7 @@ class DebugSingleton
     getMessages(format: string = 'json')
     {
         const messages = this.messages.map(msg => { return JSON.parse(msg) })
-        return orderBy('timestamp', messages)
+        return orderBy('timestamp', messages, 'DESC')
     }
 
     countErrorsByLevel(level: string)

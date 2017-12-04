@@ -20,7 +20,7 @@ export class CypherQuery
     queryNativeParts: Array<string> = [];
 
     public static RAW_QUERY_PART = true;
-
+    
     constructor()
     {
         this.clear()
@@ -113,7 +113,7 @@ export class CypherQuery
 
         this.addQueryParts(null, [this.querySetLabelsClause])
         this.addQueryParts(null, [this.queryRmLabelsClause])
-        
+
         this.addQueryParts(null, this.queryNativeParts)
 
         this.addQueryParts('RETURN', this.queryReturnClauses)

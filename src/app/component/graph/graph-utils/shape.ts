@@ -27,17 +27,6 @@ class ShapeSingleton
             .attr('class', 'dragline')
             .attr('marker-end', 'url(#dragline-arrow)')
 
-        // this.svg.append('svg:defs').append('svg:marker')
-        //     .attr('id', 'dragline-arrow')
-        //     .attr('refX', 6)
-        //     .attr('refY', 6)
-        //     .attr('class', 'dragline-arrow')
-        //     .attr('markerWidth', 12)
-        //     .attr('markerHeight', 12)
-        //     .attr('orient', 'auto')
-        //     .append('path')
-        //     .attr('d', 'M 0 0 12 6 0 12 3 6')
-
         this.svg.append('svg:defs').append('svg:marker')
             .attr('id', 'dragline-arrow')
             .attr('class', 'dragline-arrow')
@@ -114,19 +103,19 @@ class ShapeSingleton
      */
     createArrowMarker()
     {
-        let marker = this.svg.append('defs').append('marker')
-            .attr('id', 'arrow-marker')
-            .attr('class', 'arrow-marker')
-            .attr('viewBox', '0 0 10 10')
-            .attr('refX', 0)
-            .attr('refY', 5)
-            .attr('markerWidth', 4)
-            .attr('markerHeight', 4)
-            .attr('orient', 'auto')
-            .append('path')
-            .attr('d', 'M 0 0 L 10 5 L 0 10 z')
-
-        return marker;
+        // let marker = this.svg.append('defs').append('marker')
+        //     .attr('id', 'arrow-marker')
+        //     .attr('class', 'arrow-marker')
+        //     .attr('viewBox', '0 0 10 10')
+        //     .attr('refX', 0)
+        //     .attr('refY', 5)
+        //     .attr('markerWidth', 4)
+        //     .attr('markerHeight', 4)
+        //     .attr('orient', 'auto')
+        //     .append('path')
+        //     .attr('d', 'M 0 0 L 10 5 L 0 10 z')
+        //
+        // return marker;
     }
 
     appendNodeGroupShapes(groupsRef: any, settings: any)
@@ -171,7 +160,7 @@ class ShapeSingleton
         group
             .append('line')
             .attr('class', 'link')
-            .attr('marker-end', 'url(#arrow-marker)')
+            .attr('marker-end', 'url(#link-arrow)')
 
         group.append('line')
             .attr('class', 'link-overlay')
@@ -180,9 +169,22 @@ class ShapeSingleton
             .attr('class', 'link-text')
             .attr('dy', 14)
             .text((l, i) => {
-                return name(l.relationship, nameOptions) + ` [${l.relationship.ID} / ${i}]`;
+                return name(l.relationship, nameOptions) + ` [${l.relationship.ID}]`;
             })
             .attr('text-anchor', 'middle')
+
+        group.append('svg:defs').append('svg:marker')
+            .attr('id', 'link-arrow')
+            .attr('class', 'link-arrow')
+            .attr('viewBox', '0 -5 10 10')
+            .attr('refX', 10)
+            .attr('markerWidth', 5)
+            .attr('markerHeight', 5)
+            .attr('orient', 'auto')
+            .append('svg:path')
+            .attr('d', 'M0,-5L10,0L0,5')
+
+        // console.log(def.attr('orient'))
     }
 }
 
