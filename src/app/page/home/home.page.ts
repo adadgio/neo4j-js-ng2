@@ -7,7 +7,6 @@ import { Neo4jRepository }          from '../../neo4j';
 import { ResultSet, Transaction }   from '../../neo4j/orm';
 import { Node, NodeInterface  }     from '../../neo4j/model';
 import { Link, LinkInterface  }     from '../../neo4j/model';
-
 import { crosscut }                 from '../../core/array';
 
 import { LinkUpdatedEvent }         from '../../component/link-edit/link-edit.component';
@@ -137,7 +136,6 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     onNodeDoubleClicked(node: NodeInterface)
     {
-        console.log(node)
         this.findRelationships(node)
     }
 
@@ -182,8 +180,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
             this.toastSuccess('Relationship saved')
 
         }).catch(err => {
-            console.log(err)
-            this.toastError('An error occured')
+            this.toastError(err)
         })
     }
 
@@ -206,7 +203,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
             })
 
         }).catch(err => {
-            console.log(err)
+            this.toastError(err)
         })
 
         this.repo.findRelationships(sourceNode, '<-').then((links: Array<LinkInterface>) => {
@@ -217,7 +214,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
             })
 
         }).catch(err => {
-            console.log(err)
+            this.toastError(err)
         })
     }
 

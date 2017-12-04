@@ -19,7 +19,7 @@
         color: colors(grayish);
         position: absolute;
         right: 10px;
-        top: 10px;
+        top: 9px;
         display: flex;
         align-items: center;
         line-height: 1em;
@@ -33,12 +33,7 @@
     }
 }
 
-.search-bar {
-    display: flex;
-    position: relative;
-}
-
-.query-bar {
+.search-bar, .query-bar {
     display: flex;
     position: relative;
 }

@@ -120,7 +120,7 @@ class ShapeSingleton
             .text((n: NodeInterface) => {
                 return `[${n.getId().toString()}] ` + truncate(name(n, nameOptions), 6);
             })
-            
+
         // groupsRef.append('circle')
         //     .attr('class', 'expander')
         //     .attr('r', 7)

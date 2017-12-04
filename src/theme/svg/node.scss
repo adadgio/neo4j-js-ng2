@@ -7,7 +7,7 @@ g.node-group {
 
     &.selected {
         circle.ring {
-            stroke: #F7E0A8;
+            stroke: #565656;
         }
     }
 
@@ -40,7 +40,8 @@ circle {
     &.ring {
         fill: transparent;
         stroke: transparent;
-        stroke-width: 3px;
+        stroke-width: 4px;
+        transition: stroke 0.2s ease;
     }
 
     &.cursor {

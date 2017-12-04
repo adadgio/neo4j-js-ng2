@@ -55,4 +55,8 @@ input[type="email"] {
         color: #b4b4b4;
         background-color: colors(midnight);
     }
+
+    &.input-code {
+        font-family: Monospace, "Monospace sans", sans-serif;
+    }
 }

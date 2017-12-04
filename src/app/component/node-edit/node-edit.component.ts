@@ -1,5 +1,4 @@
-import { Component, ElementRef }                from '@angular/core';
-import { OnChanges, OnInit, AfterViewInit }     from '@angular/core';
+import { Component, ElementRef, OnChanges }     from '@angular/core';
 import { Input, Output, EventEmitter }          from '@angular/core';
 import { ViewChildren, QueryList, ContentChildren } from '@angular/core';
 import { SimpleChanges }                        from '@angular/core';
@@ -16,7 +15,7 @@ const randomPropNames = ['jumpy', 'flashbull', 'mourn', 'ugliest', 'furry', 'che
     templateUrl: './node-edit.component.html',
     styleUrls: ['./node-edit.component.scss']
 })
-export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
+export class NodeEditComponent
 {
     @Input('node') node: NodeInterface = null;
     @Output('onNodeEdited') onNodeEdited: EventEmitter<Node> = new EventEmitter()
@@ -26,6 +25,8 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
     loading: boolean = false;
     cancelable: boolean = false;
+
+    labelsDropdownVisible: boolean = false;
 
     selectedLabels: Array<string> = [];
     availableLabels: Array<string> = [];
@@ -41,14 +42,11 @@ export class NodeEditComponent implements OnInit, AfterViewInit, OnChanges
 
     }
 
-    ngOnInit()
+    toggleLabelsDropdown(e: any)
     {
-
-    }
-
-    ngAfterViewInit()
-    {
-
+        e.preventDefault()
+        // this.labelsDropdownVisible = !this.labelsDropdownVisible;
+        // console.log(this.labelsDropdownVisible)
     }
 
     private parseLabels()

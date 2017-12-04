@@ -525,6 +525,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     {
         // select all node groups and unselect them
         this.unselectNodes()
+        this.unselectLinks()
         element.classed('selected', true)
     }
 
@@ -535,6 +536,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
     selectLink(element: any)
     {
+        this.unselectNodes()
         this.unselectLinks()
         element.classed('selected', true)
     }

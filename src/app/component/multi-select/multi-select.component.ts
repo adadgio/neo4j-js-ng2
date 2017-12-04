@@ -17,7 +17,7 @@ import { MultiSelectOptionComponent }   from './multi-select-option.component';
                 #input
                 (focus)="onFocus($event)"
                 (keyup)="onSearchKeyup($event)"
-                class="input-small"
+                class="input-small input-dark"
                 type="text"
                 [attr.placeholder]="placeholder">
 
@@ -35,7 +35,6 @@ import { MultiSelectOptionComponent }   from './multi-select-option.component';
         <div class="dropdown" *ngIf="dropdownVisible">
             <ul>
                 <li>
-                    <!-- filter(searchTerm.getValue(), items) -->
                     <ng-container *ngFor="let value of items">
                         <multi-select-option
                             [value]="value"
@@ -44,11 +43,6 @@ import { MultiSelectOptionComponent }   from './multi-select-option.component';
                         ></multi-select-option>
                     </ng-container>
                 </li>
-                <!--
-                <li *ngIf="searchTerm.getValue() != '' && filter(searchTerm.getValue(), items).length === 0">
-                    <span class="empty-results-text"><i>No results</i></span>
-                </li>
-                -->
             </ul>
         </div>
     </div>`,
@@ -56,16 +50,16 @@ import { MultiSelectOptionComponent }   from './multi-select-option.component';
 })
 export class MultiSelectComponent implements OnInit
 {
-    dropdownVisible: boolean = false;
     searchTerm: BehaviorSubject<string> = new BehaviorSubject('');
 
     @Input('items') items: Array<any> = [];
     @Input('values') values: Array<string|number> = [];
+    @Input('dropdownVisible') dropdownVisible: boolean = false;
     @Output('valuesChanged') valuesChanged: EventEmitter<any> = new EventEmitter();
     @Output('valueAdded') valueAdded: EventEmitter<any> = new EventEmitter();
     @Output('valueRemoved') valueRemoved: EventEmitter<any> = new EventEmitter();
     @ViewChild('input') input: ElementRef;
-    
+
     placeholder: string;
     areValuesScalar: boolean = false;
 
