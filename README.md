@@ -24,12 +24,14 @@ Table of Contents
 
 - Settings can now be updated on the fly via the UI.
 - Better separated components thanks to Angular2.
-- **Much much cleaner code** for developers including core features.
-- Better events handling in graph user interactions, and an easier way to hook into those events.
+- **Much much cleaner code** for developers to build upon.
+- Better events handling in graph and database interaction.
 - Annoying bugs and annoying features fixed from v1.
 
 **New features**
 
+- Links details are no editable.
+- Links can be created in the create mode.
 - Added a plain *cypher query* mode in the main search bar.
 - Settings are served from a `settings.json` file but are then loaded/edited from local storage.
 
