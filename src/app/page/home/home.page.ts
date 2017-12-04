@@ -25,7 +25,8 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     createModeEnabled: boolean = false
     createModeDefaults: any = {
-        label: 'Test'
+        label: 'Test',
+        relationshipType: 'MY_REL'
     }
     @ViewChild(GraphComponent) graph: GraphComponent;
 
@@ -172,10 +173,10 @@ export class HomePageComponent implements OnInit, AfterViewInit
             this.toastSuccess('Relationship saved')
         }
     }
-
+    
     onLinkCreated(e: any)
     {
-        this.repo.createRelationship(e.source, e.target, '->', 'TEST_REL').then((link: Link) => {
+        this.repo.createRelationship(e.source, e.target, '->', this.createModeDefaults.relationshipType).then((link: Link) => {
 
             this.graph.addLink(link)
             this.toastSuccess('Relationship saved')
@@ -209,7 +210,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
         })
 
         this.repo.findRelationships(sourceNode, '<-').then((links: Array<LinkInterface>) => {
-            
+
             links.forEach((link: LinkInterface, i) => {
                 this.graph.addNode(link.source)
                 this.graph.addLink(link)

@@ -77,7 +77,7 @@ export class Neo4jRepository
         } else if (direction === '<-') {
             createDir = `(a)<-[r:${type}]-(b)`;
         }
-        
+
         const transaction = new Transaction()
         transaction.add(`MATCH (a), (b) WHERE ID(a)=${source.getId()} AND ID(b)=${target.getId()} CREATE ${createDir} RETURN r, ID(r), TYPE(r)`)
 
@@ -87,7 +87,6 @@ export class Neo4jRepository
                 let link: Link = null;
                 let relationship = resultSets[0].getDataset('r').first()
 
-                console.log(resultSets[0].getDataset('r'))
                 if (null !== relationship) {
                     resolve(new Link({ source: source, target: target, relationship: relationship }))
                 } else {

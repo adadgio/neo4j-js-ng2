@@ -22,7 +22,7 @@ export class SettingsPageComponent implements OnInit, AfterViewInit, OnChanges
         const data = settings.get()
         this.settingsString = JSON.stringify(data, null, 2)
     }
-    
+
     ngOnInit()
     {
 
@@ -35,7 +35,7 @@ export class SettingsPageComponent implements OnInit, AfterViewInit, OnChanges
 
     ngOnChanges(changes: SimpleChanges)
     {
-        // console.log(changes)
+        
     }
 
     save(e?: any)

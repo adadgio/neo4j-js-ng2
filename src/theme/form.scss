@@ -13,6 +13,15 @@ form {
     // align-items: stretch;
 }
 
+label {
+    margin-bottom: 8px;
+    margin-top: 16px;
+
+    &.first {
+        margin-top: 0px;
+    }
+}
+
 input[type="text"],
 input[type="password"],
 input[type="number"],
@@ -42,10 +51,8 @@ input[type="email"] {
         padding: 10px 12px 10px 12px;
     }
 
-    &.themed {
-        color: colors(white);
-        background-color: colors(coal);
-        border: 1px solid #5886b7;
-        @include border-radius(2px);
+    &.input-dark {
+        color: #b4b4b4;
+        background-color: colors(midnight);
     }
 }

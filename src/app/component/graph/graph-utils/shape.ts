@@ -149,7 +149,7 @@ class ShapeSingleton
             })
 
         groupsRef.update = function(d) {
-            console.log(d)
+
         }
     }
 
@@ -183,8 +183,6 @@ class ShapeSingleton
             .attr('orient', 'auto')
             .append('svg:path')
             .attr('d', 'M0,-5L10,0L0,5')
-
-        // console.log(def.attr('orient'))
     }
 }
 

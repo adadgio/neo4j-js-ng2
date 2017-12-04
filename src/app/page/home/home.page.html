@@ -56,7 +56,16 @@
         </div>
 
         <div flex flex-fill class="charcoal padding-16px">
-            qsd
+            <div *ngIf="createModeEnabled">
+                <div flex flex-columns>
+                    <label class="first gray">Default label</label>
+                    <input type="text" class="input-small input-dark" [(ngModel)]="createModeDefaults.label">
+                </div>
+                <div flex flex-columns>
+                    <label class="gray">Default rel. type</label>
+                    <input type="text" class="input-small input-dark" [(ngModel)]="createModeDefaults.relationshipType">
+                </div>
+            </div>
         </div>
     </div>
 

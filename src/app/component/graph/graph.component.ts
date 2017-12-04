@@ -370,7 +370,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
             this.addNode(nodes[i], this.DONT_UPDATE)
         }
     }
-    
+
     /**
      * Add single link.
      *
@@ -522,7 +522,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
         links.selectAll('.link-text')
             .attr('transform', function(d) {
-                // console.log(g, e, i)
                 // calcul de l'angle du label
                 var angle = Math.atan((d.source.y - d.target.y) / (d.source.x - d.target.x)) * 180 / Math.PI;
                 return 'translate(' + [((d.source.x + d.target.x) / 2), ((d.source.y + d.target.y) / 2)] + ')rotate(' + angle + ')';
