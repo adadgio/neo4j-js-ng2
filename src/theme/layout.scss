@@ -36,6 +36,11 @@ router-outlet {
 a {
   color: inherit;
   text-decoration: none;
+  @include transition(background-color ease 0.2s, color ease 0.2s);
+
+  &:hover {
+      color: colors(warning);
+  }
 }
 
 h1 {

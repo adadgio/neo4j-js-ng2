@@ -22,7 +22,10 @@ export class Neo4jService
         })
 
         const endpoint = this.settings.get('client.apiEndpoint');
-        this.url = `${endpoint}/transaction/commit`
+        this.url = `${endpoint}/transaction/commit`;
+
+        const debugEnabled = this.settings.get('debug');
+        Debug.debug(debugEnabled)
     }
 
     commit(trans: Transaction, rawRes: boolean = false): Promise<any>

@@ -3,12 +3,12 @@
 <div flex flex-columns class="tutorial-content">
     <div flex flex-rows flex-align-center class="header">
 
-        <h2 *ngIf="step === 1" flex class="tuto-title center">Simple queries language</h2>
-        <h2 *ngIf="step === 2" flex class="tuto-title center">Create mode</h2>
-        <h2 *ngIf="step === 3" flex class="tuto-title center">Node & link edition</h2>
+        <h2 *ngIf="step === 1" flex class="tuto-title center">Explore: Simple queries language</h2>
+        <h2 *ngIf="step === 2" flex class="tuto-title center">Create: Create mode</h2>
+        <h2 *ngIf="step === 3" flex class="tuto-title center">Edit: Node & link edition</h2>
 
         <a flex pull-right href="" title="Neo4j settings" (click)="dismiss($event)">
-            <i class="flaticon-cancel"></i>
+            <i class="flaticon-cancel" style="font-size: 13px"></i>
         </a>
     </div>
 
@@ -16,21 +16,53 @@
         <div *ngIf="step === 1" flex flex-columns>
 
             <div class="tuto-gif">
-                <img src="./assets/tutos/neo4j-js-tuto-00.gif" alt="Tuto gif" height="260">
+                <img src="./assets/tutos/neo4j-js-tuto-01-low.gif" alt="Tuto gif" height="280">
             </div>
             <p class="tuto-text">
                 Simple queries let you find nodes without typing long cypher queries.
             </p>
+
+                <code class="tuto-code">
+                    :Label1:Label2 property="Value" skip,limit
+                </code>
+                <code class="tuto-code">
+                    :Person name="Ben" age=12 0,5
+                </code>
+
         </div>
 
         <div *ngIf="step === 2">
             <div class="tuto-gif">
-                <img src="./assets/tutos/neo4j-js-tuto-02.gif" alt="Tuto gif" height="260">
+                <img src="./assets/tutos/neo4j-js-tuto-02-low.gif" alt="Tuto gif" height="280">
             </div>
             <p class="tuto-text">
-                Create mode lets you create new nodes and relationships
+                <strong>Create mode</strong> lets you create new nodes and relationships. You can toggle the create mode by clicking
+                on the create mode switch (<img style="position:relative;top:-1px" class="inline-image" src="./assets/tutos/inline-create-mode-switch.png" alt="switch">).
+            </p>
+            <p class="tuto-text">
+                You can also toggle create mode by using the <code>Ctrl+C</code> shortcut.
+            </p>
+            <p class="tuto-text">
+                <strong>Long-click</strong> on the empty circle to <strong>create a new node</strong>, and drag a line between two nodes to <strong>create a relationship</strong>.
             </p>
         </div>
+
+        <div *ngIf="step === 3">
+            <div class="tuto-gif">
+                <img src="./assets/tutos/neo4j-js-tuto-03-low.gif" alt="Tuto gif" height="280">
+            </div>
+            <p class="tuto-text">
+                <strong>Create mode</strong> lets you create new nodes and relationships. You can toggle the create mode by clicking
+                on the create mode switch (<img style="position:relative;top:-1px" class="inline-image" src="./assets/tutos/inline-create-mode-switch.png" alt="switch">).
+            </p>
+            <p class="tuto-text">
+                You can also toggle create mode by using the <code>Ctrl+C</code> shortcut.
+            </p>
+            <p class="tuto-text">
+                <strong>Long-click</strong> on the empty circle to <strong>create a new node</strong>, and drag a line between two nodes to <strong>create a relationship</strong>.
+            </p>
+        </div>
+
     </div>
 
 

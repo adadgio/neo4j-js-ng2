@@ -28,5 +28,6 @@
             }
         },
         "labels": ["Test1", "Test2", "Document", "Officer", "Company"]
-    }
+    },
+    "debug": true
 }

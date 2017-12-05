@@ -2,13 +2,12 @@ import { Component, ViewChild }     from '@angular/core';
 import { OnInit, AfterViewInit }    from '@angular/core';
 import { GraphComponent }           from '../../component';
 import { SettingsService }          from '../../service';
-import { Neo4jService }             from '../../neo4j';
 import { Neo4jRepository }          from '../../neo4j';
 import { ResultSet, Transaction }   from '../../neo4j/orm';
 import { Node, NodeInterface  }     from '../../neo4j/model';
 import { Link, LinkInterface  }     from '../../neo4j/model';
+import { LabelInterface }           from '../../neo4j/model';
 import { unique, crosscut }         from '../../core/array';
-
 import { LinkUpdatedEvent }         from '../../component/link-edit/link-edit.component';
 
 @Component({
@@ -32,28 +31,20 @@ export class HomePageComponent implements OnInit, AfterViewInit
     saveErrorText: string = null;
     saveSuccessText: string = null;
     searchLoading: boolean = false;
+    explorerToggled: boolean = false;
 
     labels: Array<any> = [];
 
     // @todo General: sue a setting to discint nodes by propertu (ID) or none, and use distinct INSIDE graph.componenet
-    constructor(private neo4j: Neo4jService, private repo: Neo4jRepository, private settings: SettingsService)
+    constructor(private repo: Neo4jRepository, private settings: SettingsService)
     {
 
     }
 
     ngOnInit()
     {
-        this.repo.findAllLabels().then((results) => {
-
-            let labels = [];
-
-            for (let i in results[0].data) {
-                const row = results[0].data[i].row;
-                labels.push({ name: row[0], count: row[1] })
-            }
-
+        this.repo.findAllLabels().then((labels: Array<LabelInterface>) => {
             this.labels = labels;
-
         }).catch(err => {
             this.toastError(err)
         })
@@ -85,11 +76,17 @@ export class HomePageComponent implements OnInit, AfterViewInit
         }
     }
 
-    filterByLabel(e: any, label: string)
+    exploreToggle(e: any)
     {
         e.preventDefault()
+        this.explorerToggled = !this.explorerToggled;
+    }
+
+    filterByLabel(e: LabelInterface)
+    {
+        let label = e;
         this.graph.clear();
-        this.onSearch({ mode: 'normal', queryString: `MATCH (a:${label}) RETURN a, LABELS(a), ID(a)` })
+        this.onSearch({ mode: 'normal', queryString: `MATCH (a:${label.name}) RETURN a, LABELS(a), ID(a)` })
     }
 
     onSearch(e: any)

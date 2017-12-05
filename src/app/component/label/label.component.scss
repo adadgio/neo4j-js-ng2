@@ -1,0 +1,25 @@
+@import "../../../theme/shared/_mixins";
+@import "../../../theme/shared/_variables";
+
+:host {
+    display: flex;
+}
+
+a.label {
+    display: flex;
+    flex-direction: row;
+    align-self: flex-start;
+    margin-right: auto;
+    padding: 4px 8px;
+
+    &:hover {
+
+    }
+
+    .count {
+        margin-left: 8px;
+    }
+
+    @include box-sizing();
+    @include border-radius(2px);
+}

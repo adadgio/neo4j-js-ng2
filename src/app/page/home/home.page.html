@@ -3,7 +3,7 @@
     <div flex flex-columns class="column-left radiusize coal-border">
 
         <div flex flex-rows class="coal padding-8-16px box-title gray">
-            <span class="toast cleared">Node details</span>
+            <span class="near-toast cleared">Node details</span>
             <span class="toast cleared" *ngIf="(null !== selectedNode)"><i [innerText]="' [' + selectedNode.getId() + ']'"></i></span>
             <span pull-right class="toast success pull-right" [innerText]="saveSuccessText" *ngIf="saveSuccessText"></span>
             <span pull-right class="toast danger pull-right" [innerText]="saveErrorText" *ngIf="saveErrorText"></span>
@@ -19,9 +19,13 @@
             </p>
 
             <div *ngIf="(null === selectedNode && null === selectedLink && false === createModeEnabled)">
-                <ul>
+                <a href="" (click)="exploreToggle($event)" class="warning explore-toggler">Explore labels &nbsp;
+                    <span *ngIf="!explorerToggled" class="caret">&#9656;</span>
+                    <span *ngIf="explorerToggled" class="caret">&#9662;</span>
+                </a>
+                <ul class="labels-list" *ngIf="explorerToggled">
                     <li *ngFor="let label of labels">
-                        <a (click)="filterByLabel($event, label.name)" [innerText]="label.name + ' (' + label.count + ')'" href=""></a>
+                        <label-component [label]="label" [displayCount]="false" (onClick)="filterByLabel($event)"></label-component>
                     </li>
                 </ul>
             </div>
