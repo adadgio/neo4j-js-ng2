@@ -1,6 +1,6 @@
 # Neo4jJs (v2)
 
-A Neo4j graph database explorer, editor and dashboard.
+A Neo4j graph database editor. Explore your **neo4j** graph, create and edit nodes and relationships
 
 [Features and bugs roadmap](https://trello.com/b/NLtaurIH/neo4j-js-https-githubcom-adadgio-neo4j-js-ng2)
 
@@ -11,10 +11,8 @@ Table of Contents
 * [Getting started](#getting-started)
   * [Pre-requisites](#pre-requisites)
   * [Quick configuration](#quick-configuration)
-* [Graph events](#graph-events)
 * [Running in production](#running-in-production)
 * [Running in development](#running-in-development)
-* [Graph events](#graph-events)
 * [Known issues](#known-issues)
 * [License](#license)
 
@@ -30,10 +28,10 @@ Table of Contents
 
 **New features**
 
-- Links details are no editable.
-- Links can be created in the create mode.
-- Added a plain *cypher query* mode in the main search bar.
-- Settings are served from a `settings.json` file but are then loaded/edited from local storage.
+- Editable relationships types and properties.
+- Links/relationships can be created in the create mode.
+- Added a plain *cypher query* mode in the main search bar (*@todo will be deprecated*)
+- Settings are served from `neo4j.settings.json` and can be changed on the fly (stored in local storage).
 
 ![Demo gif 01](https://github.com/adadgio/neo4j-js-ng2/blob/develop/src/assets/tutos/neo4j-js-tuto-01-low.gif)
 
@@ -55,15 +53,10 @@ Table of Contents
 
 ### Quick configuration
 
-- With Angular2: serve projeect with `ng serve`and navigate to `http://localhost:4200/`
+- With Angular2: serve project with `ng serve`and navigate to `http://localhost:4200/`
 - Without Angular2: create a virtual host on your machine and point it to the `dist` folder
 - Copy `src/assets/neo4j.settings.json.dist` to `neo4j.settings.json` and change with your settings
 - Change client `authBasic` value to `Basic: <authString>`. Auth string is a base64 encode of neo4j `username:password`
-
-
-## Graph events
-
-@todo
 
 ## Running in production
 
@@ -81,7 +74,6 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 - Chrome:  **Compatibility OK** (no known issues)
 - In Firefox local storage is not shared between tabs so you might experience settings or debug logs inconsistent views.
-- There is a bug in Firefox when you create relationships between nodes. The dragline randomly stays stuck on the node (1/2 times).
 
 ## Licence
 
