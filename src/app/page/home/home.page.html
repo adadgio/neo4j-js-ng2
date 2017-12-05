@@ -3,7 +3,7 @@
     <div flex flex-columns class="column-left radiusize coal-border">
 
         <div flex flex-rows class="coal padding-8-16px box-title gray">
-            <span class="toast cleared">Node details</span>
+            <span class="near-toast cleared">Node details</span>
             <span class="toast cleared" *ngIf="(null !== selectedNode)"><i [innerText]="' [' + selectedNode.getId() + ']'"></i></span>
             <span pull-right class="toast success pull-right" [innerText]="saveSuccessText" *ngIf="saveSuccessText"></span>
             <span pull-right class="toast danger pull-right" [innerText]="saveErrorText" *ngIf="saveErrorText"></span>

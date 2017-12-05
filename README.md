@@ -35,15 +35,19 @@ Table of Contents
 - Added a plain *cypher query* mode in the main search bar.
 - Settings are served from a `settings.json` file but are then loaded/edited from local storage.
 
+![Demo gif 01](https://github.com/adadgio/neo4j-js-ng2/blob/develop/src/assets/tutos/neo4j-js-tuto-01-low.gif | width=360)
+
 ## Getting started
 
+- Clone or download the project
 - Rename `neo4j.settings.json.dist` into `neo4j.settings.json`.
-- Run ng serve or npm start. You're good to go !
+- Run `ng serve` or `npm start`.
 
 ### Pre-requisites
 
 - Neo4j must be installed [Neo4j quick install instructions here](https://www.digitalocean.com/community/tutorials/how-to-install-neo4j-on-an-ubuntu-vps)
 - Neo4j Basic Authentication must have been configured (by default)
+- Angular2 CLI is required for running with `ng serve` or building into the `dist` folder.
 
 ### Quick configuration
 

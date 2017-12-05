@@ -15,6 +15,13 @@ $radius: 1px;
     @include border-radius(0px 0px $radius $radius)
 }
 
+img.inline-image {
+    display: inline-block;
+    height: $fontSize + 4px;
+    line-height: inherit;
+    vertical-align: middle;
+}
+
 .coal {
     background-color: colors(coal)
 }
@@ -33,7 +40,7 @@ $radius: 1px;
     color: colors(red);
 }
 .box-title {
-    font-size: $fontSize + 1;
+    font-size: $fontSize + 2px;
 }
 .small {
     font-size: $fontSize - 2px
@@ -109,7 +116,16 @@ a.secondary {
     color: colors(green);
 }
 
+
+.near-toast {
+    font-size: inherit;
+    display: flex;
+    align-items: center;
+    padding: 2px 6px;
+}
+
 .toast {
+    font-size: $fontSize;
     display: flex;
     align-items: center;
     padding: 2px 6px;

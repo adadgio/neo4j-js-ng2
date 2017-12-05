@@ -29,17 +29,21 @@
     .header {
         padding: 16px 24px;
         border-bottom: 1px solid colors(charcoal);
+
+        .flaticon-cancel:before {
+            font-size: 15px;
+        }
     }
 
     h2.tuto-title {
-        font-size: $fontSize + 4px;
+        font-size: $fontSize + 2px;
         margin: 0px;
         font-weight: 200;
         text-align: center;
     }
 
     .sub-content {
-        padding: 24px;
+        padding: 24px 32px;
 
         .tuto-gif {
             text-align: center;
@@ -47,7 +51,7 @@
                 margin: auto;
                 display: block;
             }
-            
+
             margin-bottom: 24px;
         }
         p.tuto-text {
@@ -55,6 +59,19 @@
                 text-align: center
             }
             line-height: 1.6em;
+            margin-bottom: 16px
+        }
+        code {
+            color: colors(warning);
+            display: inline;
+        }
+        code.tuto-code {
+            display: block;
+            color: colors(warning);
+            margin-bottom: 16px;
+            padding: 8px;
+            background-color: colors(charcoal);
+            @include border-radius(2px);
         }
     }
 }
@@ -64,23 +81,21 @@
     padding: 25px 0px;
 
     a.bubble {
-        $bh: 16px;
+        $bh: 12px;
         width: $bh;
         height: $bh;
         background-color: colors(secondary);
         border: 2px solid transparent;
         @include border-radius($bh);
-        margin-left: 8px;
-        margin-right: 8px;
+        margin-left: 6px;
+        margin-right: 6px;
         @include transition(background-color ease 0.1s);
 
         &:hover {
             background-color: colors(primary);
-            // border-color: colors(primary);
         }
         &.active {
             background-color: colors(primary);
-            // border-color: colors(primary-hover);
         }
     }
 }
