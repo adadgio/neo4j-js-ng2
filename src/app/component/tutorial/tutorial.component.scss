@@ -58,7 +58,7 @@
             &.center {
                 text-align: center
             }
-            line-height: 1.6em;
+            line-height: 1.5em;
             margin-bottom: 16px
         }
         code {
@@ -70,8 +70,15 @@
             color: colors(warning);
             margin-bottom: 16px;
             padding: 8px;
+            line-height: 1.5em;;
             background-color: colors(charcoal);
             @include border-radius(2px);
+        }
+
+        code {
+            .comment {
+                color: gray;
+            }
         }
     }
 }

@@ -45,8 +45,7 @@ export class SearchComponent implements OnInit, AfterViewInit
 
     normalQueryString: string = ''; //  name="Planning de garde" 10,0
     cypherQueryString: string = ''; //'MATCH (a) RETURN a, LABELS(a), ID(a) LIMIT 10';
-
-    normalQueryRelLevel: number = 0;
+    
     normalQueryLimit: number = 30;
     normalQuerySkip: number = null;
 
@@ -81,7 +80,7 @@ export class SearchComponent implements OnInit, AfterViewInit
 
         if (this.mode === 'normal') {
 
-            const simple = new SimpleQuery(this.normalQueryString, this.normalQueryRelLevel)
+            const simple = new SimpleQuery(this.normalQueryString)
             queryString = simple.getQuery();
             this.onSearch.emit({ mode: this.mode, queryString: queryString })
 

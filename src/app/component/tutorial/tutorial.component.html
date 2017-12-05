@@ -21,13 +21,25 @@
             <p class="tuto-text">
                 Simple queries let you find nodes without typing long cypher queries.
             </p>
+            <code class="tuto-code">
+                <span class="comment">// pseudo code format</span><br>
+                :Label1:Label2 property="Value" limit,skip
+            </code>
+            <code class="tuto-code">
+                <span class="comment">// using numbers, limit and multiple properties</span><br>
+                :Person name="Ben" age=12 10
+            </code>
+            <code class="tuto-code">
+                <span class="comment">// using everything</span><br>
+                :Person name="Ben" age=34 50,0
+            </code>
 
-                <code class="tuto-code">
-                    :Label1:Label2 property="Value" skip,limit
-                </code>
-                <code class="tuto-code">
-                    :Person name="Ben" age=12 0,5
-                </code>
+            <p class="tuto-text">
+                Display one level of relationships using the "+1" flag at the very end of the query
+            </p>
+            <code class="tuto-code">
+                :Company name="Gougle" +1
+            </code>
 
         </div>
 

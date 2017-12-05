@@ -5,21 +5,22 @@ export class SimpleQuery
 {
     queryString: string;
 
-    constructor(string: string, relLevel: number = 1)
+    constructor(string: string)
     {
         // simple query expression looks like
         // ":Person id=3 name=3"
-
+        let relationshipLevel = 0;
         let labels = '';
         let where: string = null;
         let properties  = [];
         let limit: number = null;
         let skip: number = null;
-
+        
         // match labels filter like ":Label1:Label2:..."
         const labelsRegex = new RegExp(/(:[a-zA-Z0-9_:]+)\s{0,}/);
         const propertiesMatch = new RegExp(/((?:[a-z0-9]+)=(("[\w\s]+"){1}|([\S]+)))/gi);
         const limitSkipMatch = new RegExp(/([0-9,\s]+)$/i);
+        const relLevelMatch = new RegExp(/\s\+([0-9]{0,})$/g)
 
         const labelsMatch = string.match(labelsRegex);
         labels = (labelsMatch) ? labelsMatch[1] : '';
@@ -51,24 +52,30 @@ export class SimpleQuery
             queryString += ` WHERE ${where}`;
         }
 
+
+        // test if one level of relationship is detected with a "+" at the end
+        const plusMatch = string.match(relLevelMatch)
+        if (plusMatch) {
+            relationshipLevel = parseInt(plusMatch[0].trim().replace('+', ''))
+        }
+
         // @todo only one level of relationships is supported
-        if (relLevel === 1) {
+        if (relationshipLevel > 0) {
             queryString += `-[r]->(b) RETURN a, b, r, ID(a), ID(b), TYPE(r), LABELS(a), LABELS(b)`;
         } else {
             queryString += ` RETURN a, ID(a), LABELS(a)`;
         }
 
-        if (relLevel > 1) {
+        if (relationshipLevel > 1) {
             console.warn(`simple-query.ts Only one level of relationship is supported in a simple query expression`)
         }
-        
+
         if (null !== skip) {
             queryString += ` SKIP ${skip}`;
         }
         if (null !== limit) {
             queryString += ` LIMIT ${limit}`;
         }
-
 
         this.queryString = queryString;
     }

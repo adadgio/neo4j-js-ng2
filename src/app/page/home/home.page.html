@@ -25,7 +25,7 @@
                 </a>
                 <ul class="labels-list" *ngIf="explorerToggled">
                     <li *ngFor="let label of labels">
-                        <label-component [label]="label" [displayCount]="false" (onClick)="filterByLabel($event)"></label-component>
+                        <label-component [label]="label" [displayCount]="true" (onClick)="filterByLabel($event)"></label-component>
                     </li>
                 </ul>
             </div>

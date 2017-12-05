@@ -11,6 +11,7 @@ Table of Contents
 * [Getting started](#getting-started)
   * [Pre-requisites](#pre-requisites)
   * [Quick configuration](#quick-configuration)
+  * [Simple queries](#simple-queries)
 * [Running in production](#running-in-production)
 * [Running in development](#running-in-development)
 * [Known issues](#known-issues)
@@ -57,6 +58,28 @@ Table of Contents
 - Without Angular2: create a virtual host on your machine and point it to the `dist` folder
 - Copy `src/assets/neo4j.settings.json.dist` to `neo4j.settings.json` and change with your settings
 - Change client `authBasic` value to `Basic: <authString>`. Auth string is a base64 encode of neo4j `username:password`
+
+## Simple queries
+
+Simple queries let you pop nodes on the graph very quickly without writing cypher queries. Simple queries are types in the main exploration search bar.
+
+*Why use this instead of cypher queries?* Because it's a little bit more complicated to allow any alias such as `MATCH (myAlias) RETURN myAlias`, but that's coming in the future. Besides, for exploration, simple queries are faster user-end wise.
+
+**Examples**
+
+```
+// simple query pseudo code format
+:Label1:Label2 property="Value" limit,skip
+
+// numbers, limit and multiple properties (AND...)
+:Person name="Ben" age=12 10
+
+// limit and skip
+:Person name="Ben" age=34 50,0
+
+// queery and show 1st level relationships (+1 flag)
+:Company name="Gougle" +1
+```
 
 ## Running in production
 

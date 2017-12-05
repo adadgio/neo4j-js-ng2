@@ -69,23 +69,13 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     {
 
     }
-    
+
     clear()
     {
-        // @todo This is a mess !
-        // this.nodesRef = this.svg.selectAll('circle.node')
-        // this.linksRef = this.svg.selectAll('line.link')
-        //
-        // this.force = d3.layout.force()
-        //     .nodes([]).links([])
-        //     .charge(-130).linkDistance(120).size([this.width, this.height])
-        //     .on('tick', (e) => {
-        //         return null
-        //     });
-        //
-        // this.nodes = this.force.nodes()
-        // this.links = this.force.links()
-        // this.start()
+        // Remove the node from the array
+        this.nodes.splice(0, this.nodes.length)
+        this.links.splice(0, this.links.length)
+        this.update()
     }
 
     start()
