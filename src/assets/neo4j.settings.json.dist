@@ -1,19 +1,32 @@
 {
     "client": {
         "apiEndpoint": "http://127.0.0.1:7474/db/data",
-        "authBasic": "Basic qwerty=="
+        "authBasic": "Basic queRty=="
+    },
+    "hotkeys": {
+        "toggleCreateMode": ["CTRL", "c"]
     },
     "graph": {
-        "node": {
-            "labels": ["Person", "Car", "Animal"]
+        "nodes": {
+            "primaryKey": "ID",
+            "displayNameOptions": ["name", "label", "id"],
+            "displayColorOptions": {
+                "Ad": "#6DCE9E",
+                "Person": "#343434",
+                "Test": "#e8cb3b",
+                "Specialty": "#11b7ad",
+                "Client": "#6DCE9E",
+                "Company": "#1e6f98",
+                "Officer": "#e8cb3b",
+                "Test": "#11b7ad"
+            }
         },
-        "ui": {
-            "primaryNodeLabel": "name",
-            "secondary": ""
-        }
-    },
-    "test": [
-        { "id": 5, "name": "Bernie" },
-        { "id": 6, "name": "Malcom" }
-    ]
+        "links": {
+            "displayNameOptions": ["name", "TYPE"],
+            "displayColorOptions": {
+
+            }
+        },
+        "labels": ["Test1", "Test2", "Document", "Officer", "Company"]
+    }
 }

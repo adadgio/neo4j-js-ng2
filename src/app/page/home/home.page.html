@@ -8,22 +8,23 @@
             <span pull-right class="toast success pull-right" [innerText]="saveSuccessText" *ngIf="saveSuccessText"></span>
             <span pull-right class="toast danger pull-right" [innerText]="saveErrorText" *ngIf="saveErrorText"></span>
         </div>
+
         <div flex flex-fill flex-columns class="charcoal padding-8-16px">
-            <p *ngIf="(null === selectedNode && true === createModeEnabled)" class="center warning">
+
+            <p *ngIf="(true === createModeEnabled)" class="center warning">
                 Can't edit nodes in create mode.
             </p>
-            <p *ngIf="(null === selectedNode && false === createModeEnabled)" class="center">
-                Click on a node to edit its details.
+            <p *ngIf="(null === selectedNode && null === selectedLink && false === createModeEnabled)" class="center">
+                Click on a node/link to edit its details.
             </p>
 
-            <div *ngIf="(null === selectedNode && false === createModeEnabled)">
+            <div *ngIf="(null === selectedNode && null === selectedLink && false === createModeEnabled)">
                 <ul>
                     <li *ngFor="let label of labels">
                         <a (click)="filterByLabel($event, label.name)" [innerText]="label.name + ' (' + label.count + ')'" href=""></a>
                     </li>
                 </ul>
             </div>
-
 
             <node-edit
                 *ngIf="(null !== selectedNode)"
