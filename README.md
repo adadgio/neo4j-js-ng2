@@ -35,7 +35,7 @@ Table of Contents
 - Added a plain *cypher query* mode in the main search bar.
 - Settings are served from a `settings.json` file but are then loaded/edited from local storage.
 
-![Demo gif 01](https://github.com/adadgio/neo4j-js-ng2/blob/develop/src/assets/tutos/neo4j-js-tuto-01-low.gif)
+![Demo gif 01](https://github.com/adadgio/neo4j-js-ng2/blob/develop/src/assets/tutos/neo4j-js-tuto-01-low.gif =180x)
 
 ## Getting started
 
