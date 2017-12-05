@@ -37,7 +37,8 @@ Table of Contents
 
 ## Getting started
 
-@todo
+- Rename `neo4j.settings.json.dist` into `neo4j.settings.json`.
+- Run ng serve or npm start. You're good to go !
 
 ### Pre-requisites
 
