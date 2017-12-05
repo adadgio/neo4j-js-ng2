@@ -12,6 +12,8 @@ class DebugSingleton
     private messages: Array<string> = [];
     private storageKey: string = 'neo4j_debug_log';
 
+    private debugEnabled: boolean = true;
+
     constructor()
     {
         this.uuid = uuid()
@@ -24,16 +26,26 @@ class DebugSingleton
         this.timestamp = moment().valueOf();
     }
 
+    debug(debugEnabled: boolean)
+    {
+        this.debugEnabled = debugEnabled;
+        return this;
+    }
+
     group(name: string = 'Debug group')
     {
         this.groupName = name;
         this.uuid = uuid();
         this.timestamp = moment().valueOf();
-        return this
+        return this;
     }
 
     log(msg: string|any, category?: string, level: string|'info'|'debug'|'error'|'warning' = 'debug')
     {
+        if (!this.debugEnabled) {
+            return this;
+        }
+
         let logEntry: any = {}
 
         if (typeof(msg) === 'object') {
@@ -54,6 +66,7 @@ class DebugSingleton
 
         this.messages.push(JSON.stringify(logEntry))
         LocalStorage.set(this.storageKey, this.messages)
+        return this;
     }
 
     getMessages(format: string = 'json')

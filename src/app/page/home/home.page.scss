@@ -15,13 +15,35 @@
     margin-left: 24px;
 }
 
+a.explore-toggler {
+    display: flex;
+    margin: 16px 0 8px;
+
+    span.caret {
+        // position: relative;
+        // top: -1px;
+        font-size: $fontSize + 4px;
+        line-height: $fontSize;
+        vertical-align: middle;
+    }
+}
+
 ul.labels-list {
+    display: flex;
+    flex: 1;
+    flex-flow: row wrap;
+    flex-direction: row;
+    align-items: center;
+
     list-style-type: none;
     padding: 0px;
     margin: 0px;
     margin-top: 16px;
 
     li {
-        margin-bottom: 8px;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 4px;
+        margin-right: 4px;
     }
 }

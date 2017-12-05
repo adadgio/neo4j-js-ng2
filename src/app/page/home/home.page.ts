@@ -31,6 +31,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
     saveErrorText: string = null;
     saveSuccessText: string = null;
     searchLoading: boolean = false;
+    explorerToggled: boolean = false;
 
     labels: Array<any> = [];
 
@@ -74,7 +75,13 @@ export class HomePageComponent implements OnInit, AfterViewInit
             this.onCreateModeChanged(!this.createModeEnabled)
         }
     }
-    
+
+    exploreToggle(e: any)
+    {
+        e.preventDefault()
+        this.explorerToggled = !this.explorerToggled;
+    }
+
     filterByLabel(e: LabelInterface)
     {
         let label = e;

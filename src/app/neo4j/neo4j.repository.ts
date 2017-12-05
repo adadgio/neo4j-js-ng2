@@ -24,10 +24,8 @@ export class Neo4jRepository
         const transaction = new Transaction()
         const colors = this.settings.get('graph.nodes.displayColorOptions')
 
-        transaction.add(`MATCH (a) WITH DISTINCT LABELS(a) AS tmp, COUNT(a) AS tmpCnt
-            UNWIND tmp AS label
-            RETURN label, SUM(tmpCnt) AS cnt`)
-
+        transaction.add(`MATCH (a) WITH DISTINCT LABELS(a) AS tmp, COUNT(a) AS tmpCnt UNWIND tmp AS label RETURN label, SUM(tmpCnt) AS cnt`)
+        
         return new Promise((resolve, reject) => {
             this.neo4j.commit(transaction, true).then(rawResults => {
 
@@ -41,7 +39,7 @@ export class Neo4jRepository
                     const label: LabelInterface = { name: name, count: row[1], color: color };
                     labels.push(label)
                 }
-                
+
                 resolve(labels)
 
             }).catch(err => {

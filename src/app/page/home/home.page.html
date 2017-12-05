@@ -19,7 +19,11 @@
             </p>
 
             <div *ngIf="(null === selectedNode && null === selectedLink && false === createModeEnabled)">
-                <ul class="labels-list">
+                <a href="" (click)="exploreToggle($event)" class="warning explore-toggler">Explore labels &nbsp;
+                    <span *ngIf="!explorerToggled" class="caret">&#9656;</span>
+                    <span *ngIf="explorerToggled" class="caret">&#9662;</span>
+                </a>
+                <ul class="labels-list" *ngIf="explorerToggled">
                     <li *ngFor="let label of labels">
                         <label-component [label]="label" [displayCount]="false" (onClick)="filterByLabel($event)"></label-component>
                     </li>

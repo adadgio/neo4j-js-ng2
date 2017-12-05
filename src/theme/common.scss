@@ -97,13 +97,11 @@ img.inline-image {
     color: colors(secondary);
 }
 a.secondary {
-    @include transition(color ease 0.2s);
-    &:hover {
-        color: colors(white);
-    }
+    &:hover { color: colors(white) }
 }
-.warning {
+.warning, a.warning {
     color: colors(warning);
+    &:hover {  }
 }
 .danger {
     color: colors(danger);

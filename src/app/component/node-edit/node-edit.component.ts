@@ -45,8 +45,6 @@ export class NodeEditComponent
     toggleLabelsDropdown(e: any)
     {
         e.preventDefault()
-        // this.labelsDropdownVisible = !this.labelsDropdownVisible;
-        // console.log(this.labelsDropdownVisible)
     }
 
     private parseLabels()
