@@ -1,3 +1,4 @@
+export * from './label/label.component';
 export * from './button/button.component';
 export * from './switch/switch.component';
 export * from './graph/graph.component';

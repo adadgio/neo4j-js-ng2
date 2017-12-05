@@ -1,10 +1,11 @@
 import { Injectable }               from '@angular/core';
 import { Neo4jService }             from './neo4j.service';
+import { SettingsService }          from '../service';
 import { ResultSet, Transaction }   from '../neo4j/orm';
 import { CypherQuery, SimpleQuery } from '../neo4j/orm';
 import { Node, NodeInterface }      from '../neo4j/model';
 import { Link, LinkInterface }      from '../neo4j/model';
-import { distinct, crosscut }       from '../core/array';
+import { LabelInterface }           from '../neo4j/model';
 
 /**
  * Just short methods for useful top user operations.
@@ -13,7 +14,7 @@ import { distinct, crosscut }       from '../core/array';
 @Injectable()
 export class Neo4jRepository
 {
-    constructor(private neo4j: Neo4jService)
+    constructor(private neo4j: Neo4jService, private settings: SettingsService)
     {
 
     }
@@ -21,14 +22,27 @@ export class Neo4jRepository
     findAllLabels()
     {
         const transaction = new Transaction()
+        const colors = this.settings.get('graph.nodes.displayColorOptions')
+
         transaction.add(`MATCH (a) WITH DISTINCT LABELS(a) AS tmp, COUNT(a) AS tmpCnt
             UNWIND tmp AS label
             RETURN label, SUM(tmpCnt) AS cnt`)
 
         return new Promise((resolve, reject) => {
             this.neo4j.commit(transaction, true).then(rawResults => {
+
+                let labels = [];
+
+                for (let i in rawResults[0].data) {
+                    const row = rawResults[0].data[i].row;
+                    const name = row[0];
+                    const color = (typeof colors[name] !== 'undefined') ? colors[name] : '#222';
+
+                    const label: LabelInterface = { name: name, count: row[1], color: color };
+                    labels.push(label)
+                }
                 
-                resolve(rawResults)
+                resolve(labels)
 
             }).catch(err => {
                 reject(err)

@@ -14,3 +14,14 @@
     width: 260px;
     margin-left: 24px;
 }
+
+ul.labels-list {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 16px;
+
+    li {
+        margin-bottom: 8px;
+    }
+}

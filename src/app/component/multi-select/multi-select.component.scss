@@ -21,7 +21,7 @@
             display: flex;
         }
     }
-    
+
     .dropdown {
         position: absolute;
         width: 100%;
@@ -54,9 +54,8 @@
             }
         }
 
-
         &:after {
-            content:"";
+            content: "";
             position: absolute;
             left: 8px;
             top: -8px;

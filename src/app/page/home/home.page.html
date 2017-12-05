@@ -19,9 +19,9 @@
             </p>
 
             <div *ngIf="(null === selectedNode && null === selectedLink && false === createModeEnabled)">
-                <ul>
+                <ul class="labels-list">
                     <li *ngFor="let label of labels">
-                        <a (click)="filterByLabel($event, label.name)" [innerText]="label.name + ' (' + label.count + ')'" href=""></a>
+                        <label-component [label]="label" [displayCount]="false" (onClick)="filterByLabel($event)"></label-component>
                     </li>
                 </ul>
             </div>
