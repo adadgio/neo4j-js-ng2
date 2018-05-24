@@ -10,10 +10,10 @@ export class SettingsService
     inited: boolean = false
 
     private storageKey: string = 'neo4j_settings'
-    
+
     constructor(@Optional() private http: Http)
     {
-        // try to read data from local storage first
+        // read data from local storage first
         const localSettings = LocalStorage.get(this.storageKey)
 
         if (localSettings !== null) {
