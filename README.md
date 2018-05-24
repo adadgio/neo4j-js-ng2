@@ -59,6 +59,8 @@ Table of Contents
 - Copy `src/assets/neo4j.settings.json.dist` to `src/assets/neo4j.settings.json` and change with your settings
 - Change client `authBasic` value to `Basic: <authString>`. Auth string is a **base64 encode** `username:password`
 
+*Note:* various settings like node colors and default labels are customizable in the JSON or on the fly!
+
 ## Simple queries
 
 Simple queries let you pop nodes on the graph very quickly without writing cypher queries. Simple queries are types in the main exploration search bar.
