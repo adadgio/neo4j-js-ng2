@@ -10,7 +10,7 @@ export class SettingsService
     inited: boolean = false
 
     private storageKey: string = 'neo4j_settings'
-
+    
     constructor(@Optional() private http: Http)
     {
         // try to read data from local storage first
@@ -51,5 +51,10 @@ export class SettingsService
     {
         const accessor = new PropertyAccess()
         return (null === access) ? this.settings : accessor.getValue(this.settings, access)
+    }
+
+    all()
+    {
+        return this.get()
     }
 }

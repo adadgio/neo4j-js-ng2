@@ -4,7 +4,7 @@
         "authBasic": "Basic queRty=="
     },
     "hotkeys": {
-        "toggleCreateMode": ["CTRL", "c"]
+        "toggleCreateMode": ["CTRL", "n"]
     },
     "graph": {
         "nodes": {

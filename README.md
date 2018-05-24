@@ -43,7 +43,7 @@ Table of Contents
 ## Getting started
 
 - Clone or download the project
-- Rename `neo4j.settings.json.dist` into `neo4j.settings.json`.
+- Copy `src/assets/neo4j.settings.json.dist` to `src/assets/neo4j.settings.json`.
 - Run `ng serve` or `npm start`.
 
 ### Pre-requisites
@@ -56,8 +56,8 @@ Table of Contents
 
 - With Angular2: serve project with `ng serve`and navigate to `http://localhost:4200/`
 - Without Angular2: create a virtual host on your machine and point it to the `dist` folder
-- Copy `src/assets/neo4j.settings.json.dist` to `neo4j.settings.json` and change with your settings
-- Change client `authBasic` value to `Basic: <authString>`. Auth string is a base64 encode of neo4j `username:password`
+- Copy `src/assets/neo4j.settings.json.dist` to `src/assets/neo4j.settings.json` and change with your settings
+- Change client `authBasic` value to `Basic: <authString>`. Auth string is a **base64 encode** `username:password`
 
 ## Simple queries
 

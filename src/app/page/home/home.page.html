@@ -66,7 +66,7 @@
 
     <div flex  flex-columns class="column-right coal-border radiusize">
         <div flex flex-rows flex-align-center class="coal padding-8-16px box-title gray">
-            <span>Create (Ctrl+C)</span>
+            <span>Create ({{ settingsInfo.hotkeys.toggleCreateMode }})</span>
             <switch-component pull-right [value]="createModeEnabled" (change)="onCreateModeChanged($event)"></switch-component>
         </div>
 
