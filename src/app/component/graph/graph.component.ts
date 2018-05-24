@@ -567,7 +567,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
     {
         this.svg.selectAll('.link-group').classed('selected', false)
     }
-
+    
     enableCreateMode()
     {
         State.createModeEnabled = true
