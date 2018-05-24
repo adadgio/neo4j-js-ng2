@@ -20,7 +20,7 @@ export class CypherQuery
     queryNativeParts: Array<string> = [];
 
     public static RAW_QUERY_PART = true;
-    
+
     constructor()
     {
         this.clear()
@@ -186,7 +186,7 @@ export class CypherQuery
 
     setParameter()
     {
-        // @todo
+        // @TODO
     }
 
     addQueryParts(prefix: string = null, clauses: Array<string>)

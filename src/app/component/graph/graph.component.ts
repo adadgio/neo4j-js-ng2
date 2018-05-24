@@ -358,7 +358,14 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
         this.nodes.push(node)
         if (true === update) { this.update() }
+
         this.nodeAdded.emit(node)
+
+        // draggin' needs to be disabled when a new node is added
+        if (State.createModeEnabled) {
+            d3.selectAll('g.node-group').classed('droppable', true)
+            this.disableDragging()
+        }
     }
 
     /**
@@ -448,7 +455,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
     removeAllNodes()
     {
-
+        // @TODO
     }
 
     exists(node: NodeInterface)
@@ -498,9 +505,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
 
     onTick(nodes: any, links: any)
     {
-        // console.log(nodes.length, links.length)
-        // console.log(nodes[0])
-
         nodes.attr('transform', function (d) {
             // let x = Math.max(30, Math.min(this.width - 30, d.x))
             // let y = Math.max(30, Math.min(this.height - 30, d.y))
@@ -570,8 +574,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges
         d3.selectAll('g.node-group').classed('droppable', true)
 
         // create a hidden drag line to allow linking two nodes
-        State.cursor = Shape.createCursor()
-        // dont create dragline here, see graph on rel. drag start method
+        if (State.createModeEnabled)  {
+            State.cursor = Shape.createCursor()
+            // dont create dragline here, see graph on rel. drag start method
+        }
 
         this.unselectNodes()
         this.nodeSelected.emit(null)

@@ -112,7 +112,7 @@ export class LinkEditComponent implements OnInit, AfterViewInit, OnChanges
         this.repo.updateRelationshipById(this.link.getId(), this.originalType, changedType, newProperties, removedProperties).then((resultSets: Array<ResultSet>) => {
 
             const link = resultSets[0].getDataset('r').first()
-            
+
             // update current link
             this.loading = false;
             this.onLinkEdited.emit({ currentValue: link, previousValue: this.link })
@@ -120,7 +120,7 @@ export class LinkEditComponent implements OnInit, AfterViewInit, OnChanges
 
         }).catch(err => {
             this.loading = false
-            // @todo An error to show?
+            // @TODO show a ui error
             console.log(err)
         })
     }

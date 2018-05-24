@@ -1,6 +1,6 @@
 import { Node, NodeInterface } from '../model';
 
-// @todo Warn if not LABEL nor ID or event TYPE (for relationships) are not in the query
+// @TODO Warn if not LABEL nor ID or event TYPE (for relationships) are not in the query
 export class ResultSet
 {
     datasets: any = {}

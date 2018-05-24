@@ -25,7 +25,7 @@ export class Neo4jRepository
         const colors = this.settings.get('graph.nodes.displayColorOptions')
 
         transaction.add(`MATCH (a) WITH DISTINCT LABELS(a) AS tmp, COUNT(a) AS tmpCnt UNWIND tmp AS label RETURN label, SUM(tmpCnt) AS cnt`)
-        
+
         return new Promise((resolve, reject) => {
             this.neo4j.commit(transaction, true).then(rawResults => {
 
@@ -151,7 +151,7 @@ export class Neo4jRepository
             this.neo4j.commit(transaction).then((resultSets: Array<ResultSet>) => {
 
                  // "r" dataset (relationship nodes) should match number of "b" nodes...)
-                 // @todo ...what happens with multiple relationships then?
+                 // @TODO ...what happens with multiple relationships then?
                 let dataset1 = resultSets[0].getDataset('a')
                 let dataset2 = resultSets[0].getDataset('r')
                 let dataset3 = resultSets[0].getDataset('b')

@@ -15,7 +15,7 @@ export class SimpleQuery
         let properties  = [];
         let limit: number = null;
         let skip: number = null;
-        
+
         // match labels filter like ":Label1:Label2:..."
         const labelsRegex = new RegExp(/(:[a-zA-Z0-9_:]+)\s{0,}/);
         const propertiesMatch = new RegExp(/((?:[a-z0-9]+)=(("[\w\s]+"){1}|([\S]+)))/gi);
@@ -59,7 +59,7 @@ export class SimpleQuery
             relationshipLevel = parseInt(plusMatch[0].trim().replace('+', ''))
         }
 
-        // @todo only one level of relationships is supported
+        // @TODO only one level of relationships is supported
         if (relationshipLevel > 0) {
             queryString += `-[r]->(b) RETURN a, b, r, ID(a), ID(b), TYPE(r), LABELS(a), LABELS(b)`;
         } else {

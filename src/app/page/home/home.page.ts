@@ -35,8 +35,9 @@ export class HomePageComponent implements OnInit, AfterViewInit
 
     labels: Array<any> = [];
     settingsInfo: any;
-
-    // @todo General: sue a setting to discint nodes by propertu (ID) or none, and use distinct INSIDE graph.componenet
+    
+    // @TODO general: use a setting value to distinguish nodes by variable property (defaults to ID)
+    // and use distinct INSIDE graph.component
     constructor(private repo: Neo4jRepository, private settings: SettingsService)
     {
         this.settingsInfo = this.settings.all()
@@ -130,7 +131,7 @@ export class HomePageComponent implements OnInit, AfterViewInit
         // if it was successfull
         const savedNode = node;
 
-        // @todo Set default label from create mode windows
+        // @TODO Set default label from create mode windows
         node.addLabel(this.createModeDefaults.label)
 
         this.repo.persistNode(node).then((node: NodeInterface) => {
