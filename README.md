@@ -4,18 +4,17 @@ A Neo4j graph database editor. Explore your **neo4j** graph, create and edit nod
 
 [Features and bugs roadmap](https://trello.com/b/NLtaurIH/neo4j-js-https-githubcom-adadgio-neo4j-js-ng2)
 
-Table of Contents
-=================
+# Table of Contents
 
-* [Improvements over v1](#improvements-over-v1)
-* [Getting started](#getting-started)
-  * [Pre-requisites](#pre-requisites)
-  * [Quick configuration](#quick-configuration)
-  * [Simple queries](#simple-queries)
-* [Running in production](#running-in-production)
-* [Running in development](#running-in-development)
-* [Known issues](#known-issues)
-* [License](#license)
+- [Improvements over v1](#improvements-over-v1)
+- [Getting started](#getting-started)
+  - [Pre-requisites](#pre-requisites)
+  - [Quick configuration](#quick-configuration)
+  - [Simple queries](#simple-queries)
+- [Running in production](#running-in-production)
+- [Running in development](#running-in-development)
+- [Known issues](#known-issues)
+- [License](#license)
 
 ## Improvements over v1
 
@@ -31,7 +30,7 @@ Table of Contents
 
 - Editable relationships types and properties.
 - Links/relationships can be created in the create mode.
-- Added a plain *cypher query* mode in the main search bar (*@todo will be deprecated*)
+- Added a plain _cypher query_ mode in the main search bar (_@todo will be deprecated_)
 - Settings are served from `neo4j.settings.json` and can be changed on the fly (stored in local storage).
 
 ![Demo gif 01](https://github.com/adadgio/neo4j-js-ng2/blob/develop/src/assets/tutos/neo4j-js-tuto-01-low.gif)
@@ -59,13 +58,13 @@ Table of Contents
 - Copy `src/assets/neo4j.settings.json.dist` to `src/assets/neo4j.settings.json` and change with your settings
 - Change client `authBasic` value to `Basic: <authString>`. Auth string is a **base64 encode** `username:password`
 
-*Note:* various settings like node colors and default labels are customizable in the JSON or on the fly!
+_Note:_ various settings like node colors and default labels are customizable in the JSON or on the fly!
 
 ## Simple queries
 
 Simple queries let you pop nodes on the graph very quickly without writing cypher queries. Simple queries are types in the main exploration search bar.
 
-*Why use this instead of cypher queries?* Because it's a little bit more complicated to allow any alias such as `MATCH (myAlias) RETURN myAlias`, but that's coming in the future. Besides, for exploration, simple queries are faster user-end wise.
+_Why use this instead of cypher queries?_ Because it's a little bit more complicated to allow any alias such as `MATCH (myAlias) RETURN myAlias`, but that's coming in the future. Besides, for exploration, simple queries are faster user-end wise.
 
 **Examples**
 
@@ -95,9 +94,28 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
+## Testing/Demo
+
+Run the application and neo4j i docker compose.  
+Add configuration and use this client configuration:
+
+```json
+"client": {
+        "apiEndpoint": "http://localhost:7474/db/data"
+    }
+```
+
+Start the demo:
+
+```bash
+docker-compose up --build
+```
+
+Access the application on http://localhost:4000 (Use incognito mode to avoid browser caching problems)
+
 ## Known issues
 
-- Chrome:  **Compatibility OK** (no known issues)
+- Chrome: **Compatibility OK** (no known issues)
 - In Firefox local storage is not shared between tabs so you might experience settings or debug logs inconsistent views.
 
 ## Licence
